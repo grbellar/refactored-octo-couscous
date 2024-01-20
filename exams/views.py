@@ -26,5 +26,6 @@ class HandleQuestionSubmissions(View):
 
 
 
+
 # TODO: Can I use a DetailView and FormView together? Where do I send the form data? Work on how to
-    # submit form answers and get next question. 
+    # submit form answers and get next question.
