@@ -1,8 +1,6 @@
 from django.urls import path
-
-from .views import SingleQuestionView, HandleQuestionSubmissions
+from .views import question_view
 
 urlpatterns = [
-    path("exams/question/<int:pk>", SingleQuestionView.as_view(), name="question"),
-    path("exams/success/", HandleQuestionSubmissions.as_view(), name="success")
+    path("exams/question/<int:pk>", question_view, name='question')
 ]

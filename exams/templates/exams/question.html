@@ -16,12 +16,12 @@
 
 {% comment %} For each question in the Exam...  display questions one by one as user completes them.{% endcomment %}
 
-<form action="" method="post">
+<form action="{% url 'question' %}" method="post">
     {% csrf_token %}
     {% for choice in question.choices.all %}
     
     <label for="{{ choice.id }}">{{ choice.choice_text }}</label>
-    <input id="choice{{ choice.id }}" type="radio" name="{{question.id}}" value="choice{{ choice.id }}"><br>
+    <input id="choice{{ choice.id }}" type="radio" name="user_answer" value="choice{{ choice.id }}"><br>
     
     {% endfor %}
     <input type="submit" value="Next question">
