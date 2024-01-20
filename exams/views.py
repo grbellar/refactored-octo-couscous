@@ -25,16 +25,11 @@ def question_view(request, pk):
 
 
 def take_exam_view(request, pk):
-    user = request.user
-    # Should maybe see if we can make this happen
-    # when a user creates their account. Users should automatically be given a copy of all exams. ACTUALLY it should be when a user pays.
-    # Creating them when a user registers my be a waste if they dont' end up paying. Of course if the only way to register is to pay then this
-    # point is moot.
-    user.add(Exam.objects.get(id=pk))
-    user.save()
-
-    user_instance_of_exam = user.exam
-    context = {"exam": user_instance_of_exam}
+    # Need to figure out how to make sure I am storing user specific exam data as they begin taking this exam. See previous commit for 
+    # comments on one approach with giving each user an Exam.
+    #TODO: See take_exam.html
+    exam = Exam.objects.get(id=pk)
+    context = {"exam": exam}
     return render(request, "exams/take_exam.html", context)
 
 
