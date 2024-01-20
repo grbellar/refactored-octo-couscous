@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}Your Exams{% endblock title %}
+
+{% block content %}
+<div>
+    <p>You haven't taken any exams. </p>
+
+    <a href="{% url 'take-exam' %}" class="btn btn-primary">Take exam!</a>
+</div>
+{% endblock content %}

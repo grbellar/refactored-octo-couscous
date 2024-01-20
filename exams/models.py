@@ -26,7 +26,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     question = models.ForeignKey("Question", on_delete=models.CASCADE, related_name="choices")
-    choice_text = models.TextField(null=False, blank=False)
+    text = models.TextField(null=False, blank=False)
     is_correct = models.BooleanField()
 
 # TODO: Run migrations and insert some data into these tables so I can test relationships and displaying 

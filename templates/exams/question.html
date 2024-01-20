@@ -12,7 +12,7 @@
     {% comment %} <ul>
         {% for choice in question.choices.all %}
         <li>
-            <p>{{ choice.choice_text }}</p>
+            <p>{{ choice.text }}</p>
         </li>
         
         {% endfor %}
@@ -24,7 +24,7 @@
         {% csrf_token %}
         {% for choice in question.choices.all %}
         
-        <label for="{{ choice.id }}">{{ choice.choice_text }}</label>
+        <label for="{{ choice.id }}">{{ choice.text }}</label>
         <input id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}"><br>
         
         {% endfor %}
