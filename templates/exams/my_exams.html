@@ -5,8 +5,21 @@
 
 {% block content %}
 <div>
-    <p>You haven't taken any exams. </p>
 
-    <a href="{% url 'take-exam' %}" class="btn btn-primary">Take exam!</a>
+    {% if user_has_paid %}
+    <p>(Stub. Eventually show user exams from database. ) You haven't taken any exams. </p>
+    
+        {% for exam in exams %}
+
+            <a href="{% url 'take-exam' exam.id %}" class="btn btn-primary">{{ exam.name }}</a>
+
+        {%endfor%}
+    <!-- TODO: This should pass exam they choose to take exam view and retrieve it from the database. Take exam
+            view then displays the exam. Currently this is accomplished by question.html-->
+    {%else%}
+    <p>Exams are for paying customers only.</p>
+    <a href="#" class="btn btn-primary">Get access</a>
+    <!-- TODO: reach out to Stripe. -->
+    {%endif%}
 </div>
 {% endblock content %}
