@@ -1,6 +1,5 @@
 from django.db import models
 
-# https://chat.openai.com/share/788b0c0f-c032-4fd4-a65a-d9c156a36419 
 
 class Exam(models.Model):
     name = models.CharField(max_length=300)
@@ -29,6 +28,5 @@ class Choice(models.Model):
     text = models.TextField(null=False, blank=False)
     is_correct = models.BooleanField()
 
-# TODO: Run migrations and insert some data into these tables so I can test relationships and displaying 
-    # them. 2. Build correct/incorrect functionality so I can test that. Need to figure out what relationships are needed
+# TODO: 2. Build correct/incorrect functionality so I can test that. Need to figure out what relationships are needed
     # and whether they are working correctly together.
