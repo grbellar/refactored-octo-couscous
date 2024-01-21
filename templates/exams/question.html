@@ -10,8 +10,6 @@
 {%else%}
     <h6>{{ question.question }}</h6>
 
-    {% comment %} TODO: For each question in the Exam...  display questions one by one as user completes them.{% endcomment %}
-
     <form action="" method="post">
         {% csrf_token %}
         {% for choice in question.choices.all %}

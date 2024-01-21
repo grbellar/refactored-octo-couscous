@@ -12,12 +12,10 @@
             <a href="{% url 'take-exam' exam.id %}" class="btn btn-primary">{{ exam.name }}</a>
 
         {%endfor%}
-    <!-- TODO: This should pass exam they choose to take exam view and retrieve it from the database. Take exam
-            view then displays the exam. Currently this is accomplished by question.html-->
     {%else%}
-    <p>Exams are for paying customers only.</p>
-    <a href="#" class="btn btn-primary">Get access</a>
-    <!-- TODO: reach out to Stripe. -->
+        <p>Exams are for paying customers only.</p>
+        <a href="#" class="btn btn-primary">Get access</a>
+        <!-- TODO: reach out to Stripe. -->
     {%endif%}
 </div>
 {% endblock content %}

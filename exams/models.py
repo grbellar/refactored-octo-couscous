@@ -41,8 +41,6 @@ class UserExamProgress(models.Model):
         unique_together = ('user', 'exam')  # Ensure one entry per user per exam
 
 
-
-
-
-# TODO: 2. Build correct/incorrect functionality so I can test that. Need to figure out what relationships are needed
-    # and whether they are working correctly together.
+#TODO: 1. Add UserExamAnswers so I can store answer and grade them at the end. https://chat.openai.com/c/c97dd7b4-9f20-4ba7-a180-7d9ae684d04b
+    # Link has an example of a 'through' model which I think would work quite well in this instance.
+    # 2. Build grading functionality and test
