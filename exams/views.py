@@ -28,7 +28,8 @@ def take_exam_view(request, pk):
     exam = Exam.objects.get(id=pk)
     exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
 
-    # Get UserExamProgress instance or create one if it doesn't exist.
+    # Get UserExamProgress instance or create one if it doesn't exist. created is a boolean indicated whether the 
+    # UserExamProgress object was just created for the first time.
     user_progress, created = UserExamProgress.objects.get_or_create(
         user=request.user,
         exam=exam,
