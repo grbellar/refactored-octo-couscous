@@ -5,7 +5,7 @@
 
 {% block content %}
 <div>
-    <!--TODO: combine question.html logic with this template to allow user to take the Exam!-->
+    
     <h1>{{ exam.name }}</h1>
     
     
@@ -14,7 +14,6 @@
 
     <h6>{{ question.question }}</h6>
 
-    {% comment %} TODO: For each question in the Exam...  display questions one by one as user completes them.{% endcomment %}
 
     <form action="{% url 'take-exam' exam.id %}" method="post">
         {% csrf_token %}
