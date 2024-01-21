@@ -1,14 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from .models import *
 
 
+def save_user_progress(question, choice):
+    # IDK might not be worth a seperate function.
+    pass
+
+
 @require_http_methods(['GET', 'POST'])  
-def take_exam_view(request, pk):
-
-    exam = Exam.objects.get(id=pk)
-    exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
-
+def take_exam_view(request, uuid):
+    
+    exam = Exam.objects.get(uuid=uuid)
     # Get UserExamState instance or create one if it doesn't exist. created is a boolean indicating whether the 
     # UserExamState object was just created.
     user_exam_state, created = UserExamState.objects.get_or_create(
@@ -17,39 +20,47 @@ def take_exam_view(request, pk):
     )
     
     if user_exam_state.completed:
-        print('Exam complete')
-        pass # TODO: handle exam completion by return somewhere else. The way this is written it will cause an index of range error
-            # for current_question_index below if not. May need to refactor this as CHAT may not have the best ideas.
+        return redirect("exam-complete", permanent=True)
+        
 
-    current_question_index = user_exam_state.current_question_index
-    print(current_question_index)
-    current_question = exam_questions[current_question_index]
-
-    context = {"exam": exam,
-               "question": current_question}
+    else:
+        exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
     
-    if request.method == 'POST':
-        user_choice = request.POST.get('user_choice')
-        # TODO: store user choice
+        current_question_index = user_exam_state.current_question_index
+        current_question = exam_questions[current_question_index]
+
+        context = {"exam": exam,
+                "question": current_question,
+                "user_exam_state": user_exam_state,
+                "DEBUG": True}
         
-        current_question_index +=1
+        if request.method == 'POST':
+            user_choice = request.POST.get('user_choice')
+            selected_choice_obj = Choice.objects.get(id=user_choice)
+            UserAnswer.objects.create(
+                user_exam_state=user_exam_state,
+                question=current_question,
+                selected_choice=selected_choice_obj
+            )
+            
+            current_question_index +=1
 
-        if current_question_index >= len(exam_questions):
-            user_exam_state.completed = True
-        
-        user_exam_state.current_question_index = current_question_index
-        user_exam_state.save()
-        
-        if user_exam_state.completed:
-            # redirect to compeltion page. 
-            print('Exam complete.')
-            pass
-        else:
-            next_question = exam_questions[user_exam_state.current_question_index]
-            context['question'] = next_question
+            if current_question_index >= len(exam_questions):
+                user_exam_state.completed = True
+            
+            user_exam_state.current_question_index = current_question_index
+            user_exam_state.save()
+            
+            if user_exam_state.completed:
+                return redirect("exam-complete", permanent=True)
+            else:
+                next_question = exam_questions[user_exam_state.current_question_index]
+                context['question'] = next_question
 
-    return render(request, "exams/take_exam.html", context)
+        return render(request, "exams/take_exam.html", context)
 
 
-# Need a way better way to store which choice a user made. Right now there might be 500 choices and a 
-    # choice would be Choice23 which doesn't tell me which question it belongs to.
+def exam_complete(request):
+     # TODO: This doesn't feel quite right. Feel like I should pass Exam specific context and idk
+     # if this being a permanent redirect is good.
+     return render(request, "exams/exam_complete.html")

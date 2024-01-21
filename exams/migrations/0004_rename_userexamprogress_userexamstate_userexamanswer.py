@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             new_name='UserExamState',
         ),
         migrations.CreateModel(
-            name='UserExamAnswer',
+            name='UserAnswer',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('user_exam_state', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='exams.userexamstate')),

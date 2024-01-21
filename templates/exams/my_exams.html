@@ -9,7 +9,7 @@
     {% if user_has_paid %}    
         {% for exam in exams %}
 
-            <a href="{% url 'take-exam' exam.id %}" class="btn btn-primary">{{ exam.name }}</a>
+            <a href="{% url 'take-exam' exam.uuid %}" class="btn btn-primary">{{ exam.name }}</a>
 
         {%endfor%}
     {%else%}
