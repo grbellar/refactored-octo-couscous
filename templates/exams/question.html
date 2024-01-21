@@ -12,7 +12,7 @@
 
     {% comment %} TODO: For each question in the Exam...  display questions one by one as user completes them.{% endcomment %}
 
-    <form action="{% url 'question'  question.id %}" method="post">
+    <form action="" method="post">
         {% csrf_token %}
         {% for choice in question.choices.all %}
         

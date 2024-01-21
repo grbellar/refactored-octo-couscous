@@ -6,9 +6,7 @@
 {% block content %}
 <div>
 
-    {% if user_has_paid %}
-    <p>(Stub. Eventually show user exams from database. ) You haven't taken any exams. </p>
-    
+    {% if user_has_paid %}    
         {% for exam in exams %}
 
             <a href="{% url 'take-exam' exam.id %}" class="btn btn-primary">{{ exam.name }}</a>
