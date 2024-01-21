@@ -9,19 +9,19 @@ def take_exam_view(request, pk):
     exam = Exam.objects.get(id=pk)
     exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
 
-    # Get UserExamProgress instance or create one if it doesn't exist. created is a boolean indicating whether the 
-    # UserExamProgress object was just created.
-    user_progress, created = UserExamProgress.objects.get_or_create(
+    # Get UserExamState instance or create one if it doesn't exist. created is a boolean indicating whether the 
+    # UserExamState object was just created.
+    user_exam_state, created = UserExamState.objects.get_or_create(
         user=request.user,
         exam=exam,
     )
     
-    if user_progress.completed:
+    if user_exam_state.completed:
         print('Exam complete')
         pass # TODO: handle exam completion by return somewhere else. The way this is written it will cause an index of range error
             # for current_question_index below if not. May need to refactor this as CHAT may not have the best ideas.
 
-    current_question_index = user_progress.current_question_index
+    current_question_index = user_exam_state.current_question_index
     print(current_question_index)
     current_question = exam_questions[current_question_index]
 
@@ -35,17 +35,17 @@ def take_exam_view(request, pk):
         current_question_index +=1
 
         if current_question_index >= len(exam_questions):
-            user_progress.completed = True
+            user_exam_state.completed = True
         
-        user_progress.current_question_index = current_question_index
-        user_progress.save()
+        user_exam_state.current_question_index = current_question_index
+        user_exam_state.save()
         
-        if user_progress.completed:
+        if user_exam_state.completed:
             # redirect to compeltion page. 
             print('Exam complete.')
             pass
         else:
-            next_question = exam_questions[user_progress.current_question_index]
+            next_question = exam_questions[user_exam_state.current_question_index]
             context['question'] = next_question
 
     return render(request, "exams/take_exam.html", context)

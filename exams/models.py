@@ -30,7 +30,7 @@ class Choice(models.Model):
     is_correct = models.BooleanField()
 
 
-class UserExamProgress(models.Model):
+class UserExamState(models.Model):
     exam = models.ForeignKey('Exam', on_delete=models.DO_NOTHING)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     current_question_index = models.IntegerField(default=0)
@@ -39,6 +39,10 @@ class UserExamProgress(models.Model):
 
     class Meta:
         unique_together = ('user', 'exam')  # Ensure one entry per user per exam
+
+
+class UserExamAnswer(models.Model):
+    user_exam_state = models.ForeignKey(UserExamState, on_delete=models.DO_NOTHING)
 
 
 #TODO: 1. Add UserExamAnswers so I can store answer and grade them at the end. https://chat.openai.com/c/c97dd7b4-9f20-4ba7-a180-7d9ae684d04b
