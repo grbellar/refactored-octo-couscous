@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block title %}Your Exams{% endblock title %}
+{% comment %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/stripe.css' %}">
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock css %} {% endcomment %}
+
+{% comment %} TODO: link stripe style.css and javascript file {% endcomment %}
 
 {% block content %}
 <div>
