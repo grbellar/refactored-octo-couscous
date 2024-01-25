@@ -2,3 +2,5 @@
 2. Make sure User completition of exam is accurate and I am able store their answers effectively. 
 3. Create grading funcionality and test.
 4. Plug in Stripe payment
+
+Probably have user create an account first and view dashboard and exams for purchase. Then when they are ready create a check out session for them. This will allow me to pass a user id parameter as metadata to Stripe.
