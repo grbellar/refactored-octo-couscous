@@ -1,0 +1,4 @@
+#TODO: 1. Continue verifying models and their relationships are good. I know they at least work with a simple Postgres example. (deployed to Render)
+2. Make sure User completition of exam is accurate and I am able store their answers effectively. 
+3. Create grading funcionality and test.
+4. Plug in Stripe payment
