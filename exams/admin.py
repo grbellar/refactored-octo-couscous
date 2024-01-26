@@ -4,7 +4,36 @@ from .models import *
 # Register your models here.
 admin.site.register(Exam)
 admin.site.register(Choice)
+
+
+# ExamType editing
+class CategoryInline(admin.TabularInline):
+    model = Category
+    extra = 1
+
+
+class ExamTypeAdmin(admin.ModelAdmin):
+    inlines = [CategoryInline]
+
+
+admin.site.register(ExamType, ExamTypeAdmin)
+
+
+# Category editing
+class QuestionInline(admin.TabularInline):
+    model = Question
+    extra = 1
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = QuestionInline
+
+
 admin.site.register(Category)
+
+
+class ExamAdmin(admin.ModelAdmin):
+    filter_horizontal = ('questions')
 
 
 class ChoiceInline(admin.StackedInline):

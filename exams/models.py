@@ -10,10 +10,21 @@ from django.conf import settings
 # Probably add UUID for external url consumption but keep pk as id for internal database lookups
 
 
+class ExamType(models.Model):
+    name = models.CharField(max_length=300)
+
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+
+
 class Exam(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) # going to use this for url parameters
     name = models.CharField(max_length=300)
-    question = models.ManyToManyField('Question')
+    questions = models.ManyToManyField('Question')
+    exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="exams", null=True)
 
 
     def __str__(self):
@@ -23,15 +34,15 @@ class Exam(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=300)
-    exam = models.ForeignKey("Exam", on_delete=models.DO_NOTHING, related_name="categories")
+    exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="categories", null=True)
 
     def __str__(self):
         return f'{self.name}'
 
 
 class Question(models.Model):
-    question = models.TextField(null=False, blank=False)
-    category = models.ForeignKey("Category", on_delete=models.DO_NOTHING, related_name="questions")
+    text = models.TextField(null=False, blank=False)
+    category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="questions", null=True)
 
 
     def __str__(self):
