@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from accounts.models import CustomUser
 import stripe
 import pprint
 
@@ -11,6 +13,9 @@ endpoint_secret = 'whsec_8ec6f3cdfb97458a49a38aabbc3b9ceb8042f718fba0953cb164684
 @require_http_methods(["POST"])
 def create_checkout_session(request):
 
+    if request.user.is_authenticated:
+        current_user = request.user
+
     checkout_session = stripe.checkout.Session.create(
         line_items=[
             {
@@ -20,10 +25,10 @@ def create_checkout_session(request):
             },
         ],
         mode='payment',
-        success_url="http://127.0.0.1:3000/",
-        cancel_url="http://127.0.0.1:3000/",
+        success_url="http://127.0.0.1:3000/my-exams",
+        cancel_url="http://127.0.0.1:3000/my-exams",
         metadata = {
-            "perf_user_id": "XXX2007"
+            "perf_user_id": current_user.id
         }
     )
 
@@ -35,12 +40,9 @@ def payments_webhook(request):
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
 
-    #TODO: This is where I can pull the meta i added to the checkout session and update Users paid status in my Database!! :):)
-
-
-    # verify post event came from Stripe
+    # Verify post event came from Stripe
     #TODO: I don't think this is working correctly. This should return a 400 response but instead returns 500 when I 
-    # try to post to the endpoint using curl. See Stripe docs on how to test fulfilment endpoint.
+    #       try to post to the endpoint using curl. See Stripe docs on how to test fulfilment endpoint.
     try:
         event = stripe.Webhook.construct_event(
         payload, sig_header, endpoint_secret
@@ -52,6 +54,27 @@ def payments_webhook(request):
     # Invalid signature
         return HttpResponse(status=400)
 
-    pprint.pprint(payload)
+     # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        # Retrieve the session 
+        session = stripe.checkout.Session.retrieve(
+        event['data']['object']['id']
+        )
+        # Update user has paid attribute
+        pprint.pprint(session)
+        update_user_paid(session)
 
     return HttpResponse(status=200)
+
+def update_user_paid(stripe_session):
+    paid_user_id = stripe_session['metadata']['perf_user_id']
+    perf_user = CustomUser.objects.get(
+        id=paid_user_id
+    )
+    print(perf_user)
+    print(perf_user.has_paid)
+
+    perf_user.has_paid = True
+    perf_user.save()
+
+    print(perf_user.has_paid)
