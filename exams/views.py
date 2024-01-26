@@ -24,18 +24,9 @@ def take_exam_view(request, uuid):
         
 
     else:
-        exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
-        exam_categories = exam.categories.all()
-        q_list = []
-        for category in exam_categories:
-            for q in category.questions.all():
-                q_list.append(q)
-
-        print(q_list[0].question)
+        exam_questions = list(exam.questions.all()) # wrapping this in a list to make this easier to work with
         current_question_index = user_exam_state.current_question_index
-        print(f"{request.user.username}: {current_question_index}")
-        current_question = q_list[current_question_index]
-
+        current_question = exam_questions[current_question_index]
         context = {"exam": exam,
                 "question": current_question,
                 "user_exam_state": user_exam_state,
@@ -52,7 +43,7 @@ def take_exam_view(request, uuid):
             
             current_question_index +=1
 
-            if current_question_index >= len(q_list):
+            if current_question_index >= len(exam_questions):
                 user_exam_state.completed = True
             
             user_exam_state.current_question_index = current_question_index
@@ -61,7 +52,7 @@ def take_exam_view(request, uuid):
             if user_exam_state.completed:
                 return redirect("exam-complete", permanent=True)
             else:
-                next_question = q_list[user_exam_state.current_question_index]
+                next_question = exam_questions[user_exam_state.current_question_index]
                 context['question'] = next_question
 
         return render(request, "exams/take_exam.html", context)

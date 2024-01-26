@@ -11,7 +11,7 @@
     
     <p class="lead">Welcome to the Exam.</p><br>
 
-        <h6>{{ question.question }}</h6>
+        <h6>{{ question.text }}</h6>
 
 
         <form action="{% url 'take-exam' exam.uuid %}" method="post">
