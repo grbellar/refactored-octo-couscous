@@ -59,6 +59,10 @@ class Choice(models.Model):
     is_correct = models.BooleanField()
 
 
+    def __str__(self):
+        return f'{self.text}'
+
+
 class UserExamState(models.Model):
     exam = models.ForeignKey('Exam', on_delete=models.DO_NOTHING)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
