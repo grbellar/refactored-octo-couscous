@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block title %}Your Exams{% endblock title %}
+{% comment %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/stripe.css' %}">
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock css %} {% endcomment %}
+
+{% comment %} TODO: link stripe style.css and javascript file {% endcomment %}
 
 {% block content %}
 <div>
@@ -14,8 +20,19 @@
         {%endfor%}
     {%else%}
         <p>Exams are for paying customers only.</p>
-        <a href="#" class="btn btn-primary">Get access</a>
-        <!-- TODO: reach out to Stripe. -->
+        <section>
+            <div class="product">
+              <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
+              <div class="description">
+                <h3>Stubborn Attachments</h3>
+                <h5>$20.00</h5>
+              </div>
+            </div>
+            <form action="{% url 'get-access' %}" method="POST">
+                {% csrf_token %}
+              <button type="submit" id="checkout-button">Checkout</button>
+            </form>
+          </section>
     {%endif%}
 </div>
 {% endblock content %}
