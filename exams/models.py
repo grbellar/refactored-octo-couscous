@@ -21,8 +21,14 @@ class Exam(models.Model):
 
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=300)
+    exam = models.ForeignKey("Exam", on_delete=models.DO_NOTHING, related_name="categories")
+
+
 class Question(models.Model):
     question = models.TextField(null=False, blank=False)
+    category = models.ForeignKey("Category", on_delete=models.DO_NOTHING, related_name="questions")
 
 
     def __str__(self):
