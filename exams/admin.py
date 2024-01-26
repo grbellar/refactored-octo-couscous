@@ -4,6 +4,7 @@ from .models import *
 # Register your models here.
 admin.site.register(Exam)
 admin.site.register(Choice)
+admin.site.register(Category)
 
 
 class ChoiceInline(admin.StackedInline):

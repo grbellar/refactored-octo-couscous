@@ -25,6 +25,9 @@ class Category(models.Model):
     name = models.CharField(max_length=300)
     exam = models.ForeignKey("Exam", on_delete=models.DO_NOTHING, related_name="categories")
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Question(models.Model):
     question = models.TextField(null=False, blank=False)

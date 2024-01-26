@@ -25,8 +25,9 @@ def take_exam_view(request, uuid):
 
     else:
         exam_questions = list(exam.question.all()) # wrapping this in a list to make this easier to work with
-    
+        print(exam_questions)
         current_question_index = user_exam_state.current_question_index
+        print(f"{request.user.username}: {current_question_index}")
         current_question = exam_questions[current_question_index]
 
         context = {"exam": exam,
