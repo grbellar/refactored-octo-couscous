@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from exams.models import Exam, UserAnswer, UserExamState
+from exams.models import Exam, UserExamState
 
 
 class HomePageView(TemplateView):
@@ -17,7 +17,7 @@ class AboutPageView(TemplateView):
 @login_required
 @require_http_methods(["GET"])
 def my_exams(request):
-        # it appears you can access the current user object from the request. see https://docs.djangoproject.com/en/5.0/topics/auth/default/#authentication-in-web-requests
+        # You can access the current user object from the request! see https://docs.djangoproject.com/en/5.0/topics/auth/default/#authentication-in-web-requests
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
@@ -66,6 +66,7 @@ def my_results(request):
             "num_questions": num_questions
         }
         all_results.append(result_dict)
+    
     context = {"all_results": all_results}
 
     return render(request, "exams/results.html", context)

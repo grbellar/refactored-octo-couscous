@@ -6,6 +6,7 @@ from .models import *
 # Register your models here.
 admin.site.register(Exam)
 admin.site.register(Choice)
+admin.site.register(UserAnswer)
 
 
 # ExamType editing
@@ -76,3 +77,20 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Question, QuestionAdmin)
+
+# EXAM STATES
+class UserAnswerInline(admin.TabularInline):
+    model = UserAnswer
+    extra = 0
+
+    can_delete = False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class UserExamStateAdmin(admin.ModelAdmin):
+    inlines = [UserAnswerInline]
+
+
+admin.site.register(UserExamState, UserExamStateAdmin)
