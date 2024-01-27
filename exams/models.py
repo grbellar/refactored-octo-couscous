@@ -85,3 +85,6 @@ class UserAnswer(models.Model):
     user_exam_state = models.ForeignKey(UserExamState, on_delete=models.CASCADE, related_name="user_answers")
     question = models.ForeignKey('Question', default=None, on_delete=models.SET_NULL, null=True)
     selected_choice = models.ForeignKey('Choice', default=None, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"Question: {self.question.id} for {self.user_exam_state.user}"
