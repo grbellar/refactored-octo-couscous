@@ -14,7 +14,7 @@ class ExamType(models.Model):
 class Exam(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) # Using this for url parameters
     name = models.CharField(max_length=300)
-    questions = models.ManyToManyField('Question')
+    questions = models.ManyToManyField('Question', blank=True)
     exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="exams", null=True)
 
     def __str__(self):

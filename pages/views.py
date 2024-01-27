@@ -35,7 +35,16 @@ def my_exams(request):
 #       Better yet, grade an Exam as soon as they finish, that way I have the data for whenever I want to present it to them,
 #       weather that is right away or by telling them to view the results page.
 def grade(exam, user_answers):
-    print(f"Exam: {exam.name}")
+    #TODO: Major todo: If Exam is deleted my current display results logic doesn't work. UserExamState data is protected but don't know what Exam is belonged to.
+    # A. Specify a default for when Exam are deleted. That way the Exam field in 
+    # question would at least have a name. Would require some complex logic though as Question exam field
+    # is expecting type Exam, not a string.
+    # B. Could also not allow deletion of exams but this doesn't feel good long term. Though perhaps once in production
+    # we won't be deleting any exams?
+    # C. Best option. I need to properly handle for deletion of Exams that still allows me to display User results
+    # with the name of the deleted exam and perhaps a note explaing that this Exam no longer exists.
+    if exam is not None:
+        print(f"Exam: {exam.name}")
     num_questions = exam.questions.count()
     num_correct = 0
     for user_answer in user_answers.all():
@@ -57,7 +66,7 @@ def grade(exam, user_answers):
 @login_required
 def my_results(request):
     all_results = []
-    for exam_state in UserExamState.objects.filter(user=request.user):
+    for exam_state in UserExamState.objects.filter(user_id=request.user.id):
         exam_name, score, num_correct, num_questions = grade(exam_state.exam, exam_state.user_answers)
         result_dict = {
             "exam_name": exam_name,

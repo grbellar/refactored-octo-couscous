@@ -4,7 +4,6 @@ from django.http.request import HttpRequest
 from .models import *
 
 # Register your models here.
-admin.site.register(Exam)
 admin.site.register(Choice)
 
 
@@ -12,6 +11,12 @@ admin.site.register(Choice)
 class CategoryInline(admin.TabularInline):
     model = Category
     extra = 0
+
+    def has_change_permission(self, request, obj=None):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class ExamTypeAdmin(admin.ModelAdmin):
@@ -43,9 +48,15 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
+#TODO: Add question display name similar to question admin and how it displays more info about Category
+#TODO: Filter the question dropdown to only display questions of the categories that belong the selected ExamType.
+#       i.e., only show PSBE or CAPE questions based on what kind of exam I'm creating.
 class ExamAdmin(admin.ModelAdmin):
-    filter_horizontal = ('questions')
+    # filter_horizontal = ('questions')
+    readonly_fields = ["uuid"]
     
+
+admin.site.register(Exam, ExamAdmin)
 
 
 class ChoiceInline(admin.StackedInline):
