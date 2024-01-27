@@ -50,6 +50,8 @@ def take_exam_view(request, uuid):
             user_exam_state.save()
             
             if user_exam_state.completed:
+                #TODO: call grade here and save to db I think. Could probably create a seperate functions.py file for grade
+                #      and save_user_progress. Might be good to seperate my concerns? Functions vs Views?
                 return redirect("exam-complete", permanent=True)
             else:
                 next_question = exam_questions[user_exam_state.current_question_index]
