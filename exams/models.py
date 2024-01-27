@@ -54,7 +54,9 @@ class UserExamState(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     current_question_index = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
-    answers = models.ManyToManyField('Question', through='UserAnswer')
+    answers = models.ManyToManyField('Question', through='UserAnswer') #TODO: I maybe don't need this relationship
+                                                                        # but probably best to leave just in case, see
+                                                                        # https://chat.openai.com/c/4150bbd8-7b7d-43c8-8fb1-b9a710df4c4f
 
     def grade():
         # TODO: Build grading functionality and test
@@ -66,6 +68,6 @@ class UserExamState(models.Model):
 
 
 class UserAnswer(models.Model):
-    user_exam_state = models.ForeignKey(UserExamState, on_delete=models.DO_NOTHING)
+    user_exam_state = models.ForeignKey(UserExamState, on_delete=models.DO_NOTHING, related_name="user_answers")
     question = models.ForeignKey('Question', default=None, on_delete=models.DO_NOTHING)
     selected_choice = models.ForeignKey('Choice', default=None, on_delete=models.DO_NOTHING)
