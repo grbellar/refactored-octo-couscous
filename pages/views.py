@@ -31,6 +31,9 @@ def my_exams(request):
         return render(request, 'exams/my_exams.html', context)
 
 
+#TODO: Should probably store this data in the database so I'm not grading every time they look at the results page.
+#       Better yet, grade an Exam as soon as they finish, that way I have the data for whenever I want to present it to them,
+#       weather that is right away or by telling them to view the results page.
 def grade(exam, user_answers):
     print(f"Exam: {exam.name}")
     num_questions = exam.questions.count()
@@ -39,19 +42,31 @@ def grade(exam, user_answers):
         if user_answer.selected_choice.is_correct:
             num_correct+=1
     if num_questions != 0:
-        score = num_correct / num_questions
+        score = num_correct / num_questions * 100
     else:
+        #TODO: Properly catch divide by zero error
         score = -999
     print(f"{num_correct}/{exam.questions.count()} | {score}")
     print(f"Exam length: {num_questions} questions.\n")
+
+    return (exam.name, "{:.0f}%".format(score), num_correct, num_questions)
                
      
 
 
 @login_required
 def my_results(request):
+    all_results = []
     for exam_state in UserExamState.objects.filter(user=request.user):
-        grade(exam_state.exam, exam_state.user_answers)
+        exam_name, score, num_correct, num_questions = grade(exam_state.exam, exam_state.user_answers)
+        result_dict = {
+            "exam_name": exam_name,
+            "score": score,
+            "num_correct": num_correct,
+            "num_questions": num_questions
+        }
+        all_results.append(result_dict)
+    context = {"all_results": all_results}
 
-    return render(request, "exams/results.html")
+    return render(request, "exams/results.html", context)
      

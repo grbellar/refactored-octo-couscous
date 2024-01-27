@@ -4,5 +4,11 @@
 
 {% block content %}
 <h1>Exam Results</h1>
-<p>Take a look at your results.</p>
+
+    {%for result in all_results %}
+        <h4>{{ result.exam_name }}</h4>
+        <p>{{ result.score }}</p>
+        <p>{{ result.num_correct }}/{{ result.num_questions }}</p>
+    {% endfor %}
+
 {% endblock content %}
