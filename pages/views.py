@@ -31,7 +31,8 @@ def my_exams(request):
         return render(request, 'exams/my_exams.html', context)
 
 
-#TODO: Should probably store this data in the database so I'm not grading every time they look at the results page.
+#TODO: THIS SHOULD FIX THE ISSUE WITH DELETED EXAMS AND QUESTIONS. STORE A COPY OF EXAM AND QUESTION TEXT TO FALL BACK ON.
+#       1. Should probably store this data in the database so I'm not grading every time they look at the results page.
 #       Better yet, grade an Exam as soon as they finish, that way I have the data for whenever I want to present it to them,
 #       weather that is right away or by telling them to view the results page.
 def grade(exam, user_answers):
@@ -43,6 +44,8 @@ def grade(exam, user_answers):
     # we won't be deleting any exams?
     # C. Best option. I need to properly handle for deletion of Exams that still allows me to display User results
     # with the name of the deleted exam and perhaps a note explaing that this Exam no longer exists.
+    #TODO: Also handle deletion of Questions object which affect UserAnswer data.
+    #   A. I think I need to more gracefully present exam results so that deletion of a question doesn't nuke everything
     if exam is not None:
         print(f"Exam: {exam.name}")
     num_questions = exam.questions.count()
