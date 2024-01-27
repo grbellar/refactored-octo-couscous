@@ -58,33 +58,34 @@ class Choice(models.Model):
 
 class UserExamState(models.Model):
     exam = models.ForeignKey('Exam', on_delete=models.SET_NULL, null=True) # "Might not offer exam anymore but still save state"
+    exam_name = models.CharField(max_length=300, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     current_question_index = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
-    answers = models.ManyToManyField('Question', through='UserAnswer') #TODO: I maybe don't need this relationship
-                                                                        # but probably best to leave just in case, see
-                      
-                      
-                                                                        # https://chat.openai.com/c/4150bbd8-7b7d-43c8-8fb1-b9a710df4c4f
+    answers = models.ManyToManyField('Question', through='UserAnswer')
+    graded = models.BooleanField(default=False)
+    score = models.FloatField(null=True, blank=True)
+    num_correct = models.IntegerField(null=True, blank=True)
+    num_questions = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} | {self.exam}"
-
-
-    def grade():
-        # TODO: Build grading functionality and test
-        # Something like for all answers in state... check right or wrong.
-        pass
+    
 
     class Meta:
-        unique_together = ('user', 'exam')  # Ensure one entry per user per exam
+        unique_together = ('user', 'exam')  # Ensure one entry per user per exam. #TODO: This could be a problem if we want to allow users to retake exams.
         verbose_name = "User Exam"
 
 
 class UserAnswer(models.Model):
     user_exam_state = models.ForeignKey(UserExamState, on_delete=models.CASCADE, related_name="user_answers")
     question = models.ForeignKey('Question', default=None, on_delete=models.SET_NULL, null=True)
+    question_text = models.CharField(max_length=500, null=True, blank=True)
     selected_choice = models.ForeignKey('Choice', default=None, on_delete=models.SET_NULL, null=True)
+    choice_text = models.CharField(max_length=500, null=True, blank=True)
+
+    # Note: Currently not using question text or choice text but it is in place should I decide to display
+        # all questions and answers and the question has since been deleted :)
 
     def __str__(self):
         return f"Question: {self.question.id} for {self.user_exam_state.user}"

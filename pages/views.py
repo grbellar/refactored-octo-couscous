@@ -29,54 +29,26 @@ def my_exams(request):
 
 
         return render(request, 'exams/my_exams.html', context)
-
-
-#TODO: THIS SHOULD FIX THE ISSUE WITH DELETED EXAMS AND QUESTIONS. STORE A COPY OF EXAM AND QUESTION TEXT TO FALL BACK ON.
-#       1. Should probably store this data in the database so I'm not grading every time they look at the results page.
-#       Better yet, grade an Exam as soon as they finish, that way I have the data for whenever I want to present it to them,
-#       weather that is right away or by telling them to view the results page.
-def grade(exam, user_answers):
-    #TODO: Major todo: If Exam is deleted my current display results logic doesn't work. UserExamState data is protected but don't know what Exam is belonged to.
-    # A. Specify a default for when Exam are deleted. That way the Exam field in 
-    # question would at least have a name. Would require some complex logic though as Question exam field
-    # is expecting type Exam, not a string.
-    # B. Could also not allow deletion of exams but this doesn't feel good long term. Though perhaps once in production
-    # we won't be deleting any exams?
-    # C. Best option. I need to properly handle for deletion of Exams that still allows me to display User results
-    # with the name of the deleted exam and perhaps a note explaing that this Exam no longer exists.
-    #TODO: Also handle deletion of Questions object which affect UserAnswer data.
-    #   A. I think I need to more gracefully present exam results so that deletion of a question doesn't nuke everything
-    if exam is not None:
-        print(f"Exam: {exam.name}")
-    num_questions = exam.questions.count()
-    num_correct = 0
-    for user_answer in user_answers.all():
-        if user_answer.selected_choice.is_correct:
-            num_correct+=1
-    if num_questions != 0:
-        score = num_correct / num_questions * 100
-    else:
-        #TODO: Properly catch divide by zero error
-        score = -999
-    print(f"{num_correct}/{exam.questions.count()} | {score}")
-    print(f"Exam length: {num_questions} questions.\n")
-
-    return (exam.name, "{:.0f}%".format(score), num_correct, num_questions)
                
      
-
-
 @login_required
 def my_results(request):
+    
     all_results = []
     for exam_state in UserExamState.objects.filter(user_id=request.user.id):
-        exam_name, score, num_correct, num_questions = grade(exam_state.exam, exam_state.user_answers)
+
+        if exam_state.exam == None:
+            exam_name = exam_state.exam_name
+        else:
+            exam_name = exam_state.exam.name
+        
         result_dict = {
             "exam_name": exam_name,
-            "score": score,
-            "num_correct": num_correct,
-            "num_questions": num_questions
+            "score": "{:.0f}%".format(exam_state.score),
+            "num_correct": exam_state.num_correct, 
+            "num_questions": exam_state.num_questions
         }
+        
         all_results.append(result_dict)
     
     context = {"all_results": all_results}
