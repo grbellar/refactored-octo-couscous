@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 from .models import *
 
 
@@ -29,7 +30,7 @@ def grade(user_exam_state):
     
     user_exam_state.save()
 
-
+@login_required
 @require_http_methods(['GET', 'POST'])  
 def take_exam_view(request, uuid):
     
@@ -77,7 +78,6 @@ def take_exam_view(request, uuid):
             user_exam_state.save()
             
             if user_exam_state.completed:
-                #Immedietly grade the single exam they took and save to db.
                 grade(user_exam_state)
                 #TODO: Prob display the single result or just redirect to page and thell them to view results.
                 return redirect("exam-complete", permanent=True)
