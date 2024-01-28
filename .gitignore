@@ -18,3 +18,5 @@ media
 .idea
 
 data.json
+
+.env
