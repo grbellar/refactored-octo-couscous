@@ -4,3 +4,12 @@
 4. Plug in Stripe payment
 
 Probably have user create an account first and view dashboard and exams for purchase. Then when they are ready create a check out session for them. This will allow me to pass a user id parameter as metadata to Stripe.
+
+1. Install Postgres locally so I can practice manipulating data via pgadmin with scripting.
+2. Refine script for inserting data and especially figure out how to insert data into production
+3. Insert some additional real data so I can proper quiz completion of exam grading
+4. Display results properly on page.
+
+
+1. Once installed in a production like environment, implement sendgrid so I can test email sending.
+2. Verify account functionaly like creation pw reset and no jankiness
