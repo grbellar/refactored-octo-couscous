@@ -1,10 +1,3 @@
-#TODO: 1. Continue verifying models and their relationships are good. I know they at least work with a simple Postgres example. (deployed to Render)
-2. Make sure User completition of exam is accurate and I am able store their answers effectively. 
-3. Create grading funcionality and test.
-4. Plug in Stripe payment
-
-Probably have user create an account first and view dashboard and exams for purchase. Then when they are ready create a check out session for them. This will allow me to pass a user id parameter as metadata to Stripe.
-
 1. Install Postgres locally so I can practice manipulating data via pgadmin with scripting.
 2. Refine script for inserting data and especially figure out how to insert data into production
 3. Insert some additional real data so I can proper quiz completion of exam grading
