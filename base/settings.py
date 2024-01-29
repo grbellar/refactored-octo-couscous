@@ -77,7 +77,14 @@ TEMPLATES = [
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600),
+     "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "grantbellar",
+        "USER": "grantbellar",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
 }
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
