@@ -1,17 +1,20 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# TODO: generate new secret key!
-# https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
-SECRET_KEY = "django-insecure-0peo@#x9jur3!h$ryje!$879xww8y1y66jx!%*#ymhg&jkozs2"
+load_dotenv(BASE_DIR / '.env')
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True
+DEBUG = False
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(' ')
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = [
@@ -74,14 +77,7 @@ TEMPLATES = [
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "grantbellar",
-        "USER": "grantbellar",
-        "PASSWORD": "",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600),
 }
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
@@ -172,3 +168,8 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+
+# Django Deployment Checklist
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
