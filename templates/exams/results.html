@@ -4,11 +4,13 @@
 
 {% block content %}
 <h1>Exam Results</h1>
-
+{% if results %}
     {%for result in all_results %}
         <h4>{{ result.exam_name }}</h4>
         <p>{{ result.score }}</p>
         <p>{{ result.num_correct }}/{{ result.num_questions }}</p>
     {% endfor %}
-
+{% else %}
+    <p>You have not completed any exams yet.</p>
+{%endif%}
 {% endblock content %}

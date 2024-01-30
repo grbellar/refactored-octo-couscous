@@ -33,25 +33,29 @@ def my_exams(request):
      
 @login_required
 def my_results(request):
-    
+    context = {}
     all_results = []
     for exam_state in UserExamState.objects.filter(user_id=request.user.id):
 
-        if exam_state.exam == None:
-            exam_name = exam_state.exam_name
-        else:
-            exam_name = exam_state.exam.name
-        
-        result_dict = {
-            "exam_name": exam_name,
-            "score": "{:.0f}%".format(exam_state.score),
-            "num_correct": exam_state.num_correct, 
-            "num_questions": exam_state.num_questions
-        }
-        
-        all_results.append(result_dict)
+        if exam_state.completed:
+            if exam_state.exam == None:
+                exam_name = exam_state.exam_name
+            else:
+                exam_name = exam_state.exam.name
+            
+            result_dict = {
+                "exam_name": exam_name,
+                "score": "{:.0f}%".format(exam_state.score),
+                "num_correct": exam_state.num_correct, 
+                "num_questions": exam_state.num_questions
+            }
+            
+            all_results.append(result_dict)
     
-    context = {"all_results": all_results}
+    context["all_results"] = all_results
+    
+    if not all_results: # If all_results is empty
+         context["results"] = False
 
     return render(request, "exams/results.html", context)
      
