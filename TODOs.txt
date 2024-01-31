@@ -6,3 +6,8 @@
 
 1. Once installed in a production like environment, implement sendgrid so I can test email sending.
 2. Verify account functionaly like creation pw reset and no jankiness
+
+Major TODO:
+Enforced required selection of choice for each question
+
+Require First Name Last Name on registration
