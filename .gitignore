@@ -20,3 +20,5 @@ media
 sampdata
 
 .env
+
+base/local_settings.py
