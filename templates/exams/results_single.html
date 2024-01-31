@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+
+{% block title %}Your Results{% endblock %}
+
+{% block content %}
+
+<h3>{{ exam_result.exam_name }}</h3>
+<p>Results for: {{user_full_name}}</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Correct</th>
+      <th scope="col">Possible</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for category in category_scores %}
+    <tr>
+      <th scope="row">{{ category.name }}</th>
+      <td>{{ category.correct }}</td>
+      <td>{{ category.total }}</td>
+    </tr>
+    <tfoot>
+      <tr>
+        <td>Totals</td>
+        <td>{{ exam_result.num_correct }}</td>
+        <td>{{ exam_result.num_questions }}</td>
+      </tr>
+    </tfoot>
+    {%endfor%}
+  </tbody>
+</table>
+
+{% endblock content %}

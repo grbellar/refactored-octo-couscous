@@ -60,6 +60,7 @@ def take_exam_view(request, uuid):
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
+            #TODO: Require user to make a choice. Currently you can just hit next!
             selected_choice_obj = Choice.objects.get(id=user_choice)
             UserAnswer.objects.create(
                 user_exam_state=user_exam_state,
@@ -88,6 +89,8 @@ def take_exam_view(request, uuid):
         return render(request, "exams/take_exam.html", context)
 
 
+@login_required
+@require_http_methods(["GET"])
 def exam_complete(request):
      # TODO: This doesn't feel quite right. Feel like I should pass Exam specific context and idk
      # if this being a permanent redirect is good.

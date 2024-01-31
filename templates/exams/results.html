@@ -15,7 +15,7 @@
           <h5 class="card-title">{{ result.exam_name }}</h5>
           <p class="card-text">{{ result.score }}</p>
           <p class="card-text">{{ result.num_correct }}/{{ result.num_questions }}</p>
-          <a href="#" class="btn btn-primary">View results</a>
+          <a href="{% url 'single-result' result.id %}" class="btn btn-primary">Detailed Review</a>
         </div>
       </div>
 
