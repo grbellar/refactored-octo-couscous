@@ -56,6 +56,8 @@ def my_results(request):
     
     if not all_results: # If all_results is empty
          context["results"] = False
+    else: 
+         context["results"] = True
 
     return render(request, "exams/results.html", context)
      

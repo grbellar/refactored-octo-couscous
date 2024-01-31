@@ -17,6 +17,6 @@ media
 # VS Code
 .idea
 
-data.json
+sampdata
 
 .env
