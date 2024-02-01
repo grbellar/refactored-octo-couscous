@@ -4,25 +4,28 @@
 {% block title %}Exam{% endblock title %}
 
 {% block content %}
-<div>
+<div class="container">
     
-    <h1>{{ exam.name }}</h1>
+    <h2>{{ exam.name }}</h2>
     
     
-    <p class="lead">Welcome to the Exam.</p><br>
+    <p>Welcome to the exam. You have two hours to complete.</p>
 
-        <h6>{{ question.text }}</h6>
+        <p class="lead">{{ question.text }}</p>
 
 
         <form action="{% url 'take-exam' exam.uuid %}" method="post">
             {% csrf_token %}
-            {% for choice in question.choices.all %}
-            
-            <label for="{{ choice.id }}">{{ choice.text }}</label>
-            <input id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}"><br>
-            
-            {% endfor %}
-            <input type="submit" value="Next question">
+            <div class="form-check">
+                {% for choice in question.choices.all %}
+
+                <label class="form-check-label" for="{{ choice.id }}">{{ choice.text }}</label>
+                <input class="form-check-input" id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}"><br>
+                
+    
+                {% endfor %}
+                <input class="btn btn-primary m-2" type="submit" value="Next question">
+            </div>
 
         </form>
 

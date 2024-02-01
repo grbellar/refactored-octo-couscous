@@ -46,6 +46,10 @@ def take_exam_view(request, uuid):
         user_exam_state.save()
     
     if user_exam_state.completed:
+        context = {
+            "exam_uuid": user_exam_state.exam.uuid
+        }
+        print(user_exam_state.exam.uuid)
         return redirect("exam-complete", permanent=True)
         
 
@@ -56,7 +60,7 @@ def take_exam_view(request, uuid):
         context = {"exam": exam,
                 "question": current_question,
                 "user_exam_state": user_exam_state,
-                "DEBUG": True}
+                "DEBUG": False}
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')

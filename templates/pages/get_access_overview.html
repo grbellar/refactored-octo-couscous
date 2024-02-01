@@ -6,39 +6,34 @@
 
 {% block content %}
 <!-- Features section-->
-<section class="py-5" id="features">
-    <div class="container px-5 my-5">
-        <div class="row gx-5">
-            <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">Practice with XXX style exam questions</h2></div>
-            <div class="col-lg-8">
-                <div class="row gx-5 row-cols-1 row-cols-md-2">
-                    <div class="col mb-5 h-100">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
-                    </div>
-                    <div class="col mb-5 h-100">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
-                    </div>
-                    <div class="col mb-5 mb-md-0 h-100">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
-                    </div>
-                    <div class="col h-100">
-                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
-                    </div>
+ <!-- Header-->
+ <header class="py-5">
+    <div class="container px-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xxl-6">
+                <div class="text-center my-5">
+                    <h1 class="fw-bolder mb-3">Practice with something something something style exam questions</h1>
+                    <p class="lead fw-normal text-muted mb-4">Create an account to get started. Already have an account? <a href="{% url 'account_login' %}">Log in</a></p>
+                    <a class="btn btn-primary btn-lg" href="{% url 'account_signup' %}">Create account</a>
                 </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- About section one-->
+<section class="py-5 bg-light" id="scroll-target">
+    <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
+            <div class="col-lg-6">
+                <h2 class="fw-bolder">Selling point</h2>
+                <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
             </div>
         </div>
     </div>
 </section>
 <!-- Testimonial section-->
-<div class="py-5 bg-light">
+<div class="py-5">
     <div class="container px-5 my-5">
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-10 col-xl-7">
@@ -55,18 +50,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="py-5">
-    <div class="container px-5 my-5">
-        <div class="row gx-5 justify-content-center">
-            <div class="col-sm-12">
-                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                    <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
-                    <a class="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
-                </div>
-            </div>
     </div>
 </div>
 

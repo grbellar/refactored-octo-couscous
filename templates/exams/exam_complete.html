@@ -3,5 +3,8 @@
 {% block title %}{% endblock title %}
 
 {% block content %}
-<p class="lead">Exam complete.</p>
+<div class="container"><p class="lead">Exam complete.</p></div>
+{% comment %} <p><a href="{% url 'single-result' exam_uuid %}">View results</a></p>
+<p><a href="#">Retake exam</a></p> {% endcomment %}
+
 {% endblock content %}

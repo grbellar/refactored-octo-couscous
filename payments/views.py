@@ -2,14 +2,18 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.urls import reverse
 from accounts.models import CustomUser
 import stripe
 import pprint
 
+
+#TODO: Remove this!!! Prob regen new test key
 # This is your test secret API key.
 stripe.api_key = 'sk_test_51OT4uxHnSCQ3O7d7AX4KozRzbMi7RFflkA2v9tIPaGbNThCvnZv4Ag9h3or4cCRUTRT8ZUCFivmq7nQzncDDRIEi00cslL5ZBD'
 endpoint_secret = 'whsec_8ec6f3cdfb97458a49a38aabbc3b9ceb8042f718fba0953cb1646848fb08d82a'
 
+#TODO: Need to add redirect urls for production
 @require_http_methods(["POST"])
 def create_checkout_session(request):
 
@@ -26,7 +30,7 @@ def create_checkout_session(request):
         ],
         mode='payment',
         success_url="http://127.0.0.1:3000/my-exams",
-        cancel_url="http://127.0.0.1:3000/my-exams",
+        cancel_url="http://127.0.0.1:3000/get-access/buy",
         metadata = {
             "perf_user_id": current_user.id
         }
