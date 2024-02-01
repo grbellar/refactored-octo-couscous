@@ -28,7 +28,7 @@
                 <h5>$20.00</h5>
               </div>
             </div>
-            <form action="{% url 'get-access' %}" method="POST">
+            <form action="{% url 'stripe-checkout' %}" method="POST">
                 {% csrf_token %}
               <button type="submit" id="checkout-button">Checkout</button>
             </form>

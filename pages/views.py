@@ -103,3 +103,11 @@ def single_result(request, id):
     }
     
     return render(request, "exams/results_single.html", context)
+
+
+def get_access_buy(request):
+    return render(request, "pages/get_access_buy.html")
+
+
+def get_access_overview(request):
+    return render(request, "pages/get_access_overview.html")
