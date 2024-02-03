@@ -10,6 +10,13 @@ def save_user_progress(question, choice):
     # IDK might not be worth a seperate function.
     pass
 
+def question_to_dict(question):
+    dict = {}
+    dict["text"] = question.text
+    dict["choices"] = []
+    for choice in question.choices.all():
+        dict["choices"].append({"text": choice.text, "id": choice.id,})
+    return dict
 
 def grade(user_exam_state):
     num_questions = user_exam_state.exam.questions.count()
@@ -69,6 +76,8 @@ def take_exam_view(request, uuid):
                 "user_exam_state": user_exam_state, # only passing this for debug purposes
                 "DEBUG": False,
                 }
+        if request.method == 'GET':
+            return render(request, "exams/take_exam.html", context)
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
@@ -97,9 +106,8 @@ def take_exam_view(request, uuid):
                 return redirect("exam-complete", permanent=True)
             else:
                 next_question = exam_questions[user_exam_state.current_question_index]
-                context['question'] = next_question
-
-        return render(request, "exams/take_exam.html", context)
+                data = question_to_dict(next_question)
+                return JsonResponse(data)
 
 
 @login_required
