@@ -38,7 +38,7 @@ def grade(user_exam_state):
     # think. Also then need template to call grade method. Would require completely reworking take_exam_view.
 
 @login_required
-@require_http_methods(['GET', 'POST'])  
+@require_http_methods(['GET', 'POST']) 
 def take_exam_view(request, uuid):
     
     exam = Exam.objects.get(uuid=uuid)
@@ -53,10 +53,10 @@ def take_exam_view(request, uuid):
         user_exam_state.save()
     
     if user_exam_state.completed:
-        context = {
-            "exam_uuid": user_exam_state.exam.uuid
-        }
-        print(user_exam_state.exam.uuid)
+        # context = {
+        #     "exam_uuid": user_exam_state.exam.uuid
+        # }
+        # print(user_exam_state.exam.uuid)
         return redirect("exam-complete", permanent=True)
         
     else:
@@ -66,12 +66,13 @@ def take_exam_view(request, uuid):
         context = {
                 "exam": exam,
                 "question": current_question,
-                "user_exam_state": user_exam_state,
+                "user_exam_state": user_exam_state, # only passing this for debug purposes
                 "DEBUG": False,
                 }
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
+            print(user_choice)
             #TODO: Require user to make a choice. Currently you can just hit next!
             selected_choice_obj = Choice.objects.get(id=user_choice)
             UserAnswer.objects.create(
@@ -109,17 +110,21 @@ def exam_complete(request):
      return render(request, "exams/exam_complete.html")
 
 
+@require_http_methods(['GET', 'POST'])
 def test_ajax_request(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
+    test_qs = ["Item1", "Item2", "Item3"]
+    cur_item = 0
     if is_ajax:
         if request.method == 'GET':
-            return JsonResponse({'message': 'It worked!'})
+            return JsonResponse({'item': test_qs[0]})
         if request.method == 'POST':
+            cur_item +=1
             data = json.load(request)
             message = data.get('payload')
             print(message)
-            return JsonResponse({'status': 'Message printed successfully'})
+            return JsonResponse({'item': test_qs[cur_item]})
         return JsonResponse({'status': 'Invalid Request'}, status=400)
     
     else:

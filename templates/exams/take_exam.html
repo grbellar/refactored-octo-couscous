@@ -15,7 +15,7 @@
         <p class="lead">{{ question.text }}</p>
 
 
-        <form action="{% url 'take-exam' exam.uuid %}" method="post">
+        <form id="exam-form">
             {% csrf_token %}
             <div class="form-check">
                 {% for choice in question.choices.all %}
@@ -38,32 +38,38 @@
                 <p class="lead" style="color: green;">Question: {{question.id}}</p>
 
             </div>
-            {%endif%}
-
+            
             <button onclick="getSpecialMessage()" class="btn btn-secondary">Get!</button>
 
             <button onclick="postSpecialMessage()" class="btn btn-dark">Post !</button>
+        {%endif%}
+
+            
 
 </div>
 
 <script>
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
+    const form = document.getElementById('exam-form');
+    const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    form.addEventListener('submit', event =>{
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const data = new URLSearchParams(formData);
+
+        fetch("{% url 'take-exam' exam.uuid %}", {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            body: data
+        }).then(res => res.json()).then(data =>{
+            console.log(data);
+        })
+    });
 
     function getSpecialMessage(){
         fetch({% url 'test-ajax' %}, {
@@ -74,7 +80,7 @@
         }).then(
             response => response.json()).then(
                 data=> {
-                    console.log(data['message']);
+                    console.log(data["item"]);
                 }
             )
     }
@@ -91,7 +97,7 @@
         }).then(
             response => response.json()).then(
                 data=> {
-                    console.log(data);
+                    console.log(data["item"]);
                 }
             )
     }
@@ -128,7 +134,7 @@
       }
       
       // Call the function to start the countdown
-      startCountdown();
+      //startCountdown();
 </script>
 
 {% endblock content %}
