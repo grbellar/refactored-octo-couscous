@@ -2,11 +2,19 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.utils import timezone
+from datetime import timedelta
 
 
 def save_user_progress(question, choice):
     # IDK might not be worth a seperate function.
     pass
+
+def create_timer():
+    target_time = timezone.now() + timedelta(hours=2)
+    return target_time
+
+
 
 def grade(user_exam_state):
     num_questions = user_exam_state.exam.questions.count()
@@ -30,6 +38,10 @@ def grade(user_exam_state):
     
     user_exam_state.save()
 
+#TODO: The javascript works quite well at counting down and redirecting after a certain amount of time. The issue is I am 
+    # making a new request each time they hit next question. I need to pass all questions to template and have javascript render them I 
+    # think. Also then need template to call grade method. Would require completely reworking take_exam_view.
+
 @login_required
 @require_http_methods(['GET', 'POST'])  
 def take_exam_view(request, uuid):
@@ -41,9 +53,16 @@ def take_exam_view(request, uuid):
         exam=exam,
     )
 
+    # TODO: Maybe move this into if state_created to ensure this only happens the first time they access exam
+    if request.method == 'GET':
+        print(timezone.now())
+        end_time = create_timer()
+        print(end_time)
+
     if state_created:
         user_exam_state.exam_name = exam.name # Store Exam name for retrival in case of deletion. TODO: If Exam name changes this does not update
         user_exam_state.save()
+        # initialize a new timer 
     
     if user_exam_state.completed:
         context = {
@@ -52,15 +71,16 @@ def take_exam_view(request, uuid):
         print(user_exam_state.exam.uuid)
         return redirect("exam-complete", permanent=True)
         
-
     else:
         exam_questions = list(exam.questions.all()) # wrapping this in a list to make this easier to work with
         current_question_index = user_exam_state.current_question_index
         current_question = exam_questions[current_question_index]
-        context = {"exam": exam,
+        context = {
+                "exam": exam,
                 "question": current_question,
                 "user_exam_state": user_exam_state,
-                "DEBUG": False}
+                "DEBUG": False,
+                }
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
