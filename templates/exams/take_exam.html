@@ -10,6 +10,7 @@
     
     
     <p>Welcome to the exam. You have two hours to complete.</p>
+    <p id="countdown"></p>
 
         <p class="lead">{{ question.text }}</p>
 
@@ -40,4 +41,40 @@
             {%endif%}
 
 </div>
+
+<script>
+    function startCountdown() {
+        // Calculate the end time (2 hours from now)
+        const endTime = new Date();
+        endTime.setTime(endTime.getTime() + 5000); // 2 hours in milliseconds
+      
+        // Update the countdown every second
+        const timerInterval = setInterval(function() {
+          const currentTime = new Date().getTime();
+          const timeLeft = endTime - currentTime;
+      
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            console.log("Countdown timer has ended!");
+            document.getElementById("countdown").innerHTML = "Time ended. Redirecting..."
+            setTimeout(function(){
+                return  window.location.href = "{% url 'exam-complete' %}"
+            }, 2000)
+
+          } else {
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + String(seconds) + "s";
+
+            console.log(`Time left: ${hours} hours ${minutes} seconds ${seconds}`);
+          }
+        }, 1000); // Update every 1 second
+      }
+      
+      // Call the function to start the countdown
+      startCountdown();
+</script>
+
 {% endblock content %}
