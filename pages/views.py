@@ -5,6 +5,7 @@ from django.shortcuts import render
 from exams.models import Exam, UserExamState
 from collections import defaultdict
 from allauth.account.views import SignupView
+from django.views.decorators.cache import never_cache
 
 
 class HomePageView(TemplateView):
@@ -110,5 +111,6 @@ def get_access_buy(request):
     return render(request, "pages/get_access_buy.html")
 
 
+@never_cache
 def get_access_overview(request):
     return render(request, "pages/get_access_overview.html")

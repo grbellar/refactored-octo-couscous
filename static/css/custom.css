@@ -1,0 +1,23 @@
+.btn-primary {
+    background-color: #171E65;
+    border-color: #171E65;
+}
+.btn-outline-secondary:hover {
+    background-color: #171E65;
+}
+
+.btn-primary:hover{
+    background-color: #6c757d;
+}
+
+.bg-primary {
+    background-color: #171E65;
+}
+
+a {
+    color: #171E65;
+}
+
+a:hover {
+    color: #e52023
+}
