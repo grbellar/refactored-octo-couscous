@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) # Using this for url parameters    
     has_paid = models.BooleanField(default=False, null=False)
     exam = models.ManyToManyField(Exam)
+    school = models.CharField(max_length=300, null=True, blank=True)
     #TODO: Figure out why my customer fields aren't showing up in the Django User admin panel.
 
     #TODO: Add a UUID field so that I can pass that to stripe and use that to identify users. Better than using sequential integers
