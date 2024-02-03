@@ -10,7 +10,7 @@
     
     
     <p>Welcome to the exam. You have two hours to complete.</p>
-    <p id="countdown"></p>
+    <p id="countdown" style="float: right; color: red;">Time left.</p>
 
         <p class="lead">{{ question.text }}</p>
 
@@ -40,13 +40,67 @@
             </div>
             {%endif%}
 
+            <button onclick="getSpecialMessage()" class="btn btn-secondary">Get!</button>
+
+            <button onclick="postSpecialMessage()" class="btn btn-dark">Post !</button>
+
 </div>
 
 <script>
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function getSpecialMessage(){
+        fetch({% url 'test-ajax' %}, {
+            method: 'GET',
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            }
+        }).then(
+            response => response.json()).then(
+                data=> {
+                    console.log(data['message']);
+                }
+            )
+    }
+
+    function postSpecialMessage(){
+        fetch({% url 'test-ajax' %}, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": csrftoken
+            },
+            body: JSON.stringify({payload: "It worked again!"})
+        }).then(
+            response => response.json()).then(
+                data=> {
+                    console.log(data);
+                }
+            )
+    }
+    
+
     function startCountdown() {
         // Calculate the end time (2 hours from now)
         const endTime = new Date();
-        endTime.setTime(endTime.getTime() + 5000); // 2 hours in milliseconds
+        endTime.setTime(endTime.getTime() + 100000); // 2 hours in milliseconds
       
         // Update the countdown every second
         const timerInterval = setInterval(function() {

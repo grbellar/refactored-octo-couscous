@@ -1,19 +1,14 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from .models import *
-from django.utils import timezone
-from datetime import timedelta
+import json
 
 
 def save_user_progress(question, choice):
     # IDK might not be worth a seperate function.
     pass
-
-def create_timer():
-    target_time = timezone.now() + timedelta(hours=2)
-    return target_time
-
 
 
 def grade(user_exam_state):
@@ -53,16 +48,9 @@ def take_exam_view(request, uuid):
         exam=exam,
     )
 
-    # TODO: Maybe move this into if state_created to ensure this only happens the first time they access exam
-    if request.method == 'GET':
-        print(timezone.now())
-        end_time = create_timer()
-        print(end_time)
-
     if state_created:
         user_exam_state.exam_name = exam.name # Store Exam name for retrival in case of deletion. TODO: If Exam name changes this does not update
         user_exam_state.save()
-        # initialize a new timer 
     
     if user_exam_state.completed:
         context = {
@@ -119,3 +107,20 @@ def exam_complete(request):
      # TODO: This doesn't feel quite right. Feel like I should pass Exam specific context and idk
      # if this being a permanent redirect is good.
      return render(request, "exams/exam_complete.html")
+
+
+def test_ajax_request(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        if request.method == 'GET':
+            return JsonResponse({'message': 'It worked!'})
+        if request.method == 'POST':
+            data = json.load(request)
+            message = data.get('payload')
+            print(message)
+            return JsonResponse({'status': 'Message printed successfully'})
+        return JsonResponse({'status': 'Invalid Request'}, status=400)
+    
+    else:
+        return HttpResponseBadRequest('Invalid request')
