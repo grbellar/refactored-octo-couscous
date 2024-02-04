@@ -5,30 +5,39 @@
 
 {% block content %}
 <div class="container">
+    <div class="row p-md-4">
+        <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
+
+        <div class="col-sm-6"><h6 id="countdown" style="float: right">1h 59m</h6></div>
     
-    <h6>{{ exam.name }}</h6>
+    </div>
+    <div class="row p-md-4">
+        <div class="col ">
+            <p class="lead" id="question-text">{{ question.text }}</p>
 
-    <p id="countdown" style="float: right; color: red;">Time left.</p>
+            <form id="exam-form">
+                {% csrf_token %}
+                <div class="form-check">
+                    {% for choice in question.choices.all %}
 
-        <p class="lead" id="question-text">{{ question.text }}</p>
+                    <label class="form-check-label" for="choice{{ choice.id }}">{{ choice.text }}</label>
+                    <input class="form-check-input" id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}">
+                    <br>
+                    
+        
+                    {% endfor %}
+                    <input class="btn btn-primary m-2" type="submit" value="Next question">
+                </div>
 
+            </form>
+        </div>
+    </div>
 
-        <form id="exam-form">
-            {% csrf_token %}
-            <div class="form-check">
-                {% for choice in question.choices.all %}
-
-                <label class="form-check-label" for="choice{{ choice.id }}">{{ choice.text }}</label>
-                <input class="form-check-input" id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}">
-                <br>
-                
+    <div class="row p-md-4 text-center">
+        <p style="border-radius: 3px; max-width: 700px;" id="low-time-warning"></p>
+    </div>
     
-                {% endfor %}
-                <input class="btn btn-primary m-2" type="submit" value="Next question">
-            </div>
-
-        </form>
-
+        
 </div>
 
 <script>
@@ -116,31 +125,41 @@
     function startCountdown() {
         // Calculate the end time (2 hours from now)
         const endTime = new Date();
-        endTime.setTime(endTime.getTime() + 100000); // 2 hours in milliseconds
+        endTime.setTime(endTime.getTime() + 2 * 60 * 60 * 1000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
       
         // Update the countdown every second
         const timerInterval = setInterval(function() {
           const currentTime = new Date().getTime();
           const timeLeft = endTime - currentTime;
-      
+          console.log(timeLeft)
+        
+          // at 5 minutes left display a warning
+          if (timeLeft <= 300000){
+            warning = document.getElementById('low-time-warning');
+            warning.className = 'bg-warning p-2';
+            warning.innerHTML = 'You have 5 minutes remaining. When the timer ends you will be redirected automatically.';
+            setTimeout(function(){
+                warning.style.display = "none";
+            }, 15000) // display warning for 15 seconds
+          }
           if (timeLeft <= 0) {
             clearInterval(timerInterval);
             console.log("Countdown timer has ended!");
-            document.getElementById("countdown").innerHTML = "Time ended. Redirecting..."
+            document.getElementById("countdown").innerHTML = "Exam time has ended. Automatically redirecting..."
             setTimeout(function(){
                 return  window.location.href = "{% url 'exam-complete' %}"
-            }, 2000)
+            }, 3000)
 
           } else {
             const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
             
-            document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + String(seconds) + "s";
+            document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
 
-            console.log(`Time left: ${hours} hours ${minutes} seconds ${seconds}`);
+            console.log(`Time left: ${hours} hours ${minutes} minutes ${seconds} seconds`);
           }
-        }, 1000); // Update every 1 second
+        }, 60000); // Update every 1 second
       }
       
       // Call the function to start the countdown
