@@ -50,11 +50,11 @@ def my_results(request):
             result_dict = {
                 "id": exam_state.id,
                 "exam_name": exam_name,
-                "score": "{:.0f}%".format(exam_state.score),
+                "score": exam_state.score,
                 "num_correct": exam_state.num_correct, 
                 "num_questions": exam_state.num_questions
             }
-            print(result_dict['id'])
+            print(result_dict)
             all_results.append(result_dict)
     
     context["all_results"] = all_results

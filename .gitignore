@@ -22,3 +22,6 @@ sampdata
 .env
 
 base/local_settings.py
+
+test.js
+debug.html
