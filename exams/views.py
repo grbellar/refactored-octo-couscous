@@ -6,10 +6,6 @@ from .models import *
 import json
 
 
-def save_user_progress(question, choice):
-    # IDK might not be worth a seperate function.
-    pass
-
 def question_to_dict(question):
     dict = {}
     dict["text"] = question.text
@@ -25,7 +21,7 @@ def grade(user_exam_state):
         if user_answer.selected_choice.is_correct:
             num_correct+=1
     if num_questions != 0:
-        score = num_correct / num_questions * 100
+        score = int(num_correct / num_questions * 100)
     else:
         #TODO: Properly catch divide by zero error. Don't think this matters. A real Exam that has just been completed will never have 0 questions.
         score = -999
@@ -40,9 +36,6 @@ def grade(user_exam_state):
     
     user_exam_state.save()
 
-#TODO: The javascript works quite well at counting down and redirecting after a certain amount of time. The issue is I am 
-    # making a new request each time they hit next question. I need to pass all questions to template and have javascript render them I 
-    # think. Also then need template to call grade method. Would require completely reworking take_exam_view.
 
 @login_required
 @require_http_methods(['GET', 'POST']) 
@@ -58,9 +51,11 @@ def take_exam_view(request, uuid):
     if state_created:
         user_exam_state.exam_name = exam.name # Store Exam name for retrival in case of deletion. TODO: If Exam name changes this does not update
         user_exam_state.save()
-    
+
+    # Only succeeds in checking complete on initial or after the fact get requets. Check completion after submitting the last
+        # question happens in if POST block because update current question index only happens in post block. Probably a better
+        # way to refactor this all.
     if user_exam_state.completed:
-        # TODO: Redirect must now be handled by the fetch api.
         return redirect("exam-complete", permanent=True)
         
     else:
@@ -99,8 +94,7 @@ def take_exam_view(request, uuid):
             
             if user_exam_state.completed:
                 grade(user_exam_state)
-                #TODO: Redirect must now be handled by the fetch api. The return statement is trying to return to my fetch api request and failing.
-                return redirect("exam-complete", permanent=True)
+                return JsonResponse({"complete": True})
             else:
                 next_question = exam_questions[user_exam_state.current_question_index]
                 data = question_to_dict(next_question)
@@ -114,24 +108,3 @@ def exam_complete(request):
      # TODO: This doesn't feel quite right. Feel like I should pass Exam specific context and idk
      # if this being a permanent redirect is good.
      return render(request, "exams/exam_complete.html")
-
-
-@require_http_methods(['GET', 'POST'])
-def test_ajax_request(request):
-    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-
-    test_qs = ["Item1", "Item2", "Item3"]
-    cur_item = 0
-    if is_ajax:
-        if request.method == 'GET':
-            return JsonResponse({'item': test_qs[0]})
-        if request.method == 'POST':
-            cur_item +=1
-            data = json.load(request)
-            message = data.get('payload')
-            print(message)
-            return JsonResponse({'item': test_qs[cur_item]})
-        return JsonResponse({'status': 'Invalid Request'}, status=400)
-    
-    else:
-        return HttpResponseBadRequest('Invalid request')

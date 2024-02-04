@@ -6,10 +6,8 @@
 {% block content %}
 <div class="container">
     
-    <h2>{{ exam.name }}</h2>
-    
-    
-    <p>Welcome to the exam. You have two hours to complete.</p>
+    <h6>{{ exam.name }}</h6>
+
     <p id="countdown" style="float: right; color: red;">Time left.</p>
 
         <p class="lead" id="question-text">{{ question.text }}</p>
@@ -31,8 +29,6 @@
 
         </form>
 
-            
-
 </div>
 
 <script>
@@ -52,9 +48,6 @@
 
         var choiceDiv = document.createElement('div');
         choiceDiv.className = "form-check";
-
-        //TODO: need to add hidden csrf_token element or use the get cookie funciton. This nukes the cookies each time 
-        // a new question is displayed
 
         choices = question["choices"]
         choices.forEach(function(choice){
@@ -103,48 +96,23 @@
                 "X-CSRFToken": csrftoken
             },
             body: data
-        }).then(res => res.json()).then(question =>{
-            
-            console.log("Data recieved. Inside of fetch method:")
-            console.log(question)
+        }).then(response => response.json()).then(data =>{
 
-            nextQuestion(question);
+            if (data["complete"] === true) {
+                console.log("Redirected by Javascript!")
+                window.location.href = "{% url 'exam-complete' %}";
+            }
+            else {
+                console.log("Data recieved. Inside of fetch method:")
+                console.log(data)
+                nextQuestion(data);
+            };
+
+            
             
         })
     });
-
-    function getSpecialMessage(){
-        fetch({% url 'test-ajax' %}, {
-            method: 'GET',
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-            }
-        }).then(
-            response => response.json()).then(
-                data=> {
-                    console.log(data["item"]);
-                }
-            )
-    }
-
-    function postSpecialMessage(){
-        fetch({% url 'test-ajax' %}, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": csrftoken
-            },
-            body: JSON.stringify({payload: "It worked again!"})
-        }).then(
-            response => response.json()).then(
-                data=> {
-                    console.log(data["item"]);
-                }
-            )
-    }
     
-
     function startCountdown() {
         // Calculate the end time (2 hours from now)
         const endTime = new Date();
@@ -176,7 +144,7 @@
       }
       
       // Call the function to start the countdown
-      //startCountdown();
+      startCountdown();
 </script>
 
 {% endblock content %}
