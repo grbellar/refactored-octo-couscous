@@ -60,10 +60,7 @@ def take_exam_view(request, uuid):
         user_exam_state.save()
     
     if user_exam_state.completed:
-        # context = {
-        #     "exam_uuid": user_exam_state.exam.uuid
-        # }
-        # print(user_exam_state.exam.uuid)
+        # TODO: Redirect must now be handled by the fetch api.
         return redirect("exam-complete", permanent=True)
         
     else:
@@ -81,7 +78,7 @@ def take_exam_view(request, uuid):
         
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
-            print(user_choice)
+            print(f"From client, user chose: {user_choice}")
             #TODO: Require user to make a choice. Currently you can just hit next!
             selected_choice_obj = Choice.objects.get(id=user_choice)
             UserAnswer.objects.create(
@@ -102,11 +99,12 @@ def take_exam_view(request, uuid):
             
             if user_exam_state.completed:
                 grade(user_exam_state)
-                #TODO: Prob display the single result or just redirect to page and thell them to view results.
+                #TODO: Redirect must now be handled by the fetch api. The return statement is trying to return to my fetch api request and failing.
                 return redirect("exam-complete", permanent=True)
             else:
                 next_question = exam_questions[user_exam_state.current_question_index]
                 data = question_to_dict(next_question)
+                print(f"Data being send to client from server: {data}")
                 return JsonResponse(data)
 
 

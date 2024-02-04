@@ -12,7 +12,7 @@
     <p>Welcome to the exam. You have two hours to complete.</p>
     <p id="countdown" style="float: right; color: red;">Time left.</p>
 
-        <p class="lead" id="question-text"></p>
+        <p class="lead" id="question-text">{{ question.text }}</p>
 
 
         <form id="exam-form">
@@ -20,8 +20,9 @@
             <div class="form-check">
                 {% for choice in question.choices.all %}
 
-                <label class="form-check-label" for="{{ choice.id }}">{{ choice.text }}</label>
-                <input class="form-check-input" id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}"><br>
+                <label class="form-check-label" for="choice{{ choice.id }}">{{ choice.text }}</label>
+                <input class="form-check-input" id="choice{{ choice.id }}" type="radio" name="user_choice" value="{{ choice.id }}">
+                <br>
                 
     
                 {% endfor %}
@@ -30,20 +31,6 @@
 
         </form>
 
-        
-        {% if DEBUG %}
-            <div class="container" style='background-color: antiquewhite;'>
-                
-                <p class="lead" style="color: green;">User question index: {{user_exam_state.current_question_index}}</p>
-                <p class="lead" style="color: green;">Question: {{question.id}}</p>
-
-            </div>
-            
-            <button onclick="getSpecialMessage()" class="btn btn-secondary">Get!</button>
-
-            <button onclick="postSpecialMessage()" class="btn btn-dark">Post !</button>
-        {%endif%}
-
             
 
 </div>
@@ -51,7 +38,57 @@
 <script>
 
     const form = document.getElementById('exam-form');
-    const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    const hidden = form.querySelector('[name=csrfmiddlewaretoken]');
+    const csrftoken = hidden.value;
+
+    function nextQuestion(question){
+        var form = document.getElementById('exam-form');
+        var questionEl = document.getElementById('question-text')
+
+        questionEl.innerHTML = question["text"]
+        form.innerHTML = "";
+
+        form.appendChild(hidden)
+
+        var choiceDiv = document.createElement('div');
+        choiceDiv.className = "form-check";
+
+        //TODO: need to add hidden csrf_token element or use the get cookie funciton. This nukes the cookies each time 
+        // a new question is displayed
+
+        choices = question["choices"]
+        choices.forEach(function(choice){
+            console.log(choice)
+            const input = document.createElement('input');
+            input.id = `choice${choice["id"]}`;
+            input.type = 'radio';
+            input.name = "user_choice"
+            input.value = choice["id"]
+            input.className = "form-check-input";
+
+            const label = document.createElement('label');
+            label.setAttribute('for', `choice${choice["id"]}`)
+            label.textContent = choice["text"];
+            label.className = "form-check-label";
+
+            br = document.createElement('br')
+            choiceDiv.appendChild(label);
+            choiceDiv.appendChild(input);
+            choiceDiv.appendChild(br)
+            
+        })
+
+        const submit = document.createElement('input');
+        submit.className = 'btn btn-primary m2'
+        submit.type = 'submit';
+        submit.value = 'Next question';
+
+        choiceDiv.appendChild(submit)
+        
+        form.appendChild(choiceDiv)
+        console.log(form);
+
+    }
 
     form.addEventListener('submit', event =>{
         event.preventDefault();
@@ -67,10 +104,12 @@
             },
             body: data
         }).then(res => res.json()).then(question =>{
-            questionEl = document.getElementById('question-text')
-            console.log(question["text"])
-            questionEl.innerHTML = question["text"]
-            console.log(question);
+            
+            console.log("Data recieved. Inside of fetch method:")
+            console.log(question)
+
+            nextQuestion(question);
+            
         })
     });
 
