@@ -80,9 +80,9 @@ class UserExamState(models.Model):
 class UserAnswer(models.Model):
     user_exam_state = models.ForeignKey(UserExamState, on_delete=models.CASCADE, related_name="user_answers")
     question = models.ForeignKey('Question', default=None, on_delete=models.SET_NULL, null=True)
-    question_text = models.CharField(max_length=500, null=True, blank=True)
+    question_text = models.TextField(null=True, blank=True)
     selected_choice = models.ForeignKey('Choice', default=None, on_delete=models.SET_NULL, null=True)
-    choice_text = models.CharField(max_length=500, null=True, blank=True)
+    choice_text = models.TextField(null=True, blank=True)
 
     # Note: Currently not using question text or choice text but it is in place should I decide to display
         # all questions and answers and the question has since been deleted :)
