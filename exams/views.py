@@ -5,6 +5,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from .models import *
 import json
+from django.contrib.auth.decorators import user_passes_test
 
 
 def question_to_dict(question):
@@ -38,6 +39,7 @@ def grade(user_exam_state):
     user_exam_state.save()
 
 
+# @user_passes_test(lambda user: user.is_staff)
 @login_required
 @require_http_methods(['GET', 'POST']) 
 def take_exam_view(request, uuid):

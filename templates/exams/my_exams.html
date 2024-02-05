@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Exams</h1>
+  <h1>Available Exams</h1>
     {% if user_has_paid %}    
         {% for exam in exams %}
 
@@ -19,20 +19,7 @@
 
         {%endfor%}
     {%else%}
-        <p>Exams are for paying customers only.</p>
-        <section>
-            <div class="product">
-              <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
-              <div class="description">
-                <h3>Stubborn Attachments</h3>
-                <h5>$20.00</h5>
-              </div>
-            </div>
-            <form action="{% url 'stripe-checkout' %}" method="POST">
-                {% csrf_token %}
-              <button type="submit" id="checkout-button">Checkout</button>
-            </form>
-          </section>
+        <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
     {%endif%}
 </div>
 {% endblock content %}
