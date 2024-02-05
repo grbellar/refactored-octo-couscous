@@ -72,7 +72,7 @@
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center align-items-center mb-md-0">
 
-          <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="175px" height="auto" src="{% static 'images/logo.jpg' %}" alt="Perfusion Board Prep Logo"></a></li>
+          <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="50px" height="auto" src="{% static 'images/logo-square.png' %}" alt="Perfusion Board Prep Logo"></a></li>
           {% comment %} <li><a href="{% url 'home' %}" class="nav-link px-2 link-secondary">Home</a></li> {% endcomment %}
 
           {% if not user.is_authenticated %}
@@ -85,7 +85,7 @@
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
           
           {% else %}
-          <li><a href="{% url 'get-access-overview' %}" class="nav-link px-2 link-dark">Get Access</a></li>
+          <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Get Access</a></li>
           {%endif%}
           
         </ul>
@@ -119,11 +119,23 @@
   {% endblock content %}
     
 
-  {% comment %} <footer class="footer">
-    <div class="container">
-      <span class="text-muted">Footer...</span>
+<footer class="footer">
+    <div class="container p-2">
+      <div class="row">
+        <div class="col-md-3">
+          <div id="copyright" class="text-muted" style="font-size: 12px">
+
+              </div>
+        </div>
+        <div class="col-md-9">
+            <div id="contact"><span class="text-muted" style="float:right; font-size: 12px;">This product was made for perfusionists, by perfusionists. Have a question? email us at admin@perfusionboardprep.com</span></div>
+        </div>
+      </div>
+      
+      
+      
     </div>
-  </footer> {% endcomment %}
+  </footer>
 
   {% block javascript %}
   <!-- Bootstrap JavaScript -->
@@ -133,7 +145,14 @@
 
   <!-- Project JS -->
   <script src="{% static 'js/base.js' %}"></script>
+    
+  <script>
+    date = new Date().getFullYear()
+    document.getElementById('copyright').innerHTML = `© PerfusionBoardPrep.com ${date}`
+    
 
+    console.log(date)
+  </script>
   {% endblock javascript %}
 
 </body>
