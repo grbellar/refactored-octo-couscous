@@ -131,7 +131,7 @@
     function startCountdown() {
         // Calculate the end time (2 hours from now)
         const endTime = new Date();
-        endTime.setTime(endTime.getTime() + 10000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
+        endTime.setTime(endTime.getTime() + 2 * 60 * 60 * 1000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
       
         // Update the countdown every second
         const timerInterval = setInterval(function() {
@@ -176,9 +176,8 @@
             
             document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
 
-            console.log(`Time left: ${hours} hours ${minutes} minutes ${seconds} seconds`);
           }
-        }, 1000); // Update every 1 second
+        }, 60000); // Update every 1 second
       }
       
       // Call the function to start the countdown
