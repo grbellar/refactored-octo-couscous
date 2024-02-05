@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from .models import *
 import json
@@ -65,9 +66,11 @@ def take_exam_view(request, uuid):
         context = {
                 "exam": exam,
                 "question": current_question,
+                "exam_state_id": user_exam_state.id,
                 "user_exam_state": user_exam_state, # only passing this for debug purposes
                 "DEBUG": False,
                 }
+        print(user_exam_state.id)
         if request.method == 'GET':
             return render(request, "exams/take_exam.html", context)
         
@@ -108,3 +111,18 @@ def exam_complete(request):
      # TODO: This doesn't feel quite right. Feel like I should pass Exam specific context and idk
      # if this being a permanent redirect is good.
      return render(request, "exams/exam_complete.html")
+
+
+@requires_csrf_token
+@require_http_methods(['POST'])
+def grade_endpoint(request):
+
+    if request.method == 'POST':
+        
+        id = json.loads(request.body)["id"]
+        exam_state_to_grade = UserExamState.objects.get(id=id)
+        exam_state_to_grade.completed = True
+        grade(exam_state_to_grade)
+
+        return JsonResponse({"message": "graded"})
+    

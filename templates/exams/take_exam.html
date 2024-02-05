@@ -46,7 +46,10 @@
     const form = document.getElementById('exam-form');
     const hidden = form.querySelector('[name=csrfmiddlewaretoken]');
     const csrftoken = hidden.value;
+    
+    const state_id = {{exam_state_id}} // this is a django variable passed in with the context on inital get request
 
+    
     function nextQuestion(question){
         var form = document.getElementById('exam-form');
         var questionEl = document.getElementById('question-text')
@@ -128,7 +131,7 @@
     function startCountdown() {
         // Calculate the end time (2 hours from now)
         const endTime = new Date();
-        endTime.setTime(endTime.getTime() + 2 * 60 * 60 * 1000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
+        endTime.setTime(endTime.getTime() + 10000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
       
         // Update the countdown every second
         const timerInterval = setInterval(function() {
@@ -149,6 +152,19 @@
             clearInterval(timerInterval);
             console.log("Countdown timer has ended!");
             document.getElementById("countdown").innerHTML = "Exam time has ended. Automatically redirecting..."
+
+            fetch("{% url 'grade-endpoint' %}", {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "X-CSRFToken": csrftoken
+                },
+                body: JSON.stringify({"id": state_id})
+            }).then(response => response.json()).then(data =>{
+                // do nothing with response
+            })
+
             setTimeout(function(){
                 return  window.location.href = "{% url 'exam-complete' %}"
             }, 3000)
@@ -160,13 +176,14 @@
             
             document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
 
-            console.log(`Time left: ${hours} hours ${minutes} minutes`);
+            console.log(`Time left: ${hours} hours ${minutes} minutes ${seconds} seconds`);
           }
-        }, 60000); // Update every 1 second
+        }, 1000); // Update every 1 second
       }
       
       // Call the function to start the countdown
       startCountdown();
+
 </script>
 
 {% endblock content %}
