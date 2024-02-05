@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="container">
-  <h3>{{ exam_result.exam_name }}</h3>
-  <p>Results for: {{user_full_name}}</p>
-  <p>Score: {{ exam_result.score }}%</p>
+  <h3 id="text-primary">{{ exam_result.exam_name }}</h3>
+  <p id="text-primary">Results for: <span><strong>{{user_full_name}}</strong></span></p>
+  <p id="text-primary">Score: <span><strong>{{ exam_result.score }}%</strong></span></p>
   <table class="table table-striped">
     <thead>
       <tr>
         <th scope="col"></th>
-        <th scope="col">Correct</th>
+        <th class="text-success" scope="col">Correct</th>
         <th scope="col">Possible</th>
       </tr>
     </thead>
@@ -19,7 +19,7 @@
       {%for category in category_scores %}
       <tr>
         <th scope="row">{{ category.name }}</th>
-        <td>{{ category.correct }}</td>
+        <td class="text-success">{{ category.correct }}</td>
         <td>{{ category.total }}</td>
       </tr>
       {%endfor%}

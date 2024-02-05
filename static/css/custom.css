@@ -1,9 +1,9 @@
 .btn-primary {
-    background-color: #171E65;
-    border-color: #171E65;
+    background-color: #175781;
+    border-color: #175781;
 }
 .btn-outline-secondary:hover {
-    background-color: #171E65;
+    background-color: #175781;
 }
 
 .btn-primary:hover{
@@ -11,17 +11,21 @@
 }
 
 .bg-primary {
-    background-color: #171E65;
+    background-color: #175781;
 }
 
 a {
-    color: #171E65;
+    color: #175781;
 }
 
 a:hover {
-    color: #e52023
+    color: #F34C4C
 }
 
 #iconBlue {
-    background-color: #171E65;
+    background-color: #175781;
+}
+
+#text-primary {
+    color: #175781;   
 }
