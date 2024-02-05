@@ -6,6 +6,7 @@ from exams.models import Exam, UserExamState
 from collections import defaultdict
 from allauth.account.views import SignupView
 from django.views.decorators.cache import never_cache
+from pprint import pprint
 
 
 class HomePageView(TemplateView):
@@ -71,9 +72,11 @@ def my_results(request):
 def single_result(request, id):
 
     exam_result = UserExamState.objects.get(id=id)
+    exam = exam_result.exam
 
     #TODO: This should be refactored into my grade method so the data can be saved in the database.
     #   I don't think I want to be running this computation every time a user looks at their results.
+    #TODO: Store category_scores_list as a JSONField in my UserExamState model.
 
     # Initialize a list to store the data for each category.
     category_scores_list = []
@@ -95,13 +98,20 @@ def single_result(request, id):
     # Convert the defaultdict to a list of dictionaries with the desired keys.
     for category_name, data in category_data.items():
         category_scores_list.append({'name': category_name, 'correct': data['correct'], 'total': data['total']})
+    
+    total_answers = 0
+    for category in category_scores_list:
+        total_answers = total_answers + category["total"]
 
-    #TODO: Store this data in a JSONField in my UserExamState model.
+    total_questions = exam.questions.all().count()
+
+    unanswered = total_questions - total_answers
 
     context = {
         "exam_result": exam_result,
         "category_scores": category_scores_list,
-        "user_full_name": f"{request.user.first_name} {request.user.last_name}"
+        "user_full_name": f"{request.user.first_name} {request.user.last_name}",
+        "unanswered": unanswered
     }
     
     return render(request, "exams/results_single.html", context)

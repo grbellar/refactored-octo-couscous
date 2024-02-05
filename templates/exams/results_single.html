@@ -22,6 +22,14 @@
         <td>{{ category.correct }}</td>
         <td>{{ category.total }}</td>
       </tr>
+      {%endfor%}
+      {% if unanswered != 0 %}
+      <tr>
+        <th scope="row">Unanswered</th>
+        <td></td>
+        <td>{{ unanswered }}</td>
+      </tr>
+      {%endif%}
       <tfoot>
         <tr>
           <td>Totals</td>
@@ -29,7 +37,6 @@
           <td>{{ exam_result.num_questions }}</td>
         </tr>
       </tfoot>
-      {%endfor%}
     </tbody>
   </table>
 </div>
