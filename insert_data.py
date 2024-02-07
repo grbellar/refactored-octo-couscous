@@ -7,7 +7,7 @@ with open('data.json', 'r') as file:
 
 for question in question_list:
     new_question = Question.objects.create(
-        text=question["question"],
+        text=question["text"],
         category=Category.objects.get(id=3)
         )
     print(f"\nAdded question: {new_question.text}")
