@@ -21,7 +21,7 @@
                 <h5 class="card-title">{{ exam.name }}</h5>
                 <p>2 hours to complete</p>
                 <p>{{ exam.questions.all.count }} questions</p>
-                <a href="{% url 'take-exam' exam.uuid %}" class="btn btn-primary">Start Exam</a>
+                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}" >Start Exam</button>
               </div>
             </div>
           </div>
@@ -32,4 +32,19 @@
     {%endif%}
 </div>
 </div>
+<script>
+
+  document.querySelectorAll('.start-quiz').forEach(button => {
+    button.addEventListener('click', function(){
+      var examUUID = this.getAttribute('data-exam-id');
+      var confirmation = confirm('You are about to begin the exam. You have one attempt and two hours to complete. Are you ready to begin?');
+      if (confirmation) {
+        // Redirect to take exam view with quiz uuid
+        window.location.href = '/exams/exam/' + examUUID
+      }
+    })
+  })
+
+</script>
 {% endblock content %}
+
