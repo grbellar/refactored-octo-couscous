@@ -184,7 +184,6 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
 
-SITE_ID = 2
 
 # Override production variables if DJANGO_DEVELOPMENT env variable is true
 if os.getenv('DJANGO_DEVELOPMENT') == 'true':
