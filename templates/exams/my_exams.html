@@ -11,7 +11,7 @@
 <div class="container">
   <h1>Available Exams</h1>
   <div class="row">
-    {% if user_has_paid %}    
+    {% comment %} {% if user_has_paid %}     {% endcomment %}
 
         {% for exam in exams %}
         <div class="col-md-4 p-4">
@@ -27,9 +27,9 @@
           </div>
 
         {%endfor%}
-    {%else%}
+    {% comment %} {%else%}
         <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
-    {%endif%}
+    {%endif%} {% endcomment %}
 </div>
 </div>
 <script>

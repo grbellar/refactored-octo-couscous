@@ -55,10 +55,14 @@
                                Made by Educators
                             </li>
                         </ul>
-                        <div class="d-grid"> <form action="{% url 'stripe-checkout' %}" method="POST">
+                        <button class="btn btn-primary" disabled>Coming soon</button>
+                        <br>
+                        <br>
+                        <p>In the meantime, try our free <a href="{% url 'my-exams' %}">practice exam</a>.</p>
+                        {% comment %} <div class="d-grid"> <form action="{% url 'stripe-checkout' %}" method="POST">
                             {% csrf_token %}
                           <button class="btn btn-primary" type="submit" id="checkout-button">Get access</button>
-                        </form></div>
+                        </form></div> {% endcomment %}
                     </div>
                 </div>
             </div>

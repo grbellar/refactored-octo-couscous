@@ -4,9 +4,10 @@
 
 {% block content %}
 <div class="container">
-  <h3 id="text-primary">{{ exam_result.exam_name }}</h3>
-  <p id="text-primary">Results for: <span><strong>{{user_full_name}}</strong></span></p>
-  <p id="text-primary">Score: <span><strong>{{ exam_result.score }}%</strong></span></p>
+  <h3>{{ exam_result.exam_name }}</h3>
+  <p>Results for: <span><strong>{{user_full_name}}</strong></span></p>
+  <p>Score: <span><strong>{{ exam_result.score }}%</strong></span></p>
+  <p>{{ exam_result.num_correct }} / {{ exam_result.num_questions }}</p>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -33,7 +34,7 @@
       <tfoot>
         <tr>
           <td>Totals</td>
-          <td>{{ exam_result.num_correct }}</td>
+          <td class="text-success">{{ exam_result.num_correct }}</td>
           <td>{{ exam_result.num_questions }}</td>
         </tr>
       </tfoot>
