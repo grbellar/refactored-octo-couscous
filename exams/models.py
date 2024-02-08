@@ -35,10 +35,14 @@ class Category(models.Model):
 
 class Question(models.Model):
     text = models.TextField(null=False, blank=False)
-    category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="questions", null=True)
+    category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="questions", null=True, blank=True)
 
     def __str__(self):
-        return f'Question {self.id}'
+        if self.category:
+            category_name = self.category.name
+        else:
+            category_name = "No category assigned"
+        return f'Question {self.id} - {category_name}'
 
     class Meta:
         ordering = ["id"]
