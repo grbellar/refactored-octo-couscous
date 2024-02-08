@@ -1,5 +1,5 @@
 {% extends '_base.html' %}
-
+{%load static%}
 {% block title %}
   Your Results
 {% endblock %}
@@ -13,7 +13,7 @@
         {% for result in all_results %}
           <div class="col-md-3">
             <div class="card" style="width: 18rem;">
-              <img class="card-img-top" src="https://dummyimage.com/600x400/343a40/6c757d" alt="Card image cap" />
+              {% comment %} <img class="card-img-top" src="{% static 'images/logo-long.png' %}" alt="Card image cap" /> {% endcomment %}
               <div class="card-body">
                 <h5 class="card-title">{{ result.exam_name }}</h5>
                 <p class="card-text">{{ result.score }}</p>

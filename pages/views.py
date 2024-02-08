@@ -32,13 +32,13 @@ def my_exams(request):
         
         # This is one nifty way of not showing exams if the user has already taken them. But when people are allowed to rebuy and retake 
         # I don't think this will be an effective solution given that this template is supposed to show exams available to buy?
-        nontaken_exams = []
-        for exam in all_exams:
-           if exam.userexamstate_set.filter(user=request.user, completed=False):
-               nontaken_exams.append(exam)
-        print(nontaken_exams)
+        # nontaken_exams = []
+        # for exam in all_exams:
+        #    if exam.userexamstate_set.filter(user=request.user, completed=False):
+        #        nontaken_exams.append(exam)
+        # print(nontaken_exams)
                
-        context['exams'] = nontaken_exams
+        context['exams'] = all_exams
 
 
         return render(request, 'exams/my_exams.html', context)
