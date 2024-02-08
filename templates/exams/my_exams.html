@@ -7,19 +7,44 @@
 <script src="https://js.stripe.com/v3/"></script>
 {% endblock css %} {% endcomment %}
 
-{% comment %} TODO: link stripe style.css and javascript file {% endcomment %}
-
 {% block content %}
 <div class="container">
   <h1>Available Exams</h1>
+  <div class="row">
     {% if user_has_paid %}    
-        {% for exam in exams %}
 
-            <a href="{% url 'take-exam' exam.uuid %}" class="btn btn-primary">{{ exam.name }}</a>
+        {% for exam in exams %}
+        <div class="col-md-4 p-4">
+            <div class="card">
+              <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
+              <div class="card-body">
+                <h5 class="card-title">{{ exam.name }}</h5>
+                <p>2 hours to complete</p>
+                <p>{{ exam.questions.all.count }} questions</p>
+                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}" >Start Exam</button>
+              </div>
+            </div>
+          </div>
 
         {%endfor%}
     {%else%}
         <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
     {%endif%}
 </div>
+</div>
+<script>
+
+  document.querySelectorAll('.start-quiz').forEach(button => {
+    button.addEventListener('click', function(){
+      var examUUID = this.getAttribute('data-exam-id');
+      var confirmation = confirm('You are about to begin the exam. You have one attempt and two hours to complete. Are you ready to begin?');
+      if (confirmation) {
+        // Redirect to take exam view with quiz uuid
+        window.location.href = '/exams/exam/' + examUUID
+      }
+    })
+  })
+
+</script>
 {% endblock content %}
+

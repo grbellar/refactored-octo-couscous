@@ -29,7 +29,16 @@ def my_exams(request):
         # This feels wasteful as all I need this for is to get each exam name and id so I can show it to suer and then 
         # send the chosen Exam to the take-exam view.
         all_exams = Exam.objects.all()
-        context['exams'] = all_exams
+        
+        # This is one nifty way of not showing exams if the user has already taken them. But when people are allowed to rebuy and retake 
+        # I don't think this will be an effective solution given that this template is supposed to show exams available to buy?
+        nontaken_exams = []
+        for exam in all_exams:
+           if exam.userexamstate_set.filter(user=request.user, completed=False):
+               nontaken_exams.append(exam)
+        print(nontaken_exams)
+               
+        context['exams'] = nontaken_exams
 
 
         return render(request, 'exams/my_exams.html', context)
