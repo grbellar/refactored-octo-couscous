@@ -86,6 +86,9 @@
           
           {% else %}
           <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Get Access</a></li>
+          <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Free Practice Exam</a></li>
+          <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
+
           {%endif%}
           
         </ul>
@@ -129,7 +132,7 @@
               </div>
         </div>
         <div class="col-md-9">
-            <div id="contact"><span class="text-muted" style="float:right; font-size: 12px;">This product was made for perfusionists, by perfusionists. Have a question? email us at admin@perfusionboardprep.com</span></div>
+            <div id="contact"><span class="text-muted" style="float:right; font-size: 12px;">This product was made for perfusionists, by perfusionists. Have a question? Email us at <a href="mailto:admin@perfusionboardprep.com">admin@perfusionboardprep.com</a></span></div>
         </div>
       </div>
       
