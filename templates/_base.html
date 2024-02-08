@@ -62,7 +62,7 @@
     </div>
 </nav> {% endcomment %}
 
-
+{% block nav %}
   <header class="p-3 mb-3">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -75,9 +75,9 @@
           <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="50px" height="auto" src="{% static 'images/logo-square.png' %}" alt="Perfusion Board Prep Logo"></a></li>
           {% comment %} <li><a href="{% url 'home' %}" class="nav-link px-2 link-secondary">Home</a></li> {% endcomment %}
 
-          {% if not user.is_authenticated %}
+
           <li><a href="{% url 'about' %}" class="nav-link px-2 link-dark">About</a></li>
-          {%endif%}
+
 
           {% if user.is_authenticated and user.has_paid %}
           
@@ -113,6 +113,7 @@
       </div>
     </div>
   </header>
+{% endblock nav %}
 
   {% block content %}
   <p>Default content...</p>

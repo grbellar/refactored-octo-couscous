@@ -3,6 +3,10 @@
 
 {% block title %}Exam{% endblock title %}
 
+{% block nav %}
+{% comment %} Don't display nav while taking an exam. {% endcomment %}
+{% endblock nav %}
+
 {% block content %}
 <div class="container">
     <div class="row p-md-4">
