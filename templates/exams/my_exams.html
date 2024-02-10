@@ -37,8 +37,11 @@
 
 </div>
 </div>
-<script>
 
+{% endblock content %}
+
+{% block javascript %}
+<script>
   document.querySelectorAll('.start-quiz').forEach(button => {
     button.addEventListener('click', function(){
       var examUUID = this.getAttribute('data-exam-id');
@@ -49,7 +52,6 @@
       }
     })
   })
-
 </script>
-{% endblock content %}
+{% endblock javascript %}
 
