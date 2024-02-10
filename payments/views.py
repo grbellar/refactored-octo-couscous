@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import redirect, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
-from django.urls import reverse
 from accounts.models import CustomUser
 import stripe
 import pprint
@@ -38,7 +36,8 @@ def create_checkout_session(request):
             success_url="http://127.0.0.1:3000/my-exams",
             cancel_url="http://127.0.0.1:3000/get-access/buy",
             metadata = {
-                "perf_user_id": current_user.id
+                "perf_user_uuid": current_user.uuid,
+                "product": "what did they buy",
             }
         )
 
@@ -69,7 +68,8 @@ def payments_webhook(request):
     if event['type'] == 'checkout.session.completed':
         # Retrieve the session 
         session = stripe.checkout.Session.retrieve(
-        event['data']['object']['id']
+        event['data']['object']['id'],
+        expand=['line_items'],
         )
         # Update user has paid attribute
         pprint.pprint(session)
@@ -77,15 +77,29 @@ def payments_webhook(request):
 
     return HttpResponse(status=200)
 
+
 def update_user_paid(stripe_session):
-    paid_user_id = stripe_session['metadata']['perf_user_id']
+    paid_user_uuid = stripe_session['metadata']['perf_user_uuid']
     perf_user = CustomUser.objects.get(
-        id=paid_user_id
+        uuid=paid_user_uuid
     )
-    print(perf_user)
-    print(perf_user.has_paid)
+    # Disabling for test purposes
+    # if perf_user.has_paid != True: # Only try to update this first time through
+    #     perf_user.has_paid = True
+    #     perf_user.save()
+    
+    print(perf_user.uuid)
+    print(perf_user.exam_tokens)
 
-    perf_user.has_paid = True
-    perf_user.save()
+    # Product they bought
+    price_id = stripe_session['line_items']['data'][0]['price']['id']
+    print(price_id)
+    if price_id == 'price_1OhxzNHnSCQ3O7d7ZCmrR6ai': # Bundle
+        perf_user.exam_tokens += 4
+        perf_user.save()
+    if price_id == 'price_1OT56jHnSCQ3O7d7brxHhRJn': # One Exam
+        perf_user.exam_tokens += 1
+        perf_user.save()
+    
+    print(perf_user.exam_tokens)
 
-    print(perf_user.has_paid)

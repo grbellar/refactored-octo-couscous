@@ -54,6 +54,11 @@ def take_exam_view(request, uuid):
     )
 
     if state_created:
+        # First time through. Subtract 1 exam token from user
+        user = request.user
+        if user.exam_tokens > 0: # It shoudn't be possible to get here with zero tokens but I still need to implement that
+            user.exam_tokens -= 1
+            user.save()
         user_exam_state.exam_name = exam.name # Store Exam name for retrival in case of deletion. TODO: If Exam name changes this does not update
         user_exam_state.save()
 

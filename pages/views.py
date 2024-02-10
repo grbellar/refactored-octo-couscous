@@ -21,7 +21,6 @@ class AboutPageView(TemplateView):
 @login_required
 @require_http_methods(["GET"])
 def my_exams(request):
-        # You can access the current user object from the request! see https://docs.djangoproject.com/en/5.0/topics/auth/default/#authentication-in-web-requests
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
@@ -39,6 +38,7 @@ def my_exams(request):
         # print(nontaken_exams)
                
         context['exams'] = all_exams
+        context['user_exam_tokens'] = user.exam_tokens
 
 
         return render(request, 'exams/my_exams.html', context)
