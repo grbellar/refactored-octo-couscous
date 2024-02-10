@@ -6,12 +6,16 @@ from django.urls import reverse
 from accounts.models import CustomUser
 import stripe
 import pprint
+from dotenv import load_dotenv
+from base.settings import BASE_DIR
+import os
 
+load_dotenv(BASE_DIR / '.env')
 
-#TODO: Remove this!!! Prob regen new test key
+#TODO: Add prod key to env variables on render.
 # This is your test secret API key.
-stripe.api_key = 'sk_test_51OT4uxHnSCQ3O7d7AX4KozRzbMi7RFflkA2v9tIPaGbNThCvnZv4Ag9h3or4cCRUTRT8ZUCFivmq7nQzncDDRIEi00cslL5ZBD'
-endpoint_secret = 'whsec_8ec6f3cdfb97458a49a38aabbc3b9ceb8042f718fba0953cb1646848fb08d82a'
+stripe.api_key = os.getenv('STRIPE_TEST_KEY')
+endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
 
 #TODO: Need to add redirect urls for production
 @require_http_methods(["POST"])
@@ -20,25 +24,28 @@ def create_checkout_session(request):
     if request.user.is_authenticated:
         current_user = request.user
 
-    checkout_session = stripe.checkout.Session.create(
-        line_items=[
-            {
-                # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                'price': 'price_1OT56jHnSCQ3O7d7brxHhRJn',
-                'quantity': 1,
-            },
-        ],
-        mode='payment',
-        success_url="http://127.0.0.1:3000/my-exams",
-        cancel_url="http://127.0.0.1:3000/get-access/buy",
-        metadata = {
-            "perf_user_id": current_user.id
-        }
-    )
+    if request.method == 'POST':
+        price_id = request.POST.get('price-id')
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Passing in product price id from get access buy view
+                    'price': price_id,
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url="http://127.0.0.1:3000/my-exams",
+            cancel_url="http://127.0.0.1:3000/get-access/buy",
+            metadata = {
+                "perf_user_id": current_user.id
+            }
+        )
 
-    return redirect(checkout_session.url, code=303)
+        return redirect(checkout_session.url, code=303)
 
 @csrf_exempt
+@require_http_methods(["POST"])
 def payments_webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
@@ -46,7 +53,7 @@ def payments_webhook(request):
 
     # Verify post event came from Stripe
     #TODO: I don't think this is working correctly. This should return a 400 response but instead returns 500 when I 
-    #       try to post to the endpoint using curl. See Stripe docs on how to test fulfilment endpoint.
+    #       try to post to the endpoint using curl. See Stripe docs on how to test fulfillment endpoint.
     try:
         event = stripe.Webhook.construct_event(
         payload, sig_header, endpoint_secret
