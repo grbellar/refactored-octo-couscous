@@ -1,57 +1,72 @@
 {% extends '_base.html' %}
 {% load static %}
 
-{% block title %}Your Exams{% endblock title %}
+{% block title %}
+  Your Exams
+{% endblock %}
 {% comment %} {% block css %}
-<link rel="stylesheet" href="{% static 'css/stripe.css' %}">
-<script src="https://js.stripe.com/v3/"></script>
-{% endblock css %} {% endcomment %}
+  <link rel="stylesheet" href="{% static 'css/stripe.css' %}" />
+  <script src="https://js.stripe.com/v3/"></script>
+{% endblock %} {% endcomment %}
 
 {% block content %}
-<div class="container">
-  <h1>Available Exams</h1>
-  <div class="row">
-    <div class="col">
-      <p class="lead">Your exam tokens: <strong>{{ user_exam_tokens }}</strong></p>
-      <span class="small">Each exam attempt requires one token.</span>
+  <div class="container">
+    <h1>Available Exams</h1>
+    <div class="row">
+      <div class="col">
+        <p class="lead">
+          Your exam tokens: <strong>{{ user_exam_tokens }}</strong>
+        </p>
+        <span class="small">Each exam attempt requires one token.</span>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    
-        {% comment %} {% for exam in exams %}
-        <div class="col-md-4 p-4">
+    <div class="row">
+      {% comment %} {% if user_has_paid %}
+        {% endcomment %}
+
+        {% for exam in exams %}
+          <div class="col-md-4 p-4">
             <div class="card">
               <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
               <div class="card-body">
                 <h5 class="card-title">{{ exam.name }}</h5>
                 <p>2 hours to complete</p>
                 <p>{{ exam.questions.all.count }} questions</p>
-                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}" >Spend token</button>
+                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Spend token</button>
               </div>
             </div>
           </div>
-
-        {%endfor%} {% endcomment %}
-
-        <p class="lead">This site is under construction. Soon you will be able to take exams.</p>
-
-</div>
-</div>
-
-{% endblock content %}
+        {% endfor %}
+        {% comment %}
+      {% else %}
+        <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
+      {% endif %} {% endcomment %}
+    </div>
+  </div>
+{% endblock %}
 
 {% block javascript %}
-<script>
-  document.querySelectorAll('.start-quiz').forEach(button => {
-    button.addEventListener('click', function(){
-      var examUUID = this.getAttribute('data-exam-id');
-      var confirmation = confirm('You are about to begin the exam. You have one attempt and two hours to complete. Are you ready to begin?');
-      if (confirmation) {
-        // Redirect to take exam view with quiz uuid
-        window.location.href = '/exams/exam/' + examUUID
-      }
-    })
-  })
-</script>
-{% endblock javascript %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <script>
+    document.querySelectorAll('.start-quiz').forEach((button) => {
+      button.addEventListener('click', function () {
+        var examUUID = this.getAttribute('data-exam-id')
+        Swal.fire({
+          title: 'Ready to begin?',
+          text: 'You are about to begin the exam. You have one attempt and two hours to complete. This will spend 1 token. Are you ready to begin?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#175781',
+          cancelButtonColor: '#F34C4C',
+          confirmButtonText: 'Spend token and start exam'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to take exam view with quiz uuid
+            window.location.href = '/exams/exam/' + examUUID
+          }
+        })
+      })
+    });
+  </script>
+{% endblock %}
