@@ -37,7 +37,6 @@ def create_checkout_session(request):
             cancel_url="http://127.0.0.1:3000/get-access/buy",
             metadata = {
                 "perf_user_uuid": current_user.uuid,
-                "product": "what did they buy",
             }
         )
 

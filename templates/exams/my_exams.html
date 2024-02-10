@@ -14,10 +14,9 @@
     <h1>Available Exams</h1>
     <div class="row">
       <div class="col">
-        <p class="lead">
-          Your exam tokens: <strong>{{ user_exam_tokens }}</strong>
+        <p>
+          <span class="lead">Your exam tokens: <strong>{{ user_exam_tokens }}</strong></span><br><a href="{% url 'get-access-buy' %}">Buy more tokens</a>
         </p>
-        <p>Need more? <a href="{% url 'get-access-buy' %}">Buy more tokens</a></p>
         <span class="small">Each exam attempt requires one token. You will be asked to confirm your choice before you begin. <br>Note: If you got disconnected and are simply resuming an attempt you will not be charged.</span>
       </div>
     </div>
