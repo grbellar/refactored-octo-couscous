@@ -17,7 +17,7 @@
         <p class="lead">
           Your exam tokens: <strong>{{ user_exam_tokens }}</strong>
         </p>
-        <span class="small">Each exam attempt requires one token.</span>
+        <span class="small">Each exam attempt requires one token. You will be asked to confirm your choice before you begin.</span>
       </div>
     </div>
     <div class="row">
@@ -32,7 +32,7 @@
                 <h5 class="card-title">{{ exam.name }}</h5>
                 <p>2 hours to complete</p>
                 <p>{{ exam.questions.all.count }} questions</p>
-                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Spend token</button>
+                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
               </div>
             </div>
           </div>
