@@ -71,6 +71,7 @@ class UserExamState(models.Model):
     score = models.FloatField(null=True, blank=True)
     num_correct = models.IntegerField(null=True, blank=True)
     num_questions = models.IntegerField(null=True, blank=True)
+    time_started = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user} | {self.exam}"
