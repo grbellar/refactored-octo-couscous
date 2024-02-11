@@ -4,10 +4,6 @@
 {% block title %}
   Your Exams
 {% endblock %}
-{% comment %} {% block css %}
-  <link rel="stylesheet" href="{% static 'css/stripe.css' %}" />
-  <script src="https://js.stripe.com/v3/"></script>
-{% endblock %} {% endcomment %}
 
 {% block content %}
   <div class="container">
@@ -21,9 +17,7 @@
       </div>
     </div>
     <div class="row">
-      {% comment %} {% if user_has_paid %}
-        {% endcomment %}
-
+      {% if user_exam_tokens > 0 %}
         {% for exam in exams %}
           <div class="col-md-4 p-4">
             <div class="card">
@@ -37,10 +31,21 @@
             </div>
           </div>
         {% endfor %}
-        {% comment %}
       {% else %}
-        <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
-      {% endif %} {% endcomment %}
+      {% for exam in exams %}
+          <div class="col-md-4 p-4">
+            <div class="card">
+              <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
+              <div class="card-body">
+                <h5 class="card-title">{{ exam.name }}</h5>
+                <p>2 hours to complete</p>
+                <p>{{ exam.questions.all.count }} questions</p>
+                <button class="btn btn-primary" disabled>Out of tokens</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
 {% endblock %}

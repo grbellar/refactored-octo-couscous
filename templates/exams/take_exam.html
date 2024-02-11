@@ -149,7 +149,7 @@
             if (timeLeft <= 300000){
               warning = document.getElementById('low-time-warning');
               warning.className = 'bg-warning p-2';
-              warning.innerHTML = 'You have 5 minutes remaining. When the timer ends you will be redirected automatically.';
+              warning.innerHTML = 'You have 5 minutes remaining. When the timer ends the exam will be graded as is.';
               setTimeout(function(){
                   warning.style.display = "none";
               }, 15000) // display warning for 15 seconds
