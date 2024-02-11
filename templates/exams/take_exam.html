@@ -12,7 +12,7 @@
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
 
-        <div class="col-sm-6"><h6 id="countdown" style="float: right">1h 59m</h6></div>
+        <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div>
     
     </div>
     <div class="row p-md-4">
@@ -136,58 +136,63 @@
     });
     
     function startCountdown() {
-        // Calculate the end time (2 hours from now)
-        const endTime = new Date();
+        // Calculate remaining timer
+        const endTime = new Date("{{time_started}}");
         endTime.setTime(endTime.getTime() + 2 * 60 * 60 * 1000); // 2 hours in milliseconds 2 * 60 * 60 * 1000
-      
-        // Update the countdown every second
-        const timerInterval = setInterval(function() {
-          const currentTime = new Date().getTime();
-          const timeLeft = endTime - currentTime;
-          console.log(timeLeft)
         
-          // at 5 minutes left display a warning
-          if (timeLeft <= 300000){
-            warning = document.getElementById('low-time-warning');
-            warning.className = 'bg-warning p-2';
-            warning.innerHTML = 'You have 5 minutes remaining. When the timer ends you will be redirected automatically.';
-            setTimeout(function(){
-                warning.style.display = "none";
-            }, 15000) // display warning for 15 seconds
+        function updateCountdown() {
+            const currentTime = new Date().getTime();
+            const timeLeft = endTime - currentTime;
+            console.log(timeLeft)
+          
+            // at 5 minutes left display a warning
+            if (timeLeft <= 300000){
+              warning = document.getElementById('low-time-warning');
+              warning.className = 'bg-warning p-2';
+              warning.innerHTML = 'You have 5 minutes remaining. When the timer ends you will be redirected automatically.';
+              setTimeout(function(){
+                  warning.style.display = "none";
+              }, 15000) // display warning for 15 seconds
+            }
+            if (timeLeft <= 0) {
+              document.getElementById("countdown").innerHTML = "Exam time has ended. Automatically redirecting..."
+  
+              fetch("{% url 'grade-endpoint' %}", {
+                  method: 'POST',
+                  credentials: 'same-origin',
+                  headers: {
+                      "Content-Type": 'application/json',
+                      "X-CSRFToken": csrftoken
+                  },
+                  body: JSON.stringify({"id": state_id})
+              }).then(response => response.json()).then(data =>{
+                  // do nothing with response
+              })
+  
+              setTimeout(function(){
+                  return  window.location.href = "{% url 'exam-complete' %}"
+              }, 2000)
+  
+            } else {
+              const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              
+              document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
+  
+            }
           }
-          if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            console.log("Countdown timer has ended!");
-            document.getElementById("countdown").innerHTML = "Exam time has ended. Automatically redirecting..."
-
-            fetch("{% url 'grade-endpoint' %}", {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    "Content-Type": 'application/json',
-                    "X-CSRFToken": csrftoken
-                },
-                body: JSON.stringify({"id": state_id})
-            }).then(response => response.json()).then(data =>{
-                // do nothing with response
-            })
-
-            setTimeout(function(){
-                return  window.location.href = "{% url 'exam-complete' %}"
-            }, 3000)
-
-          } else {
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            
-            document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
-
-          }
-        }, 60000); // Update every 1 second
+          
+        updateCountdown(); // Update display on page load
+        
+        setInterval(updateCountdown, 60000); // Then update every 1 minute. Note: The display will be slightly off if they leave and come back.
+        // For example, if someone rejoins at the 45th second of a minute the countdown will then update on every 45th second. However, their
+        // actual time remaining is still updating according to when they first started the exam. This could result in the exam ending ubrupty
+        // under 1 minute remaining. I could make this less of an issue by updating the display more frequently, or even fixing it 
+        // entirely but updating the display at the same time interval they stated on. Like the 32nd second of a minute for example.
       }
       
-      // Call the function to start the countdown
+      // Start the countdown
       startCountdown();
 
 </script>

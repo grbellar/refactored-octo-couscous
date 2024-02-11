@@ -76,10 +76,13 @@ def take_exam_view(request, uuid):
                 "exam": exam,
                 "question": current_question,
                 "exam_state_id": user_exam_state.id,
+                "time_started": user_exam_state.time_started.isoformat(),
                 "user_exam_state": user_exam_state, # only passing this for debug purposes
                 "DEBUG": False,
                 }
         print(user_exam_state.id)
+        print(f"Time started: {user_exam_state.time_started}")
+        print(type(user_exam_state.time_started.isoformat()))
         if request.method == 'GET':
             return render(request, "exams/take_exam.html", context)
         
