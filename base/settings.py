@@ -142,7 +142,14 @@ STORAGES = {
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'
+EMAIL_PORT = '587'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL')
+
 
 # django-debug-toolbar
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
@@ -187,4 +194,4 @@ SECURE_SSL_REDIRECT = True
 
 # Override production variables if DJANGO_DEVELOPMENT env variable is true
 if os.getenv('DJANGO_DEVELOPMENT') == 'true':
-    from .local_settings import SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASES, CSRF_COOKIE_SECURE, SESSION_COOKIE_SECURE, SECURE_SSL_REDIRECT
+    from .local_settings import SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASES, CSRF_COOKIE_SECURE, SESSION_COOKIE_SECURE, SECURE_SSL_REDIRECT, EMAIL_BACKEND
