@@ -23,9 +23,9 @@ class MyCustomSignupForm(SignupForm):
         self.fields['first_name'] = forms.CharField(required=True)
         self.fields['last_name'] = forms.CharField(required=True)
         self.fields['school'] = forms.CharField(required=True)
-        
 
     def save(self, request):
+
         # Ensure you call the parent class's save.
         # .save() returns a User object.
         user = super(MyCustomSignupForm, self).save(request)
