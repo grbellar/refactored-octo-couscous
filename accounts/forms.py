@@ -22,7 +22,7 @@ class MyCustomSignupForm(SignupForm):
         super(MyCustomSignupForm, self).__init__(*args, **kwargs)
         self.fields['first_name'] = forms.CharField(required=True)
         self.fields['last_name'] = forms.CharField(required=True)
-        self.fields['school'] = forms.CharField(required=True) #TODO: Make this choice field at some point
+        self.fields['school'] = forms.CharField(required=True)
         
 
     def save(self, request):
@@ -31,8 +31,6 @@ class MyCustomSignupForm(SignupForm):
         user = super(MyCustomSignupForm, self).save(request)
 
         # Add your own processing here.
-        user.school = self.cleaned_data['school']
-        user.save()
 
         # You must return the original result.
         return user
