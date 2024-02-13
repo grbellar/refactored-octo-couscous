@@ -4,7 +4,6 @@
 {% block title %}Log in{% endblock %}
 
 {% block content %}
-<div class="container">
   <h2>Log in</h2>
 <form method="post">
   {% csrf_token %}
@@ -12,6 +11,5 @@
   <button class="btn btn-success" type="submit">Log in</button>
 </form>
 <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
-</div>
 
 {% endblock content %}

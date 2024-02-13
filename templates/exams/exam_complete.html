@@ -1,13 +1,11 @@
 {% extends '_base.html' %}
 
-{% block title %}{% endblock title %}
+{% block title %}
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <p class="lead">Exam complete.</p>
-    <p><a href="{% url 'my-results' %}">View Results</a></p>
-</div>
-{% comment %} <p><a href="{% url 'single-result' exam_uuid %}">View results</a></p>
-<p><a href="#">Retake exam</a></p> {% endcomment %}
-
-{% endblock content %}
+  <p class="lead">Exam complete.</p>
+  <p>
+    <a href="{% url 'my-results' %}">View Results</a>
+  </p>
+{% endblock %}

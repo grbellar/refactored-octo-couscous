@@ -1,74 +1,72 @@
 {% extends '_base.html' %}
 {% load static %}
-{% block title %}About page{% endblock %}
+{% block title %}
+  About page
+{% endblock %}
 
 {% block content %}
-<div class="container">
-
-
-
-        
-            <!-- Header-->
-            <header class="py-5">
-                <div class="container px-5">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-8 col-xxl-6">
-                            <div class="text-center my-5">
-                                <h1 class="fw-bolder mb-3">Practice with boards like exam questions</h1>
-                                <p class="lead fw-normal text-muted mb-4">We get it. In the years past, it has been difficult to study for boards. Not anymore.</p>
-                                <a class="btn btn-primary btn-lg" href="#scroll-target">How this works</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <!-- About section one-->
-            <section class="py-5 bg-light">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="{% static 'images/logo-square-side.png' %}" alt="..." /></div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">We get it.</h2>
-                            <p class="lead fw-normal text-muted mb-0"></p>
-                            <p>You just graduated and now you're supposed to take a comprehensive exam before earning your CCP title and an increase in salary.</p>
-                            <p>But there are so many questions.</p>
-                            <p>How do I go about studying? What areas do I need to focus on? And what should I expect on exam day? </p>
-                            <p><span><strong>We are here to help answer some of those questions.</strong></span></p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- About section two-->
-            <section class="py-5"  id="scroll-target">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6 order-first order-lg-last">
-                            <img class="img-fluid rounded mb-5 mb-lg-0" style="width:100px; float: right;" src="{% static 'images/logo-underneath-small.png' %}" alt="..." />
-                        </div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">How this works</h2>
-                            <p class="lead fw-normal text-muted mb-0">
-                                Four exams total.</p>
-                                <p>
-                                    <ul><li>
-                                        2 Basic Science
-                                    </li></ul>
-                                    <ul><li>
-                                        2 Clinical Application
-                                    </li></ul>
-                                    <p id="text-primary"><strong>All exams have 100 questions and a 2 hour time limit. (Exactly half of the real exam)</strong></p>
-                            
-                            <p>Following each practice exam, your performance will be dissected into the same 11 categories as your actual board exam.</p>
-                            <p><span id="text-primary"><strong>This will give you an idea on where to focus your studies</strong></span>— subjects you're strong in and what areas need refreshing.</p>
-                            <p>
-                            After clearing up the problem areas on Exam #1, take Exam #2 to give yourself the confidence boost before the big day.
-                            </p>
-                            <a class="btn btn-primary" href="{% url 'account_signup' %}">Create an account to get started</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-</div>
-
-        {% endblock content %}
+  <div class="container">
+    <!-- Header -->
+    <header class="py-5">
+      <div class="container px-5">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-xxl-6">
+            <div class="text-center my-5">
+              <h1 class="fw-bolder mb-3">Practice with boards like exam questions</h1>
+              <p class="lead fw-normal text-muted mb-4">We get it. In the years past, it has been difficult to study for boards. Not anymore.</p>
+              <a class="btn btn-primary btn-lg" href="#scroll-target">How this works</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- About section one -->
+    <section class="py-5 bg-light">
+      <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+          <div class="col-lg-6">
+            <img class="img-fluid rounded mb-5 mb-lg-0" src="{% static 'images/logo-square-side.png' %}" alt="..." />
+          </div>
+          <div class="col-lg-6">
+            <h2 class="fw-bolder">We get it.</h2>
+            <p class="lead fw-normal text-muted mb-0"></p>
+            <p>You just graduated and now you're supposed to take a comprehensive exam before earning your CCP title and an increase in salary.</p>
+            <p>But there are so many questions.</p>
+            <p>How do I go about studying? What areas do I need to focus on? And what should I expect on exam day?</p>
+            <p>
+              <span><strong>We are here to help answer some of those questions.</strong></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- About section two -->
+    <section class="py-5" id="scroll-target">
+      <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+          <div class="col-lg-6 order-first order-lg-last">
+            <img class="img-fluid rounded mb-5 mb-lg-0" style="width:100px; float: right;" src="{% static 'images/logo-underneath-small.png' %}" alt="..." />
+          </div>
+          <div class="col-lg-6">
+            <h2 class="fw-bolder">How this works</h2>
+            <p class="lead fw-normal text-muted mb-0">Four exams total.</p>
+            <p>
+              <ul>
+                <li>2 Basic Science</li>
+                <li>2 Clinical Application</li>
+              </ul>
+            <p id="text-primary">
+              <strong>All exams have 100 questions and a 2 hour time limit. (Exactly half of the real exam)</strong>
+            </p>
+            <p>Following each practice exam, your performance will be dissected into the same 11 categories as your actual board exam.</p>
+            <p>
+              <span id="text-primary"><strong>This will give you an idea on where to focus your studies</strong></span>— subjects you're strong in and what areas need refreshing.
+            </p>
+            <p>After clearing up the problem areas on Exam #1, take Exam #2 to give yourself the confidence boost before the big day.</p>
+            <a class="btn btn-primary" href="{% url 'account_signup' %}">Create an account to get started</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
