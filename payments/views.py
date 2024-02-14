@@ -70,14 +70,14 @@ def payments_webhook(request):
         event['data']['object']['id'],
         expand=['line_items'],
         )
-        # Update user has paid attribute
+        # Update user has paid attribute and add tokens to account
         pprint.pprint(session)
-        update_user_paid(session)
+        update_tokens(session)
 
     return HttpResponse(status=200)
 
 
-def update_user_paid(stripe_session):
+def update_tokens(stripe_session):
     paid_user_uuid = stripe_session['metadata']['perf_user_uuid']
     perf_user = CustomUser.objects.get(
         uuid=paid_user_uuid
