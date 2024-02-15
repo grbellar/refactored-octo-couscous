@@ -82,10 +82,10 @@ def update_tokens(stripe_session):
     perf_user = CustomUser.objects.get(
         uuid=paid_user_uuid
     )
-    # Disabling for test purposes
-    # if perf_user.has_paid != True: # Only try to update this first time through
-    #     perf_user.has_paid = True
-    #     perf_user.save()
+
+    if perf_user.has_paid != True: # Only try to update this first time through
+        perf_user.has_paid = True
+        perf_user.save()
     
     print(perf_user.uuid)
     print(perf_user.exam_tokens)
