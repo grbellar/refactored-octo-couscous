@@ -33,8 +33,8 @@ def create_checkout_session(request):
                 },
             ],
             mode='payment',
-            success_url="http://127.0.0.1:3000/my-exams",
-            cancel_url="http://127.0.0.1:3000/get-access/buy",
+            success_url=os.getenv('SUCCESS_URL'),
+            cancel_url=os.getenv('CANCEL_URL'),
             metadata = {
                 "perf_user_uuid": current_user.uuid,
             }
