@@ -16,35 +16,25 @@
       </div>
     </div>
     <div class="row">
-      {% if user_exam_tokens > 0 %}
         {% for exam in exams %}
-          <div class="col-md-4 p-4">
-            <div class="card">
-              <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
-              <div class="card-body">
-                <h5 class="card-title">{{ exam.name }}</h5>
-                <p>2 hours to complete</p>
-                <p>{{ exam.questions.all.count }} questions</p>
-                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+          {% if exam.is_active %}
+            <div class="col-md-4 p-4">
+              <div class="card">
+                <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
+                <div class="card-body">
+                  <h5 class="card-title">{{ exam.name }}</h5>
+                  <p>2 hours to complete</p>
+                  <p>{{ exam.questions.all.count }} questions</p>
+                  {% if user_exam_tokens > 0 %}
+                    <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+                    {%else%}
+                    <button class="btn btn-primary" disabled>No tokens</button>
+                  {%endif%}
+                </div>
               </div>
             </div>
-          </div>
+          {% endif %}
         {% endfor %}
-      {% else %}
-      {% for exam in exams %}
-          <div class="col-md-4 p-4">
-            <div class="card">
-              <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
-              <div class="card-body">
-                <h5 class="card-title">{{ exam.name }}</h5>
-                <p>2 hours to complete</p>
-                <p>{{ exam.questions.all.count }} questions</p>
-                <button class="btn btn-primary" disabled>No tokens</button>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      {% endif %}
     </div>
 {% endblock %}
 

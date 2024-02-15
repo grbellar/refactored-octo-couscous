@@ -16,7 +16,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=300)
     questions = models.ManyToManyField('Question', blank=True)
     exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="exams", null=True)
-    active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name}'
