@@ -10,8 +10,8 @@
     <div class="row">
       {% if results %}
         {% for result in all_results %}
-          <div class="col-md-3">
-            <div class="card" style="width: 18rem;">
+          <div class="col-md-6 p-3">
+            <div class="card">
               {% comment %} <img class="card-img-top" src="{% static 'images/logo-long.png' %}" alt="Card image cap" /> {% endcomment %}
               <div class="card-body">
                 <h5 class="card-title">{{ result.exam_name }}</h5>
