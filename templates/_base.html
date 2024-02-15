@@ -50,17 +50,12 @@
 
 
           {% if user.is_authenticated and user.has_paid %}
-          
-          <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Take Exams</a></li>
-          <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
-          
+          <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Buy tokens</a></li>
           {% else %}
           <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Get Access</a></li>
+          {%endif%}
           <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Take Exams</a></li>
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
-
-          {%endif%}
-          
         </ul>
 
         <div class="dropdown text-end">
