@@ -5,124 +5,121 @@
 {% endblock %}
 
 {% block content %}
-  <!-- Pricing section -->
-  <section class="bg-light py-5">
-    <div class="container px-5 my-5">
+
+<!-- Pricing section-->
+<section class="bg-light py-5">
+  <div class="container px-5 my-5">
       <div class="text-center mb-5">
-        <h1 class="fw-bolder">Exam pricing</h1>
-        <p class="lead fw-normal text-muted mb-0">Only pay for what you need</p>
+          <h1 class="fw-bolder">Exam pricing</h1>
+          <p class="lead fw-normal text-muted mb-0">Only pay for what you need</p>
       </div>
       <div class="row gx-5 justify-content-center">
-        <!-- Pricing card pro -->
-        <div class="col-lg-6 col-xl-4">
-          <div class="card mb-5 mb-xl-0">
-            <div class="card-body p-5">
-              <div class="small text-uppercase fw-bold">Per Exam</div>
-              <div class="mb-3">
-                <span class="display-4 fw-bold">$100</span>
-                <span class="text-muted">/ exam</span>
+          <!-- Pricing card pro-->
+          <div class="col-lg-6 col-xl-4">
+              <div class="card mb-5 mb-xl-0">
+                  <div class="card-body p-5">
+                      <div class="small text-uppercase fw-bold">
+                          Per Exam
+                      </div>
+                      <div class="mb-3">
+                          <span class="display-4 fw-bold">$100</span>
+                          <span class="text-muted">/ exam</span>
+                      </div>
+                      <ul class="list-unstyled mb-4">
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              <strong>One exam</strong>
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              <strong>100 board like questions</strong>
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              Targeted feedback
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              You choose the exam type
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-white"></i>
+                              Basic Science
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-white"></i>
+                              or
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-white"></i>
+                              Clinical Application
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                             Made by Educators
+                          </li>
+                      </ul>
+                      <button class="btn btn-primary" disabled>Coming soon</button>
+                      <br>
+                      <br>
+                      <p>In the meantime, try our free <a href="{% url 'my-exams' %}">practice exam</a>.</p>
+                  </div>
               </div>
-              <ul class="list-unstyled mb-4">
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>One exam</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>100 board like questions</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Targeted feedback
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  You choose the exam type
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-white"></i>
-                  Basic Science
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-white"></i>
-                  or
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-white"></i>
-                  Clinical Application
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Made by Educators
-                </li>
-              </ul>
-              <div class="d-grid">
-                <form action="{% url 'stripe-checkout' %}" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="price-id" value="price_1OT56jHnSCQ3O7d7brxHhRJn" />
-                  <button class="btn btn-primary" type="submit" id="checkout-button">Get access</button>
-                </form>
-              </div>
-            </div>
           </div>
-        </div>
 
-        <div class="col-lg-6 col-xl-4">
-          <div class="card mb-5 mb-xl-0">
-            <div class="card-body p-5">
-              <div class="small text-uppercase fw-bold">
-                <i class="bi bi-star-fill text-warning"></i>
-                Exam Bundle
+          <div class="col-lg-6 col-xl-4">
+              <div class="card mb-5 mb-xl-0">
+                  <div class="card-body p-5">
+                      <div class="small text-uppercase fw-bold">
+                          <i class="bi bi-star-fill text-warning"></i>
+                          Exam Bundle
+                      </div>
+                      <div class="mb-3">
+                          <span class="display-4 fw-bold">$250</span>
+                          <span class="text-muted">all access</span>
+                      </div>
+                      <ul class="list-unstyled mb-4">
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              <strong>Access to all four exams</strong>
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              <strong>400 board like questions</strong>
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                             Targeted feedback
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              Basic Science #1
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              Basic Science #2
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              Clinical Application #1
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                              Clinical Application #2
+                          </li>
+                          <li class="mb-2">
+                              <i class="bi bi-check text-primary"></i>
+                             Made by Educators
+                          </li>
+                      </ul>
+                      <button class="btn btn-primary" disabled>Coming soon</button>
+                      <br>
+                      <br>
+                      <p>In the meantime, try our free <a href="{% url 'my-exams' %}">practice exam</a>.</p>
+                  </div>
               </div>
-              <div class="mb-3">
-                <span class="display-4 fw-bold">$250</span>
-                <span class="text-muted">all access</span>
-              </div>
-              <ul class="list-unstyled mb-4">
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>Access to all four exams</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>400 board like questions</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Targeted feedback
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Basic Science #1
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Basic Science #2
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Clinical Application #1
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Clinical Application #2
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Made by Educators
-                </li>
-              </ul>
-              <div class="d-grid">
-                <form action="{% url 'stripe-checkout' %}" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="price-id" value="price_1OhxzNHnSCQ3O7d7ZCmrR6ai" />
-                  <button class="btn btn-primary" type="submit" id="checkout-button">Get access</button>
-                </form>
-              </div>
-            </div>
           </div>
-        </div>
       </div>
-    </div>
-  </section>
-{% endblock %}
+  </div>
+</section>
+ {% endblock %}
