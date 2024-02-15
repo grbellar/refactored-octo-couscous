@@ -128,8 +128,3 @@ def single_result(request, id):
 
 def get_access_buy(request):
     return render(request, "pages/get_access_buy.html")
-
-
-@never_cache
-def get_access_overview(request):
-    return render(request, "pages/get_access_overview.html")
