@@ -140,5 +140,9 @@ class QuestionListView(UserPassesTestMixin, ListView):
         if self.raise_exception or self.request.user.is_authenticated:
             return redirect('home')  # Or any other response
         return super().handle_no_permission()  # Default behavior for unauthenticated users
-    
+
+    def get_queryset(self):
+        # This will fetch questions with their related category and exam_type in a single query
+        return Question.objects.select_related('category', 'category__exam_type').all()
+
     model = Question
