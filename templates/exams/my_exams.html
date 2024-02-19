@@ -11,9 +11,8 @@
 <div class="container">
   <h1>Available Exams</h1>
   <div class="row">
-    {% comment %} {% if user_has_paid %}     {% endcomment %}
 
-        {% for exam in exams %}
+        {% comment %} {% for exam in exams %}
         <div class="col-md-4 p-4">
             <div class="card">
               <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
@@ -26,10 +25,10 @@
             </div>
           </div>
 
-        {%endfor%}
-    {% comment %} {%else%}
-        <p class="lead">This site is under construction. Soon you will be able to buy exams!</p>
-    {%endif%} {% endcomment %}
+        {%endfor%} {% endcomment %}
+
+        <p class="lead">This site is under construction. Soon you will be able to take exams.</p>
+
 </div>
 </div>
 <script>
