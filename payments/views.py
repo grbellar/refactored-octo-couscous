@@ -12,7 +12,7 @@ load_dotenv(BASE_DIR / '.env')
 
 #TODO: Add prod key to env variables on render.
 # This is your test secret API key.
-stripe.api_key = os.getenv('STRIPE_TEST_KEY')
+stripe.api_key = os.getenv('STRIPE_KEY')
 endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
 
 #TODO: Need to add redirect urls for production
