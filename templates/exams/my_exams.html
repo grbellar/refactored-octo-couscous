@@ -6,36 +6,59 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Available Exams</h1>
-    <div class="row">
-      <div class="col">
-        <p>
-          <span class="lead">Your exam tokens: <strong>{{ user_exam_tokens }}</strong></span><br><a href="{% url 'get-access-buy' %}">Buy more tokens</a>
-        </p>
-        <span class="small">Each exam attempt requires one token. You will be asked to confirm your choice before you begin. <br>Note: If you got disconnected and are simply resuming an attempt you will not be charged.</span>
-      </div>
+  <h1>Available Exams</h1>
+  <div class="row">
+    <div class="col">
+      <p>
+        <span class="lead">Your exam tokens: <strong>{{ user_exam_tokens }}</strong></span><br /><a href="{% url 'get-access-buy' %}">Buy more tokens</a>
+      </p>
+      <span class="small">Each exam attempt requires one token. You will be asked to confirm your choice before you begin. <br />Note: If you got disconnected and are simply resuming an attempt you will not be charged.</span>
     </div>
-    <div class="row">
-        {% for exam in exams %}
-          {% if exam.is_active %}
-            <div class="col-md-4 p-4">
-              <div class="card">
-                <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
-                <div class="card-body">
-                  <h5 class="card-title">{{ exam.name }}</h5>
-                  <p>2 hours to complete</p>
-                  <p>{{ exam.questions.all.count }} questions</p>
-                  {% if user_exam_tokens > 0 %}
-                    <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
-                    {%else%}
-                    <button class="btn btn-primary" disabled>No tokens</button>
-                  {%endif%}
-                </div>
+  </div>
+  <div class="row">
+    {% for exam in exams %}
+      {% if request.user.is_staff %}
+        <div class="col-md-4 p-4">
+          <div class="card">
+            <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
+            <div class="card-body">
+              <h5 class="card-title">{{ exam.name }}</h5>
+              <p>2 hours to complete</p>
+              <p>{{ exam.questions.all.count }} questions</p>
+              {% if user_exam_tokens > 0 %}
+                <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+              {% else %}
+                <button class="btn btn-primary" disabled>No tokens</button>
+              {% endif %}
+              {% if not exam.is_active %}
+                <p style="padding-top: 10px;" class="text-danger">Not open to the public. You are seeing this exam because you are an admin.</p>
+              {% else %}
+                <p style="padding-top: 10px;" class="text-success">Open to the public.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        {% if exam.is_active %}
+          <div class="col-md-4 p-4">
+            <div class="card">
+              <img class="card-img-top p-3" src="{% static 'images/logo-square.png' %}" style="width: 150px; height: auto;" alt="Card image cap" />
+              <div class="card-body">
+                <h5 class="card-title">{{ exam.name }}</h5>
+                <p>2 hours to complete</p>
+                <p>{{ exam.questions.all.count }} questions</p>
+                {% if user_exam_tokens > 0 %}
+                  <button class="btn btn-primary start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+                {% else %}
+                  <button class="btn btn-primary" disabled>No tokens</button>
+                {% endif %}
               </div>
             </div>
-          {% endif %}
-        {% endfor %}
-    </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
 {% endblock %}
 
 {% block javascript %}
@@ -60,6 +83,6 @@
           }
         })
       })
-    });
+    })
   </script>
 {% endblock %}
