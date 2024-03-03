@@ -54,7 +54,7 @@
                 {% if request.user.is_authenticated %}
                 <form action="{% url 'stripe-checkout' %}" method="POST">
                   {% csrf_token %}
-                  <input type="hidden" name="price-id" value="price_1OT56jHnSCQ3O7d7brxHhRJn" />
+                  <input type="hidden" name="price-id" value="{{ single }}" />
                   <button class="btn btn-primary" type="submit" id="checkout-button">Buy 1 exam token</button>
                 </form>                
                 {% endif %}
@@ -101,7 +101,7 @@
                 {% if request.user.is_authenticated %}
                   <form action="{% url 'stripe-checkout' %}" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="price-id" value="price_1OhxzNHnSCQ3O7d7ZCmrR6ai" />
+                    <input type="hidden" name="price-id" value="{{ bundle }}" />
                     <button class="btn btn-primary" type="submit" id="checkout-button">Buy 4 exam tokens</button>
                   </form>
                 {% endif %}

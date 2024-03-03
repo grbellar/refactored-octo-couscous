@@ -4,9 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from exams.models import Exam, UserExamState
 from collections import defaultdict
-from allauth.account.views import SignupView
-from django.views.decorators.cache import never_cache
-from pprint import pprint
+from pathlib import Path
+from dotenv import load_dotenv
+import os 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 class HomePageView(TemplateView):
@@ -127,4 +132,10 @@ def single_result(request, id):
 
 
 def get_access_buy(request):
-    return render(request, "pages/get_access_buy.html")
+    PRICE_ID_SINGLE = os.getenv('PRICE_ID_SINGLE')
+    PRICE_ID_BUNDLE = os.getenv('PRICE_ID_BUNDLE')
+    context = {
+        "single": PRICE_ID_SINGLE,
+        "bundle": PRICE_ID_BUNDLE
+    }
+    return render(request, "pages/get_access_buy.html", context)
