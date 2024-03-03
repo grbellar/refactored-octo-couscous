@@ -41,9 +41,11 @@ class Question(models.Model):
     def __str__(self):
         if self.category:
             category_name = self.category.name
+            exam_type = self.category.exam_type
         else:
             category_name = "No category assigned"
-        return f'Question {self.id} - {category_name}'
+            exam_type = "No exam_type assigned"
+        return f'{category_name} - {exam_type} - Q.{self.id}'
 
     class Meta:
         ordering = ["id"]
