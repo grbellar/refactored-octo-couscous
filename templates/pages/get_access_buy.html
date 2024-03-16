@@ -51,13 +51,8 @@
               </ul>
               <div class="d-grid">
                 {% if request.user.is_authenticated %}
-                <form action="{% url 'stripe-checkout' %}" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="price-id" value="{{ single }}" />
-                  <button class="btn btn-primary" type="submit" id="checkout-button">Buy 1 exam token</button>
-                </form>                
                 {% endif %}
-                
+                <button class="btn btn-primary" disabled>Coming soon</button>                
               </div>
             </div>
           </div>
@@ -97,12 +92,8 @@
               </ul>
               <div class="d-grid">
                 {% if request.user.is_authenticated %}
-                  <form action="{% url 'stripe-checkout' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="price-id" value="{{ bundle }}" />
-                    <button class="btn btn-primary" type="submit" id="checkout-button">Buy 4 exam tokens</button>
-                  </form>
                 {% endif %}
+                <button class="btn btn-primary" disabled>Coming soon</button>                
               </div>
             </div>
           </div>
