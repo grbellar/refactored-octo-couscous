@@ -93,10 +93,16 @@ def update_tokens(stripe_session):
     # Product they bought
     price_id = stripe_session['line_items']['data'][0]['price']['id']
     print(price_id)
-    if price_id == 'price_1OhxzNHnSCQ3O7d7ZCmrR6ai': # Bundle
+
+    single_id = os.getenv('PRICE_ID_SINGLE')
+    bundle_id = os.getenv('PRICE_ID_BUNDLE')
+    print(single_id)
+    print(bundle_id)
+
+    if price_id == bundle_id: # Bundle
         perf_user.exam_tokens += 4
         perf_user.save()
-    if price_id == 'price_1OT56jHnSCQ3O7d7brxHhRJn': # One Exam
+    if price_id == single_id: # One Exam
         perf_user.exam_tokens += 1
         perf_user.save()
     
