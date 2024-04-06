@@ -1,12 +1,11 @@
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render, redirect
-from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse, HttpResponseForbidden
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from .models import *
 import json
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.list import ListView
 
@@ -42,7 +41,6 @@ def grade(user_exam_state):
     user_exam_state.save()
 
 
-# @user_passes_test(lambda user: user.is_staff)
 @login_required
 @require_http_methods(['GET', 'POST']) 
 def take_exam_view(request, uuid):
