@@ -12,6 +12,7 @@ from django.views.generic.list import ListView
 
 def question_to_dict(question):
     dict = {}
+    dict["id"] = question.id
     dict["text"] = question.text
     dict["choices"] = []
     for choice in question.choices.all():
