@@ -10,13 +10,13 @@
 {% block content %}
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
-
+        {% comment %} <div class="col-sm-4"><h6>Question: 1 / 100</h6></div> {% endcomment %}
         <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div>
     
     </div>
     <div class="row p-md-4">
         <div class="col">
-            <p id="question-text">{{ question.text }}</p>
+            <p id="question-text">{{question.id}}. {{ question.text }}</p>
 
             <form id="exam-form">
                 {% csrf_token %}
@@ -57,7 +57,7 @@
         var form = document.getElementById('exam-form');
         var questionEl = document.getElementById('question-text')
 
-        questionEl.innerHTML = question["text"]
+        questionEl.innerHTML = question["id"] + ". " + question["text"]
         form.innerHTML = "";
 
         form.appendChild(hidden)
@@ -175,7 +175,7 @@
               const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
               const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
               
-              document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m ";
+              document.getElementById("countdown").innerHTML = "Time remaining: " + hours + "h " + minutes + "m ";
   
             }
           }
