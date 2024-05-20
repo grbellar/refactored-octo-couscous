@@ -33,6 +33,7 @@ def create_checkout_session(request):
                 },
             ],
             mode='payment',
+            allow_promotion_codes=True,
             success_url=os.getenv('SUCCESS_URL'),
             cancel_url=os.getenv('CANCEL_URL'),
             metadata = {
