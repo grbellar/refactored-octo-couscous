@@ -11,7 +11,8 @@
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
         {% comment %} <div class="col-sm-4"><h6>Question: 1 / 100</h6></div> {% endcomment %}
-        <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div>
+        {% comment %} Disabling timer element while unused.  {% endcomment %}
+        {% comment %} <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div> {% endcomment %}
     
     </div>
     <div class="row p-md-4">
@@ -189,8 +190,8 @@
         // entirely but updating the display at the same time interval they stated on. Like the 32nd second of a minute for example.
       }
       
-      // Start the countdown
-      startCountdown();
+      // Disable timer for now.
+      // startCountdown();
 
 </script>
 {% endblock javascript %}
