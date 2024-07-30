@@ -1,3 +1,7 @@
+body {
+    font-family: 'Poppins';
+}
+        
 .btn-primary {
     background-color: #175781;
     border-color: #175781;
@@ -29,3 +33,35 @@ a:hover {
 #text-primary {
     color: #175781;   
 }
+
+#logo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #175781;
+    border-radius: 2px;
+    padding: 8px 8px;
+    letter-spacing: .5px;
+}
+#big-logo {
+    font-size: 2rem;
+    font-weight: 600;
+    color: white;
+    background-color: #175781;
+    border-radius: 2px;
+    padding: 8px 8px;
+    letter-spacing: .5px;
+    text-align: center;
+}
+#logo-heart {
+    padding-right: 5px;
+    font-size: 1rem;
+    /* color: #F34C4C; */
+}
+#tagline {
+    font-size: .5rem;
+}
+
+/* Offical red : #E51F22
+   Official blue: #161F65
+*/
