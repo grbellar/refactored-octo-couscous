@@ -10,14 +10,16 @@
 {% block content %}
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
-        {% comment %} <div class="col-sm-4"><h6>Question: 1 / 100</h6></div> {% endcomment %}
-        {% comment %} Disabling timer element while unused.  {% endcomment %}
-        {% comment %} <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div> {% endcomment %}
+        <div class="col-sm-6"><h6 id="countdown" style="float: right">Placeholder...</h6></div>
     
     </div>
     <div class="row p-md-4">
         <div class="col">
-            <p id="question-text">{{question.id}}. {{ question.text }}</p>
+            <!-- TODO: plug logic into these variables -->
+             <!-- Use js below to update this div everytime next_question func iterates -->
+            <div><h6 id="question-number">TODO: Question: {{ question.number }} / {{ number_of_questions }}</h6></div>
+            <br>
+            <p id="question-text">{{ question.text }}</p>
 
             <form id="exam-form">
                 {% csrf_token %}
@@ -53,12 +55,15 @@
     
     const state_id = {{exam_state_id}} // this is a django variable passed in with the context on inital get request
 
-    
+    var question_number = 0;
+
     function nextQuestion(question){
+        question_number += 1;
+        
         var form = document.getElementById('exam-form');
         var questionEl = document.getElementById('question-text')
 
-        questionEl.innerHTML = question["id"] + ". " + question["text"]
+        questionEl.innerHTML = question_number + ". " + question["text"]
         form.innerHTML = "";
 
         form.appendChild(hidden)
@@ -111,7 +116,7 @@
 
         fetch("{% url 'take-exam' exam.uuid %}", {
             method: 'POST',
-            credentials: 'same-origin',
+            credentials: 'same-origin', 
             headers: {
                 "X-CSRFToken": csrftoken
             },
@@ -190,7 +195,7 @@
         // entirely but updating the display at the same time interval they stated on. Like the 32nd second of a minute for example.
       }
       
-      // Disable timer for now.
+      // Start timer
       // startCountdown();
 
 </script>
