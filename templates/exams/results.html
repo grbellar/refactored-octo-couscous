@@ -5,25 +5,28 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Exam Results</h1>
+<div class="container">
+  <h1>Exam Results</h1>
 
-    <div class="row">
-      {% if results %}
-        {% for result in all_results %}
-          <div class="col-md-6 p-3">
-            <div class="card">
-              {% comment %} <img class="card-img-top" src="{% static 'images/logo-long.png' %}" alt="Card image cap" /> {% endcomment %}
-              <div class="card-body">
-                <h5 class="card-title">{{ result.exam_name }}</h5>
-                <p class="card-text">{{ result.score }}</p>
-                <p class="card-text">{{ result.num_correct }}/{{ result.num_questions }}</p>
-                <a href="{% url 'single-result' result.id %}" class="btn btn-primary">Detailed Review</a>
-              </div>
+  <div class="row">
+    {% if results %}
+      {% for result in all_results %}
+        <div class="col-md-6 p-3">
+          <div class="card">
+            {% comment %} <img class="card-img-top" src="{% static 'images/logo-long.png' %}" alt="Card image cap" /> {% endcomment %}
+            <div class="card-body">
+              <h5 class="card-title">{{ result.exam_name }}</h5>
+              <p class="card-text">{{ result.score }}</p>
+              <p class="card-text">{{ result.num_correct }}/{{ result.num_questions }}</p>
+              <a href="{% url 'single-result' result.id %}" class="btn btn-primary">Detailed Review</a>
             </div>
           </div>
-        {% endfor %}
-      {% else %}
-        <p>You have not completed any exams yet.</p>
-      {% endif %}
-    </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>You have not completed any exams yet.</p>
+    {% endif %}
+  </div>
+</div>
+    
 {% endblock %}

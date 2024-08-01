@@ -41,14 +41,12 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-          
         </a>
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center align-items-center mb-md-0">
 
-          {% comment %} <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="50px" height="auto" src="{% static 'images/logo-square.png' %}" alt="Perfusion Board Prep Logo"></a></li> {% endcomment %}
-          {% comment %} <li><a href="{% url 'home' %}" class="nav-link px-2 link-secondary">Home</a></li> {% endcomment %}
-          <span id="logo"><i class="bi bi-heart-pulse-fill" id="logo-heart"></i></i>PerfusionBoardPrep</span>
+          <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="50px" height="auto" src="{% static 'images/logo-square.png' %}" alt="Perfusion Board Prep Logo"></a></li>
+          {% comment %} <span id="logo"><i class="bi bi-heart-pulse-fill" id="logo-heart"></i></i>PerfusionBoardPrep</span> {% endcomment %}
           <li><a href="{% url 'about' %}" class="nav-link px-2 link-dark">About</a></li>
 
 
@@ -86,10 +84,8 @@
   </header>
 {% endblock nav %}
 
-<div class="container">
-  {% block content %}
-  {% endblock content %}
-</div>
+{% block content %}
+{% endblock content %}
 
     
 
@@ -98,11 +94,10 @@
       <div class="row">
         <div class="col-md-3">
           <div id="copyright" class="text-muted" style="font-size: 12px">
-
-              </div>
+          </div>
         </div>
         <div class="col-md-9">
-            <div id="contact"><span class="text-muted" style="float:right; font-size: 12px;">This product was made for perfusionists, by perfusionists. Have a question? Email us at <a href="mailto:admin@perfusionboardprep.com">admin@perfusionboardprep.com</a></span></div>
+            <div id="contact"><span class="text-muted" style="float:right; font-size: 12px;">This product was made for perfusionists, by perfusionists <i class="bi bi-heart-pulse" id="text-secondary"></i> Have a question? Email us at <a href="mailto:admin@perfusionboardprep.com">admin@perfusionboardprep.com</a></span></div>
         </div>
       </div>
       

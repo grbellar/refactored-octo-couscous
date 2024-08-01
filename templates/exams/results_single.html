@@ -3,6 +3,7 @@
 {% block title %}Your Results{% endblock %}
 
 {% block content %}
+<div class="container">
   <h3>{{ exam_result.exam_name }}</h3>
   <p>Results for: <span><strong>{{user_full_name}}</strong></span></p>
   <p>Score: <span><strong>{{ exam_result.score }}%</strong></span></p>
@@ -39,6 +40,8 @@
       </tfoot>
     </tbody>
   </table>
+</div>
+  
 
 
 {% endblock content %}

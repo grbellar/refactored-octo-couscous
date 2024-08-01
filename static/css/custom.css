@@ -1,6 +1,10 @@
 body {
     font-family: 'Poppins';
 }
+
+h1 {
+    color: #175781;
+}
         
 .btn-primary {
     background-color: #175781;
@@ -11,11 +15,16 @@ body {
 }
 
 .btn-primary:hover{
-    background-color: #6c757d;
+    background-color: #F34C4C;
+    border-color: #F34C4C;
 }
 
 .bg-primary {
     background-color: #175781;
+}
+
+.bg-dark {
+    background-color: #175781 !important;
 }
 
 a {
@@ -27,11 +36,15 @@ a:hover {
 }
 
 #iconBlue {
-    background-color: #175781;
+    background-color: #F34C4C;
 }
 
 #text-primary {
     color: #175781;   
+}
+
+#text-secondary {
+    color: #F34C4C;
 }
 
 #logo {
