@@ -11,13 +11,11 @@
 <div class="container">
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
-        <div class="col-sm-6"><h6 id="countdown" style="float: right"> 2 hour</h6></div>
+        <div class="col-sm-6"><h6 id="countdown" style="float: right"></h6></div>
     
     </div>
     <div class="row p-md-4">
         <div class="col">
-            <!-- TODO: plug logic into these variables -->
-             <!-- Use js below to update this div everytime next_question func iterates -->
             <div><h6 id="question-number">Question 1 / 100</h6></div>
             <br>
             <p id="question-text">{{ question.text }}</p>
@@ -201,7 +199,7 @@
       }
       
       // Start timer
-      // startCountdown();
+      startCountdown();
 
 </script>
 {% endblock javascript %}

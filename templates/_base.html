@@ -57,7 +57,7 @@
           {%endif%}
           <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Take Exams</a></li>
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
-          <li><em><span id="countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>
+          <li><em><span id="exam-countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>
         </ul>
 
         <div class="dropdown text-end">
@@ -133,11 +133,11 @@
       const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
 
       // Display the result
-      document.getElementById("countdown").innerText = daysLeft + " days left until board exams!";
+      document.getElementById("exam-countdown").innerText = daysLeft + " days left until board exams!";
 
       // If the countdown is over
       if (difference < 0) {
-          document.getElementById("countdown").innerText = "";
+          document.getElementById("exam-countdown").innerText = "";
       }
   }
 
