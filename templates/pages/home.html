@@ -41,55 +41,54 @@
                   </div>
               </div>
           </div>
-          <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
+          <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="{% static 'images/stock-photo.webp' %}" alt="..." /></div>
       </div>
   </div>
 </header>
 
 <!-- Features section-->
 <section class="py-5" id="features">
-  <div class="container px-5 my-5">
-    <!-- Page Features-->
-<div class="row gx-lg-5">
-  <div class="col-lg-6 col-xxl-4 mb-5">
-      <div class="card bg-light border-0 h-100">
-          <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-              <div id="iconBlue" class="feature text-white rounded-3 mb-4 mt-n4"><i class="bi bi-collection"></i></div>
-              <h2 class="fs-4 fw-bold">Simple and easy to use
-              </h2>
-              <p class="mb-0">We make it easy to navigate through practice exams so you can focus on what matters—studying. Just log in, select your exam, and get started.</p>
+    <div class="container">
+        <div class="row gx-lg-5">
+            <div class="col-lg-6 col-xxl-3 mb-5">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-check"></i></div>
+                        <h2 class="fs-4 fw-bold">Simple and easy to use
+                        </h2>
+                        <p class="mb-0">We make it easy to navigate through practice exams so you can focus on what matters—studying. Just log in, select your exam, and get started.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xxl-3 mb-5">
+              <div class="card bg-light border-0 h-100">
+                  <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                      <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-bullseye"></i></div>
+                      <h2 class="fs-4 fw-bold">Targeted feedback</h2>
+                      <p class="mb-0">This program shows you exactly where to focus your studies for exam day.</p>
+                  </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-xxl-3 mb-5">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-pencil"></i></div>
+                        <h2 class="fs-4 fw-bold">Know you're ready for the exam</h2>
+                        <p class="mb-0">Board-style questions in a board format ensure you're fully prepared for exam day.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xxl-3 mb-5">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-heart-pulse"></i></div>
+                        <h2 class="fs-4 fw-bold">We are subject matter experts</h2>
+                        <p class="mb-0">Our content is crafted by leading educators, textbook authors, and top-performing perfusionists.</p>
+                    </div>
+                </div>
+            </div>
           </div>
-      </div>
-  </div>
-  <div class="col-lg-6 col-xxl-4 mb-5">
-    <div class="card bg-light border-0 h-100">
-        <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-            <div id="iconBlue" class="feature text-white rounded-3 mb-4 mt-n4"><i class="bi bi-bullseye"></i></div>
-            <h2 class="fs-4 fw-bold">Targeted feedback</h2>
-            <p class="mb-0">This program was designed to indicate where to focus your studies to prepare for exam day.</p>
-        </div>
     </div>
-</div>
-  <div class="col-lg-6 col-xxl-4 mb-5">
-      <div class="card bg-light border-0 h-100">
-          <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-              <div id="iconBlue" class="feature text-white rounded-3 mb-4 mt-n4"><i class="bi bi-pencil"></i></div>
-              <h2 class="fs-4 fw-bold">Know you're ready for the exam</h2>
-              <p class="mb-0">With board style questions in a board style format, you can rest assured that you'll be prepared on exam day.</p>
-          </div>
-      </div>
-  </div>
-  <div class="col-lg-6 col-xxl-4 mb-5">
-      <div class="card bg-light border-0 h-100">
-          <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-              <div id="iconBlue" class="feature text-white rounded-3 mb-4 mt-n4"><i class="bi bi-heart-pulse"></i></div>
-              <h2 class="fs-4 fw-bold">We are subject matter experts</h2>
-              <p class="mb-0">PBP's content was made by educators, authors of your textbooks and perfusionists that were top performers on their exams.</p>
-          </div>
-      </div>
-  </div>
-  
-
 </section>
 
 <!-- Testimonial section-->
@@ -98,7 +97,7 @@
       <div class="row gx-5 justify-content-center">
           <div class="col-lg-10 col-xl-7">
               <div class="text-center">
-                  <div class="fs-4 mb-4 fst-italic">"PerfusionBoardPrep was very helpful when studying.  It offered multiple realistic timed practice tests to help me gauge where I was at, what I needed to work on and feel confident when it came time to take boards"</div>
+                  <div class="fs-4 mb-4 fst-italic">"PerfusionBoardPrep was very helpful when studying.  It offered multiple realistic timed practice tests to help me gauge where I was at and what I needed to work on to feel confident when it came time to take boards."</div>
                   <div class="d-flex align-items-center justify-content-center">
                       {% comment %} <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." /> {% endcomment %}
                       <div class="fw-bold" id="text-primary">

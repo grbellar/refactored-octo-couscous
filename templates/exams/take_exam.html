@@ -8,16 +8,17 @@
 {% endblock nav %}
 
 {% block content %}
+<div class="container">
     <div class="row p-md-4">
         <div class="col-sm-6"><h6>{{ exam.name }}</h6></div>
-        <div class="col-sm-6"><h6 id="countdown" style="float: right">Placeholder...</h6></div>
+        <div class="col-sm-6"><h6 id="countdown" style="float: right"> 2 hour</h6></div>
     
     </div>
     <div class="row p-md-4">
         <div class="col">
             <!-- TODO: plug logic into these variables -->
              <!-- Use js below to update this div everytime next_question func iterates -->
-            <div><h6 id="question-number">TODO: Question: {{ question.number }} / {{ number_of_questions }}</h6></div>
+            <div><h6 id="question-number">Question 1 / 100</h6></div>
             <br>
             <p id="question-text">{{ question.text }}</p>
 
@@ -44,6 +45,8 @@
         <p style="border-radius: 3px; max-width: 700px;" id="low-time-warning"></p>
     </div>
     
+</div>
+    
 {% endblock content %}
 
 {% block javascript %}
@@ -55,15 +58,17 @@
     
     const state_id = {{exam_state_id}} // this is a django variable passed in with the context on inital get request
 
-    var question_number = 0;
+    var question_number = 1;
 
     function nextQuestion(question){
         question_number += 1;
         
         var form = document.getElementById('exam-form');
         var questionEl = document.getElementById('question-text')
+        var questionNumber = document.getElementById('question-number')
 
-        questionEl.innerHTML = question_number + ". " + question["text"]
+        questionEl.innerHTML = question["text"]
+        questionNumber.innerHTML = "Question " + question_number + " / 100"
         form.innerHTML = "";
 
         form.appendChild(hidden)

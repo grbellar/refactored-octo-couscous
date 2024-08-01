@@ -27,6 +27,15 @@ h1 {
     background-color: #175781 !important;
 }
 
+.feature {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 4rem;
+    width: 4rem;
+    font-size: 2rem;
+  }
+
 a {
     color: #175781;
 }
@@ -39,8 +48,13 @@ a:hover {
     background-color: #F34C4C;
 }
 
+/* Need to change these to classes. Shouldn't have multiple instances of same id */
 #text-primary {
     color: #175781;   
+}
+
+.text-primary {
+    color: #175781 !important; 
 }
 
 #text-secondary {

@@ -57,6 +57,7 @@
           {%endif%}
           <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Take Exams</a></li>
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
+          <li><em><span id="countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>
         </ul>
 
         <div class="dropdown text-end">
@@ -117,6 +118,34 @@
   <script>
     date = new Date().getFullYear()
     document.getElementById('copyright').innerHTML = `© PerfusionBoardPrep.com ${date}`
+
+    function updateCountdown() {
+      // Set the date we're counting down to
+      const targetDate = new Date(new Date().getFullYear(), 9, 22); // October is month 9 (0-indexed)
+
+      // Get today's date and time
+      const now = new Date();
+
+      // Calculate the difference in milliseconds
+      const difference = targetDate - now;
+
+      // Calculate days left
+      const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+      // Display the result
+      document.getElementById("countdown").innerText = daysLeft + " days left until board exams!";
+
+      // If the countdown is over
+      if (difference < 0) {
+          document.getElementById("countdown").innerText = "";
+      }
+  }
+
+    // Update the countdown on page load
+    updateCountdown();
+
+    // Update the countdown daily at midnight
+    setInterval(updateCountdown, 1000 * 60 * 60 * 24);
   </script>
 
   {% block javascript %}
