@@ -26,11 +26,10 @@ class MyCustomSignupForm(SignupForm):
 
     def save(self, request):
 
-        # Ensure you call the parent class's save.
-        # .save() returns a User object.
+        # Call parent class's save() which returns a User object. I dont' need to explicity reassign 
+        # first and last name because they are being saved by parent signup form (I think).
         user = super(MyCustomSignupForm, self).save(request)
+        user.school = self.cleaned_data['school']
+        user.save()  
 
-        # Add your own processing here.
-
-        # You must return the original result.
         return user
