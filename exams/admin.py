@@ -106,6 +106,7 @@ class UserAnswerInline(admin.TabularInline):
 
 class UserExamStateAdmin(admin.ModelAdmin):
     inlines = [UserAnswerInline]
+    list_display = ['user', 'exam', 'score', 'current_question_index', 'time_started']
 
     def has_change_permission(self, request, obj=None):
         return False
