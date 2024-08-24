@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
     
-    list_display = ['email', 'first_name', 'last_name', 'school', 'date_joined']
+    list_display = ['email', 'first_name', 'last_name', 'school', 'date_joined', 'has_paid']
     readonly_fields = ['uuid', 'date_joined', 'last_login']
 
     fieldsets = [
