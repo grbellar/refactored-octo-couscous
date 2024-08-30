@@ -10,9 +10,11 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.list import ListView
 
 
-def question_to_dict(question):
-    dict = {}
+def question_to_dict(question, question_index, exam_length):
+    dict = {}                                   
     dict["id"] = question.id
+    dict["question_index"] = question_index + 1 # plus 1 so numbering doesn't start at 0
+    dict["exam_length"] = exam_length
     dict["text"] = question.text
     dict["choices"] = []
     for choice in question.choices.all():
@@ -75,6 +77,8 @@ def take_exam_view(request, uuid):
         context = {
                 "exam": exam,
                 "question": current_question,
+                "question_index": current_question_index + 1,
+                "exam_length": len(exam_questions),
                 "exam_state_id": user_exam_state.id,
                 "time_started": user_exam_state.time_started.isoformat(),
                 "user_exam_state": user_exam_state, # only passing this for debug purposes
@@ -89,7 +93,6 @@ def take_exam_view(request, uuid):
         if request.method == 'POST':
             user_choice = request.POST.get('user_choice')
             print(f"From client, user chose: {user_choice}")
-            #TODO: Require user to make a choice. Currently you can just hit next!
             selected_choice_obj = Choice.objects.get(id=user_choice)
             UserAnswer.objects.create(
                 user_exam_state=user_exam_state,
@@ -112,7 +115,7 @@ def take_exam_view(request, uuid):
                 return JsonResponse({"complete": True})
             else:
                 next_question = exam_questions[user_exam_state.current_question_index]
-                data = question_to_dict(next_question)
+                data = question_to_dict(next_question, current_question_index, len(exam_questions))
                 print(f"Data being send to client from server: {data}")
                 return JsonResponse(data)
 
