@@ -16,7 +16,7 @@
     </div>
     <div class="row p-md-4">
         <div class="col">
-            <div><h6 id="question-number">Question 1 / 100</h6></div>
+            <div><h6 id="question-number">Question {{question_index}} / {{exam_length}}</h6></div>
             <br>
             <p id="question-text">{{ question.text }}</p>
 
@@ -56,17 +56,14 @@
     
     const state_id = {{exam_state_id}} // this is a django variable passed in with the context on inital get request
 
-    var question_number = 1;
-
     function nextQuestion(question){
-        question_number += 1;
         
         var form = document.getElementById('exam-form');
         var questionEl = document.getElementById('question-text')
         var questionNumber = document.getElementById('question-number')
 
         questionEl.innerHTML = question["text"]
-        questionNumber.innerHTML = "Question " + question_number + " / 100"
+        questionNumber.innerHTML = "Question " + question["question_index"] + " / " + question["exam_length"]
         form.innerHTML = "";
 
         form.appendChild(hidden)
