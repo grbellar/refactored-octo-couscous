@@ -1,0 +1,8 @@
+You can ctrl click on a variable to jump to its definition.
+
+You can alt click on a variable to see all the references to it in the project.
+
+You can option click on a variable to see the call stack.
+
+You can shift click on a variable to select the same variable in all open files.
+
