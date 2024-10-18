@@ -9,7 +9,7 @@ class Quiz(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # need something to store stats about user responses. e.g. how many users got question right/wrong
-    stats = models.JSONField(default=dict) # not sure if this is the best way to store stats. ai suggested it.
+    stats = models.JSONField(default=dict, null=True) # not sure if this is the best way to store stats. ai suggested it.
 
     def __str__(self):
         return self.title
