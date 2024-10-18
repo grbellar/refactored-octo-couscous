@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "accounts",
     "pages",
     "exams",
+    "review",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
