@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "text": "What is the capital of France?",
+        "correct_answer": 2,
+        "answers": [
+            {
+                "id": 1,
+                "text": "Berlin",
+                "explanation": "Berlin is the capital of Germany, known for its rich history and cultural landmarks such as the Brandenburg Gate and Berlin Wall.",
+                "choice_count": 22
+            },
+            {
+                "id": 2,
+                "text": "Paris",
+                "explanation": "Paris, often referred to as the 'City of Light,' is the capital of France and a global center for art, fashion, and culture.",
+                "choice_count": 59
+            },
+            {
+                "id": 3,
+                "text": "Madrid",
+                "explanation": "Madrid is the capital of Spain, known for its vibrant cultural life and famous museums, but it is not the capital of France.",
+                "choice_count": 59
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "text": "What is the largest planet in our solar system?",
+        "correct_answer": 1,
+        "answers": [
+            {
+                "id": 1,
+                "text": "Jupiter",
+                "explanation": "Jupiter is the largest planet in our solar system, known for its Great Red Spot and many moons.",
+                "choice_count": 3
+            },
+            {
+                "id": 2,
+                "text": "Earth",
+                "explanation": "Earth is the third planet from the Sun and the only astronomical object known to support life, but it is not the largest.",
+                "choice_count": 32
+            },
+            {
+                "id": 3,
+                "text": "Mars",
+                "explanation": "Mars, known as the Red Planet, is smaller than both Earth and Jupiter and is famous for its exploration missions.",
+                "choice_count": 12
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "text": "What is the chemical symbol for water?",
+        "correct_answer": 2,
+        "answers": [
+            {
+                "id": 1,
+                "text": "O2",
+                "explanation": "O2 represents molecular oxygen, which is essential for respiration but not water.",
+                "choice_count": 11
+            },
+            {
+                "id": 2,
+                "text": "H2O",
+                "explanation": "H2O is the chemical formula for water, consisting of two hydrogen atoms bonded to one oxygen atom.",
+                "choice_count": 80
+            },
+            {
+                "id": 3,
+                "text": "CO2",
+                "explanation": "CO2 is the chemical formula for carbon dioxide, which is a gas produced by burning carbon and is not related to water.",
+                "choice_count": 99
+            }
+        ]
+    }
+]

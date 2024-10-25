@@ -8,8 +8,35 @@
     <div class="row">
         <div class="col-md-8">
             <p>This is the review page. Add your review content here.</p>
-            <!-- Add more content as needed -->
-        </div>
+            <div class="row p-md-4">
+                <div class="col">
+                    <div><h6 id="question-number">Question</h6></div>
+                    <br>
+                    <p id="question-text">What is the capital of France?</p>
+        
+                    <form id="exam-form">
+                        <div class="form-check">
+                            <label class="form-check-label" for="choice1">Paris</label>
+                            <input required class="form-check-input" id="choice1" type="radio" name="user_choice" value="1">
+                            <br>
+                            
+                            <label class="form-check-label" for="choice2">Berlin</label>
+                            <input required class="form-check-input" id="choice2" type="radio" name="user_choice" value="2">
+                            <br>
+                            
+                            <label class="form-check-label" for="choice3">Madrid</label>
+                            <input required class="form-check-input" id="choice3" type="radio" name="user_choice" value="3">
+                            <br>
+                            
+                            <label class="form-check-label" for="choice4">Rome</label>
+                            <input required class="form-check-input" id="choice4" type="radio" name="user_choice" value="4">
+                            <br>
+
+                            <br>
+                            <input class="btn btn-primary m-2" type="submit" value="Next question">
+                        </div>
+                    </form>
+            </div>        </div>
     </div>
 </div>
 {% endblock %}
