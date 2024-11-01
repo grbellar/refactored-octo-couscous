@@ -9,8 +9,8 @@
   <section class="bg-light py-5">
     <div class="container px-3 my-3">
       <div class="text-center mb-5">
-        <h1 class="fw-bolder">Exam pricing</h1>
-        <p class="lead fw-normal text-muted mb-0">Only pay for what you need</p>
+        <h1 class="fw-bolder">Full Access</h1>
+        <p class="lead fw-normal text-muted mb-0">Something something something...</p>
         <br>
         {% if not request.user.is_authenticated %}
         <p>Create an account or log in to get started.</p>
@@ -19,49 +19,6 @@
         {% endif %}
       </div>
       <div class="row gx-5 justify-content-center">
-        <!-- Pricing card pro -->
-        <div class="col-lg-6 col-xl-4">
-          <div class="card mb-5 mb-xl-0">
-            <div class="card-body p-5">
-              <div class="small text-uppercase fw-bold">Per Exam</div>
-              <div class="mb-3">
-                <span class="display-5 fw-bold">$59.99</span>
-                <p style="color: white;">blank</p>
-              </div>
-              <ul class="list-unstyled mb-4">
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>One exam</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  100 board like questions
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  You choose the exam type
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Targeted feedback
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Made by Educators
-                </li>
-              </ul>
-              <div class="d-grid">
-                {% if request.user.is_authenticated %}
-                <form action="{% url 'stripe-checkout' %}" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="price-id" value="{{ single }}" />
-                  <button class="btn btn-primary" type="submit" id="checkout-button">Buy 1 exam token</button>
-                </form>                
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="col-lg-6 col-xl-4">
           <div class="card mb-5 mb-xl-0">
