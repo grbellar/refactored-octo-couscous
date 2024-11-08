@@ -7,11 +7,9 @@
     <h1 class="mt-4 mb-3">Review</h1>
     <div class="row">
         <div class="col-md-8">
-            <p>This is the review page. Add your review content here.</p>
-            <div class="row p-md-4">
-                <div class="col">
-                    <div><h6 id="question-number">Question</h6></div>
-                    <br>
+            <div>
+                <div>
+                    <h6 id="question-number">Question</h6>
                     <p id="question-text">What is the capital of France?</p>
         
                     <form id="exam-form">
@@ -30,13 +28,22 @@
                             
                             <label class="form-check-label" for="choice4">Rome</label>
                             <input required class="form-check-input" id="choice4" type="radio" name="user_choice" value="4">
-                            <br>
-
-                            <br>
-                            <input class="btn btn-primary m-2" type="submit" value="Next question">
+                            <br>                            
                         </div>
                     </form>
-            </div>        </div>
+                    <div class="buttons" style="padding-top: 10px;">
+                        <input class="btn btn-primary" type="submit" value="Back">
+                        <input class="btn btn-primary m-2" type="submit" value="Check answer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="background-color: #e8ffe8; margin-top: 10px; border: 2px solid #cce8cc; border-radius: 5px;">
+        <div class="col-md-8" style="padding-top: 10px;">
+            <h6 id="explanation">Explanation</h6>
+            <p>Paris is indeed the capital city of France, serving as its political and cultural center since the Middle Ages. The city is home to iconic landmarks like the Eiffel Tower, the Louvre Museum, and Notre-Dame Cathedral. With a population of over 2 million people in the city proper, Paris is also France's largest metropolitan area. The city's rich history, architecture, cuisine, and fashion have made it one of the world's most visited tourist destinations.</p>
+        </div>
     </div>
 </div>
 {% endblock %}
