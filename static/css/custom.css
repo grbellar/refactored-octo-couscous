@@ -1,5 +1,9 @@
 body {
     font-family: 'Poppins';
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
 }
 
 h1 {
@@ -87,6 +91,13 @@ a:hover {
 }
 #tagline {
     font-size: .5rem;
+}
+
+.footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: #f5f5f5;
+
 }
 
 /* Offical red : #E51F22
