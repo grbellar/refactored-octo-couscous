@@ -8,9 +8,7 @@ class Quiz(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # need something to store stats about user responses. e.g. how many users got question right/wrong
-    stats = models.JSONField(default=dict, null=True) # not sure if this is the best way to store stats. ai suggested it.
-
+    
     def __str__(self):
         return self.title
         
@@ -28,6 +26,7 @@ class Answer(models.Model):
     text = models.TextField()
     is_correct = models.BooleanField(default=False)
     explanation = models.TextField(null=True, blank=True)
+    choice_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
