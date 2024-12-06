@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from base.settings import AUTH_USER_MODEL
+from exams.models import Category
 
 # Create your models here.
 class Quiz(models.Model):
@@ -15,6 +16,7 @@ class Quiz(models.Model):
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.SET_DEFAULT, default=None, null=True)
     text = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
