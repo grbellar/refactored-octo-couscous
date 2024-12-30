@@ -3,6 +3,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from exams.models import Exam, UserExamState
+from review.models import Quiz
 from collections import defaultdict
 from pathlib import Path
 from dotenv import load_dotenv
@@ -47,6 +48,18 @@ def my_exams(request):
 
 
         return render(request, 'exams/my_exams.html', context)
+
+@login_required
+@require_http_methods(["GET"])
+def my_quizzes(request):
+        user = request.user
+        has_paid = user.has_paid
+        context = {"user_has_paid": has_paid}
+
+        all_quizzes = Quiz.objects.all()   
+        context['quizzes'] = all_quizzes
+
+        return render(request, 'review/my_quizzes.html', context)
                
      
 @login_required
