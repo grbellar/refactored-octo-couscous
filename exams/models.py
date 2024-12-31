@@ -79,6 +79,7 @@ class UserExamState(models.Model):
     def __str__(self):
         return f"{self.user} | {self.exam}"
     
+    #TODO: add a save method similar to one present in quiz that provides a snapshot. can then remove the call in exams/views.py take_exam_view
 
     class Meta:
         unique_together = ('user', 'exam')  # Ensure one entry per user per exam. #TODO: This could be a problem if we want to allow users to retake exams.
