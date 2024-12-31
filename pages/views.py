@@ -8,6 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 from dotenv import load_dotenv
 import os 
+import pprint
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,22 +31,13 @@ def my_exams(request):
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
-
-        # This feels wasteful as all I need this for is to get each exam name and id so I can show it to suer and then 
-        # send the chosen Exam to the take-exam view.
-        all_exams = Exam.objects.all()
-        
-        # This is one nifty way of not showing exams if the user has already taken them. But when people are allowed to rebuy and retake 
-        # I don't think this will be an effective solution given that this template is supposed to show exams available to buy?
-        # nontaken_exams = []
-        # for exam in all_exams:
-        #    if exam.userexamstate_set.filter(user=request.user, completed=False):
-        #        nontaken_exams.append(exam)
-        # print(nontaken_exams)
-               
-        context['exams'] = all_exams
+        exams = Exam.objects.values('name', 'uuid', 'is_active', 'questions')
+        context['exams'] = exams
         context['user_exam_tokens'] = user.exam_tokens
 
+        # TODO: add a flag to show user that they have taken exam. button should say view results instead.
+        # if exam.userexamstate_set.filter(user=request.user, completed=False):
+        #     nontaken_exams.append(exam)
 
         return render(request, 'exams/my_exams.html', context)
 
@@ -55,9 +47,8 @@ def my_quizzes(request):
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
-
-        all_quizzes = Quiz.objects.all()   
-        context['quizzes'] = all_quizzes
+        quizzes = Quiz.objects.values('title', 'id', 'description')
+        context['quizzes'] = quizzes
 
         return render(request, 'review/my_quizzes.html', context)
                
