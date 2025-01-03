@@ -57,7 +57,7 @@
           {%endif%}
           <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Take Exams</a></li>
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">My Results</a></li>
-          <li><em><span id="exam-countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>
+          <!--<li><em><span id="exam-countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>-->
         </ul>
 
         <div class="dropdown text-end">
@@ -142,10 +142,10 @@
   }
 
     // Update the countdown on page load
-    updateCountdown();
+    // updateCountdown();
 
     // Update the countdown daily at midnight
-    setInterval(updateCountdown, 1000 * 60 * 60 * 24);
+    // setInterval(updateCountdown, 1000 * 60 * 60 * 24);
   </script>
 
   {% block javascript %}
