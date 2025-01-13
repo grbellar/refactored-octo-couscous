@@ -73,7 +73,6 @@
 
         choices = question["choices"]
         choices.forEach(function(choice){
-            console.log(choice)
             const input = document.createElement('input');
             input.id = `choice${choice["id"]}`;
             input.type = 'radio';
@@ -104,7 +103,6 @@
         choiceDiv.appendChild(submit)
         
         form.appendChild(choiceDiv)
-        console.log(form);
 
     }
 
@@ -124,12 +122,9 @@
         }).then(response => response.json()).then(data =>{
 
             if (data["complete"] === true) {
-                console.log("Redirected by Javascript!")
                 window.location.href = "{% url 'exam-complete' %}";
             }
             else {
-                console.log("Data recieved. Inside of fetch method:")
-                console.log(data)
                 nextQuestion(data);
             };
 
@@ -146,7 +141,6 @@
         function updateCountdown() {
             const currentTime = new Date().getTime();
             const timeLeft = endTime - currentTime;
-            console.log(timeLeft)
           
             // at 5 minutes left display a warning
             if (timeLeft <= 300000){
