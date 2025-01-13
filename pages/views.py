@@ -9,6 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os 
 import pprint
+from django.db.models import Count
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,7 @@ def my_exams(request):
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
-        exams = Exam.objects.values('name', 'uuid', 'is_active', 'questions')
+        exams = Exam.objects.annotate(question_count=Count('questions')).values('name', 'uuid', 'is_active', 'question_count')        
         context['exams'] = exams
         context['user_exam_tokens'] = user.exam_tokens
 
@@ -47,7 +48,7 @@ def my_quizzes(request):
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
-        quizzes = Quiz.objects.values('title', 'id', 'description')
+        quizzes = Quiz.objects.values('title', 'uuid', 'description')
         context['quizzes'] = quizzes
 
         return render(request, 'review/my_quizzes.html', context)

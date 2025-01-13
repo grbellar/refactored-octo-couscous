@@ -27,7 +27,7 @@
                 <img src="{% static 'images/logo-square.png' %}" style="width: 40px; height: auto;" alt="Card image cap" />
               </div>
               <p>2 hours to complete</p>
-              <p>{{ exam.questions }} questions</p>
+              <p>{{ exam.question_count }} questions</p>
               <div class="mt-auto">
                 {% if request.user.is_staff and not exam.is_active %}
                   <p class="text-danger mb-2">Not open to the public. You are seeing this exam because you are an admin.</p>
