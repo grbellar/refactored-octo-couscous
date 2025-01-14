@@ -38,7 +38,7 @@ class Answer(models.Model):
         return self.text
     
 class Explanation(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='explanation')
     text = models.TextField()
     sources = models.JSONField(default=list, blank=True)
     
