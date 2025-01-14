@@ -2,54 +2,137 @@
 
 {% block title %}Review{% endblock %}
 
+TODO: Should display category of exam at top and maybe more info about question
 {% block content %}
 <div class="container">
     <h1 class="mt-4 mb-3">Review</h1>
     <div class="row">
         <div class="col-md-8">
             <div>
+                <h2>{{quiz.title}}</h2>
                 <div>
                     <h6 id="question-number">Question</h6>
-                    <p id="question-text">What is the capital of France?</p>
+                    <p id="question-text">{{current_question.text}}</p>
         
-                    <form id="exam-form">
+                    <form id="quiz-form">
+                        {% csrf_token %}
                         <div class="form-check">
-                            <label class="form-check-label" for="choice1">Paris</label>
-                            <input required class="form-check-input" id="choice1" type="radio" name="user_choice" value="1">
-                            <br>
-                            
-                            <label class="form-check-label" for="choice2">Berlin</label>
-                            <input required class="form-check-input" id="choice2" type="radio" name="user_choice" value="2">
-                            <br>
-                            
-                            <label class="form-check-label" for="choice3">Madrid</label>
-                            <input required class="form-check-input" id="choice3" type="radio" name="user_choice" value="3">
-                            <br>
-                            
-                            <label class="form-check-label" for="choice4">Rome</label>
-                            <input required class="form-check-input" id="choice4" type="radio" name="user_choice" value="4">
-                            <br>                            
+                            {% for answer in current_question.answer_set.all %}     
+                            <label class="form-check-label" for="choice{{ answer.id }}">{{answer.text}}</label>
+                            <input required class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                            <br>                         
+                            {% endfor %}
                         </div>
+                        <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                        <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
+                        <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
+                        <!-- There actually needs to be a seperate interace for chcking answer and then proceeding to next question-->
                     </form>
-                    <div class="buttons" style="padding-top: 10px;">
-                        <input class="btn btn-primary" type="submit" value="Back">
-                        <input class="btn btn-primary m-2" type="submit" value="Check answer">
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row" style="background-color: #e6f3ff; margin-top: 10px; margin-bottom: 20px; border: 2px solid #cce0f5; border-radius: 5px;">
         <div class="col-md-8" style="padding-top: 10px;">
-            <h6 id="explanation">Explanation</h6>
-            <p>Uremia is a serious clinical condition that occurs as a result of severe kidney failure, where the kidneys are no longer able to adequately filter waste products from the blood. It leads to the accumulation of toxic substances, including urea, creatinine, and other nitrogenous waste products, and disrupts the body's fluid, electrolyte, and acid-base balance. Uremia is a hallmark of end-stage renal disease (ESRD) and requires immediate medical intervention, such as dialysis or kidney transplantation, to prevent life-threatening complications.</p>
-                <p>The symptoms of uremia are diverse and affect multiple organ systems, reflecting the critical role the kidneys play in maintaining homeostasis. Key features of uremia include generalized edema, hyperkalemia, elevated waste product levels, and metabolic acidosis, among others.</p>
-                <p>Generalized edema:<br>As kidney function declines, the kidneys lose their ability to excrete excess water and sodium, leading to fluid retention. This results in generalized edema, which manifests as swelling in various parts of the body, particularly in the legs, ankles, and around the eyes. This occurs because the impaired kidneys are unable to regulate fluid balance, causing water to accumulate in tissues.</p>
-                <p>High concentrations of urea, creatinine, and other non-protein nitrogenous waste products:<br>Uremia is characterized by the accumulation of these waste products, which are normally excreted by the kidneys. In renal failure, urea and creatinine levels rise significantly in the blood, contributing to the toxic effects on multiple organs. This buildup leads to symptoms such as fatigue, nausea, confusion, and muscle cramps.</p>
-                <p>Hyperkalemia (high potassium levels):<br>In healthy kidneys, potassium is carefully regulated and excreted in the urine. However, in uremia, the kidneys are unable to maintain this balance, leading to elevated potassium levels in the blood (hyperkalemia). This can cause severe complications, particularly affecting heart function, with the potential to cause dangerous arrhythmias and even sudden cardiac arrest.</p>
-                <p>Metabolic acidosis (not alkalosis):<br>One of the key differences between uremia and other conditions is that it is associated with metabolic acidosis, not alkalosis. The failing kidneys are unable to excrete sufficient hydrogen ions and produce enough bicarbonate to buffer acids. As a result, acids accumulate in the blood, leading to a drop in pH, which can impair organ function and exacerbate the symptoms of renal failure.</p>
-                <p>In summary, uremia results in fluid retention, elevated waste products, hyperkalemia, and metabolic acidosis. Alkalosis, however, is not typically seen in uremia, making it the exception.
+            <h6>Explanation</h6>
+            <p id="explanation"></p>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block javascript %}
+<script>
+    quizForm = document.getElementById('quiz-form');
+    const csrftoken = quizForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    const checkAnswerBtn = document.getElementById('check-answer-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const backBtn = document.getElementById('back-btn');
+    const explanationDiv = document.getElementById('explanation');
+
+    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
+        // Disable all radio inputs
+        document.querySelectorAll('.form-check-input').forEach(input => {
+            input.disabled = true;
+        });
+        
+        // Select the previously chosen answer
+        const selectedInput = document.querySelector(`#choice${selectedAnswerId}`);
+        if (selectedInput) {
+            selectedInput.checked = true;
+        }
+        
+        // TODO: Change to something not as jarring
+        const colorFeedback = document.querySelector('.form-check');
+        colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
+        
+        // Show explanation
+        explanationDiv.innerHTML = explanation;
+        
+        // Show next button, hide check answer button
+        checkAnswerBtn.style.display = 'none';
+        nextBtn.style.display = 'inline';
+    }
+
+    quizForm.addEventListener('submit', event => {
+        event.preventDefault();
+        
+        const formData = new FormData(quizForm);
+        const data = new URLSearchParams(formData);
+        const clickedButton = event.submitter.id;
+        data.append('button', clickedButton);
+
+        fetch("{% url 'check-answer' quiz.uuid %}", {
+            method: 'POST',
+            credentials: 'same-origin', 
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            body: data
+        }).then(response => response.json()).then(data => {
+            if (clickedButton === 'check-answer-btn') {
+                disableFormAndShowExplanation(
+                    formData.get('user_answer'),
+                    data.is_correct,
+                    data.explanation
+                );
+            } else if (clickedButton === 'next-btn') {
+                // Update question and answers
+                console.log(data)
+                document.getElementById('question-text').textContent = data.next_question.text;
+                const answersHtml = data.next_question.answers.map(answer => `
+                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
+                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <br>
+                `).join('');
+                document.querySelector('.form-check').innerHTML = answersHtml;
+                
+                // Reset form state
+                explanationDiv.innerHTML = '';
+                checkAnswerBtn.style.display = 'inline';
+                nextBtn.style.display = 'none';
+                document.querySelectorAll('.form-check-input').forEach(input => {
+                    input.disabled = false;
+                });
+                document.querySelector('.form-check').style.backgroundColor = ''
+            } else if (clickedButton === 'back-btn') {
+                // Update question and answers
+                document.getElementById('question-text').textContent = data.next_question.text;
+                const answersHtml = data.next_question.answers.map(answer => `
+                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
+                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <br>
+                `).join('');
+                document.querySelector('.form-check').innerHTML = answersHtml;
+                
+                // Show previous answer and explanation
+                disableFormAndShowExplanation(
+                    data.previous_answer.selected_answer_id,
+                    data.previous_answer.is_correct,
+                    data.previous_answer.explanation
+                );
+            }
+        });
+    });
+</script>
+{% endblock javascript %}
