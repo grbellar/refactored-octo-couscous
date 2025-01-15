@@ -48,7 +48,7 @@ def my_quizzes(request):
         user = request.user
         has_paid = user.has_paid
         context = {"user_has_paid": has_paid}
-        quizzes = Quiz.objects.values('title', 'uuid', 'description')
+        quizzes = Quiz.objects.annotate(question_count=Count('questions')).values('title', 'uuid', 'description', 'question_count')
         context['quizzes'] = quizzes
 
         return render(request, 'review/my_quizzes.html', context)

@@ -13,9 +13,9 @@
                 <h5 class="card-title">{{ quiz.title }}</h5>
               </div>
               <p>{{ quiz.description }}</p>
-              <p>{{ quiz.question_set.all.count }} questions</p>
+              <p>{{ quiz.question_count }} questions</p>
               <div class="mt-auto">
-                {% comment %} <a href="{% url 'all-quizzes' quiz.id %}" class="btn btn-primary w-100">Start Review</a> {% endcomment %}
+                <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Start Review</a>
               </div>
             </div>
           </div>
