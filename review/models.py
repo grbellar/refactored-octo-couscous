@@ -10,6 +10,7 @@ class Quiz(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     quiz_type = models.ForeignKey(ExamType, on_delete=models.SET_NULL, related_name="quizzes", null=True)
+    questions = models.ManyToManyField('Question', related_name='questions', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -17,7 +18,6 @@ class Quiz(models.Model):
         return self.title
         
 class Question(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.SET_DEFAULT, default=None, null=True)
     text = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,7 +68,7 @@ class UserQuizState(models.Model):
 
     class Meta:
         verbose_name = "User Quiz State"
-        # Note: Removing unique_together to allow multiple attempts
+        unique_together = ('user', 'quiz')
 
     def save(self, *args, **kwargs):
         if self.quiz and not self.quiz_title_snapshot:
