@@ -7,15 +7,12 @@
 
 {% block content %}
 <div class="container">
+  {% if user_has_paid %}
   <h1 class="mt-4 mb-3">Available Exams</h1>
-  <div class="row">
-    <div class="col">
-      <p>
-        <span class="lead">Your exam tokens: <strong>{{ user_exam_tokens }}</strong></span><br /><a href="{% url 'get-access-buy' %}">Buy more tokens</a>
-      </p>
-      <span class="small">Each exam attempt requires one token. You will be asked to confirm your choice before you begin. <br />Note: If you got disconnected and are simply resuming an attempt you will not be charged.</span>
-    </div>
-  </div>
+  {% else %}
+  <h1 class="mt-4 mb-3">Exam Previews</h1>
+  {% endif %}
+  
   <div class="row">
     {% for exam in exams %}
       {% if exam.is_active or request.user.is_staff %}
@@ -34,10 +31,10 @@
                 {% elif request.user.is_staff %}
                   <p class="text-success mb-2">Open to the public.</p>
                 {% endif %}
-                {% if user_exam_tokens > 0 %}
+                {% if user_has_paid %}
                   <button class="btn btn-primary w-100 start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
                 {% else %}
-                  <button class="btn btn-primary w-100" disabled>No tokens</button>
+                  <a href="{% url 'get-access-buy' %}" class="btn btn-primary w-100">Get Access</a>
                 {% endif %}
               </div>
             </div>

@@ -9,8 +9,8 @@
   <section class="bg-light py-5">
     <div class="container px-3 my-3">
       <div class="text-center mb-5">
-        <h1 class="fw-bolder">Full Access</h1>
-        <p class="lead fw-normal text-muted mb-0">Something something something...</p>
+        <h1 class="fw-bolder">Full Site Access</h1>
+        <p class="lead fw-normal text-muted mb-0">Our entire suite of tools. Designd to give you confidence on exam day.</p>
         <br>
         {% if not request.user.is_authenticated %}
         <p>Create an account or log in to get started.</p>
@@ -25,11 +25,10 @@
             <div class="card-body p-5">
               <div class="small text-uppercase fw-bold">
                 <i class="bi bi-star-fill text-warning"></i>
-                Exam Bundle <s>$149.99</s>
+                Full Access
               </div>
               <div class="mb-3">
-                <span id="text-secondary" class="display-5 fw-bold">$99.99</span>
-                <span><br><em>October sale!</em></span>
+                <span class="display-5 fw-bold">$99.99</span>
               </div>
               <ul class="list-unstyled mb-4">
                 <li class="mb-2">
@@ -38,11 +37,11 @@
                 </li>
                 <li class="mb-2">
                   <i class="bi bi-check text-primary"></i>
-                  <strong>400 board like questions</strong>
+                  <strong>400 board like exam questions</strong>
                 </li>
                 <li class="mb-2">
                   <i class="bi bi-check text-primary"></i>
-                  All exam types
+                  Over 1,400 review questions
                 </li>
                 <li class="mb-2">
                   <i class="bi bi-check text-primary"></i>
@@ -58,7 +57,7 @@
                   <form action="{% url 'stripe-checkout' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="price-id" value="{{ bundle }}" />
-                    <button class="btn btn-primary" type="submit" id="checkout-button">Buy 4 exam tokens</button>
+                    <button class="btn btn-primary" type="submit" id="checkout-button">Buy access</button>
                   </form>
                 {% endif %}
               </div>

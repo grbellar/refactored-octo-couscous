@@ -30,11 +30,10 @@ class AboutPageView(TemplateView):
 @require_http_methods(["GET"])
 def my_exams(request):
         user = request.user
-        has_paid = user.has_paid
+        has_paid = user.has_paid_v2
         context = {"user_has_paid": has_paid}
         exams = Exam.objects.annotate(question_count=Count('questions')).values('name', 'uuid', 'is_active', 'question_count')        
         context['exams'] = exams
-        context['user_exam_tokens'] = user.exam_tokens
 
         # TODO: add a flag to show user that they have taken exam. button should say view results instead.
         # if exam.userexamstate_set.filter(user=request.user, completed=False):
