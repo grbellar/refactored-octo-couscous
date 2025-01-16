@@ -37,7 +37,7 @@ def take_quiz(request, quiz_uuid):
 @login_required
 @require_http_methods(['POST']) 
 def save_answer(request, quiz_uuid):
-    # Save to db
+    #TODO: Save to db
     return JsonResponse({
         'status': "Saved to db!"
     })
@@ -46,7 +46,7 @@ def save_answer(request, quiz_uuid):
 @login_required
 @require_http_methods(['POST']) 
 def update_question_index(request, quiz_uuid):
-    # Update index and save to db
+    # Update index in db and return new question data
     direction = int(request.POST.get('direction'))
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
@@ -65,8 +65,7 @@ def update_question_index(request, quiz_uuid):
         user_quiz_state.current_question_index += direction
         user_quiz_state.save()
         question_data = get_quiz_question(request.user, quiz_uuid)
-
-    return JsonResponse(question_data)
+        return JsonResponse(question_data)
 
 
 

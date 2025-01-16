@@ -70,7 +70,7 @@ TODO: Should display category of exam at top and maybe more info about question
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data.status)
+                console.log(data)
                 checkAnswerBtn.style.display = 'none';
                 nextBtn.style.display = 'inline';
             });
@@ -89,7 +89,7 @@ TODO: Should display category of exam at top and maybe more info about question
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data.question_data)
+                console.log(data)
                 checkAnswerBtn.style.display = 'inline';
                 nextBtn.style.display = 'none';
                 // Populate new question
@@ -108,7 +108,7 @@ TODO: Should display category of exam at top and maybe more info about question
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data.status)
+                console.log(data)
                 checkAnswerBtn.style.display = 'none';
                 nextBtn.style.display = 'inline';
                 // Populate new question
