@@ -4,8 +4,9 @@ from django.db import models
 from exams.models import Exam
 
 class CustomUser(AbstractUser):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) # Using this for url parameters    
-    has_paid = models.BooleanField(default=False, null=False) # Users who bought old token model
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True) # Using this for url parameters
+    has_paid_v2 = models.BooleanField(default=False, null=False)
+    legacy_has_paid_token = models.BooleanField(default=False, null=False) # Users who bought old token model
     exam_tokens = models.IntegerField(default=0, null=False, blank=False) 
     exam = models.ManyToManyField(Exam)
     school = models.CharField(max_length=300, null=True, blank=True)
