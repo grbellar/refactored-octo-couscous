@@ -136,10 +136,8 @@ def single_result(request, id):
 
 
 def get_access_buy(request):
-    PRICE_ID_SINGLE = os.getenv('PRICE_ID_SINGLE')
-    PRICE_ID_BUNDLE = os.getenv('PRICE_ID_BUNDLE')
+    PRICE_ID_FULL_ACCESS = os.getenv('PRICE_ID_FULL_ACCESS')
     context = {
-        "single": PRICE_ID_SINGLE,
-        "bundle": PRICE_ID_BUNDLE
+        "fullaccess": PRICE_ID_FULL_ACCESS,
     }
     return render(request, "pages/get_access_buy.html", context)

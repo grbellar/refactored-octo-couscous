@@ -3,19 +3,15 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from accounts.models import CustomUser
 import stripe
-import pprint
 from dotenv import load_dotenv
 from base.settings import BASE_DIR
 import os
 
 load_dotenv(BASE_DIR / '.env')
 
-#TODO: Add prod key to env variables on render.
-# This is your test secret API key.
 stripe.api_key = os.getenv('STRIPE_KEY')
 endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
 
-#TODO: Need to add redirect urls for production
 @require_http_methods(["POST"])
 def create_checkout_session(request):
 
@@ -71,41 +67,20 @@ def payments_webhook(request):
         event['data']['object']['id'],
         expand=['line_items'],
         )
-        # Update user has paid attribute and add tokens to account
-        pprint.pprint(session)
-        update_tokens(session)
+        # Update user has paid v2 attribute
+        update_has_paid(session)
 
     return HttpResponse(status=200)
 
 
-def update_tokens(stripe_session):
+def update_has_paid(stripe_session):
     paid_user_uuid = stripe_session['metadata']['perf_user_uuid']
     perf_user = CustomUser.objects.get(
         uuid=paid_user_uuid
     )
-
-    if perf_user.has_paid != True: # Only try to update this first time through
-        perf_user.has_paid = True
+    #TODO: Need to disable get accesss buy page once a user has paid. If they can't 
+    # get to the page anymore than it shouldn't be necessary to  have this check. (I'm 
+    # not sure it's stricly necessary even if they can get to the buy page.)
+    if perf_user.has_paid_v2 != True: # Only try to update this first time through
+        perf_user.has_paid_v2 = True
         perf_user.save()
-    
-    print(perf_user.uuid)
-    print(perf_user.exam_tokens)
-
-    # Product they bought
-    price_id = stripe_session['line_items']['data'][0]['price']['id']
-    print(price_id)
-
-    single_id = os.getenv('PRICE_ID_SINGLE')
-    bundle_id = os.getenv('PRICE_ID_BUNDLE')
-    print(single_id)
-    print(bundle_id)
-
-    if price_id == bundle_id: # Bundle
-        perf_user.exam_tokens += 4
-        perf_user.save()
-    if price_id == single_id: # One Exam
-        perf_user.exam_tokens += 1
-        perf_user.save()
-    
-    print(perf_user.exam_tokens)
-

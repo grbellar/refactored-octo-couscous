@@ -56,7 +56,7 @@
                 {% if request.user.is_authenticated %}
                   <form action="{% url 'stripe-checkout' %}" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="price-id" value="{{ bundle }}" />
+                    <input type="hidden" name="price-id" value="{{ fullaccess }}" />
                     <button class="btn btn-primary" type="submit" id="checkout-button">Buy access</button>
                   </form>
                 {% endif %}
