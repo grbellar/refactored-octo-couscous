@@ -9,17 +9,17 @@ TODO: Should display category of exam at top and maybe more info about question
     <div class="row">
         <div class="col-md-8">
             <div>
-                <h2>{{quiz.title}}</h2>
+                <h2>{{ quiz_title }}</h2>
                 <div>
-                    <h6 id="question-number">Question</h6>
-                    <p id="question-text">{{current_question.text}}</p>
+                    <h6 id="question-number"></h6>
+                    <p id="question-text"></p>
         
                     <form id="quiz-form">
                         {% csrf_token %}
                         <div class="form-check">
-                            {% for answer in current_question.answer_set.all %}     
-                            <label class="form-check-label" for="choice{{ answer.id }}">{{answer.text}}</label>
-                            <input required class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                            {% for answer in answers %}     
+                            <label class="form-check-label" for="choice1">{{ answer.text }}</label>
+                            <input required class="form-check-input" id="choice1" type="radio" name="user_answer" value="1">
                             <br>                         
                             {% endfor %}
                         </div>
@@ -35,7 +35,7 @@ TODO: Should display category of exam at top and maybe more info about question
     <div class="row" style="background-color: #e6f3ff; margin-top: 10px; margin-bottom: 20px; border: 2px solid #cce0f5; border-radius: 5px;">
         <div class="col-md-8" style="padding-top: 10px;">
             <h6>Explanation</h6>
-            <p id="explanation"></p>
+            <pre id="explanation" style="white-space: pre-wrap; font-family: inherit;"></pre>
         </div>
     </div>
 </div>
@@ -50,7 +50,74 @@ TODO: Should display category of exam at top and maybe more info about question
     const backBtn = document.getElementById('back-btn');
     const explanationDiv = document.getElementById('explanation');
 
-    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
+  
+    quizForm.addEventListener('submit', event => {
+        event.preventDefault();
+        
+        const formData = new FormData(quizForm);
+        const data = new URLSearchParams(formData);
+        const clickedButton = event.submitter.id;
+
+        if (clickedButton == 'check-answer-btn'){
+            // Submit user answer to database
+            fetch(`{% url 'save-answer' quiz_uuid %}`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status)
+                checkAnswerBtn.style.display = 'none';
+                nextBtn.style.display = 'inline';
+            });
+            
+        }
+        else if (clickedButton == 'next-btn'){
+            data.append('direction', 1)
+            // Update question index
+            fetch(`{% url 'update-question-index' quiz_uuid %}`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.question_data)
+                checkAnswerBtn.style.display = 'inline';
+                nextBtn.style.display = 'none';
+                // Populate new question
+            });
+        }
+        else if (clickedButton == 'back-btn'){
+            data.append('direction', -1)
+            // Update question index
+            fetch(`{% url 'update-question-index' quiz_uuid %}`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status)
+                checkAnswerBtn.style.display = 'none';
+                nextBtn.style.display = 'inline';
+                // Populate new question
+            });
+        }
+        
+    });
+
+    {% comment %} function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
         // Disable all radio inputs
         document.querySelectorAll('.form-check-input').forEach(input => {
             input.disabled = true;
@@ -72,15 +139,32 @@ TODO: Should display category of exam at top and maybe more info about question
         // Show next button, hide check answer button
         checkAnswerBtn.style.display = 'none';
         nextBtn.style.display = 'inline';
-    }
+    } {% endcomment %}
 
-    quizForm.addEventListener('submit', event => {
+    {% comment %} quizForm.addEventListener('submit', event => {
         event.preventDefault();
         
         const formData = new FormData(quizForm);
         const data = new URLSearchParams(formData);
         const clickedButton = event.submitter.id;
         data.append('button', clickedButton);
+        if (clickedButton == 'check-answer-btn'){
+            fetch("{% url 'check-answer' quiz.uuid %}", {
+                method: 'POST',
+                credentials: 'same-origin', 
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                body: data
+            }).then(response => response.json()).then(data => {
+                disableFormAndShowExplanation(
+                    formData.get('user_answer'),
+                    data.is_correct,
+                    data.explanation
+            });
+        } else if (clickedButton === 'next-btn') {
+
+        }
 
         fetch("{% url 'check-answer' quiz.uuid %}", {
             method: 'POST',
@@ -96,9 +180,9 @@ TODO: Should display category of exam at top and maybe more info about question
                     data.is_correct,
                     data.explanation
                 );
+                // TODO: If we get is last question from server, don't display next button
             } else if (clickedButton === 'next-btn') {
                 // Update question and answers
-                console.log(data)
                 document.getElementById('question-text').textContent = data.next_question.text;
                 const answersHtml = data.next_question.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
@@ -133,6 +217,6 @@ TODO: Should display category of exam at top and maybe more info about question
                 );
             }
         });
-    });
+    }); {% endcomment %}
 </script>
 {% endblock javascript %}

@@ -1,10 +1,11 @@
 from django.urls import path
-from pages.views import my_quizzes
-from .views import take_quiz
+from .views import take_quiz, check_answer, save_answer, update_question_index
 
-# TODO: Setup take-quiz to actually accept quiz id as parameter
 urlpatterns = [
-    path('my-quizzes/', my_quizzes, name='my-quizzes'),
-    path('take-quiz/', take_quiz, name='take-quiz')
+    path('review/quiz/<uuid:quiz_uuid>', take_quiz, name='take-quiz'),
+    path('review/quiz/<uuid:quiz_uuid>/check-answer', check_answer, name='check-answer'),
+    path('save-answer/<uuid:quiz_uuid>', save_answer, name='save-answer'),
+    path('update-question-index/<uuid:quiz_uuid>', update_question_index, name='update-question-index'),
+
 ]
 

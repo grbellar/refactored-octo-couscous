@@ -10,22 +10,64 @@ from django.views.decorators.csrf import requires_csrf_token
 with open('review/test-review-data.json', 'r') as file:
     quizzes = json.load(file)
 
-def get_quiz_question(quiz_uuid, question_index):
+
+def get_quiz_question(user, quiz_uuid):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
-    print(quiz.question_set.all())
-    quiz_question = quiz.question_set.all()[question_index]
-    return quiz_question
+    quiz_state = UserQuizState.objects.get(user=user, quiz=quiz)
+    quiz_question = quiz.questions.all()[quiz_state.current_question_index]
+    return {
+        'question_id': quiz_question.id,
+        'question_number': quiz_state.current_question_index + 1,
+        'question_text': quiz_question.text,
+        'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
+        'explanation': quiz_question.explanation.text
+    }
 
 
 @login_required
 @require_http_methods(['GET']) 
-def take_quiz(request, quiz_uuid): # TODO: this should become get_quiz prob. All its doing is setting the starting state of the quiz from a GET request.
-    quiz = Quiz.objects.get(uuid=quiz_uuid)
-    user_quiz_state = UserQuizState.objects.get_or_create(user=request.user, quiz=quiz)[0]
-    current_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-    print(current_question)
+def take_quiz(request, quiz_uuid):
+    context = get_quiz_question(request.user, quiz_uuid)
+    context['quiz_title'] = Quiz.objects.get(uuid=quiz_uuid).title
+    context['quiz_uuid'] = quiz_uuid
     # Initial page load
-    return render(request, "review/take_quiz.html", {'quiz': quiz, 'current_question': current_question})
+    return render(request, "review/take_quiz.html", context=context)
+
+
+@login_required
+@require_http_methods(['POST']) 
+def save_answer(request, quiz_uuid):
+    # Save to db
+    return JsonResponse({
+        'status': "Saved to db!"
+    })
+
+
+@login_required
+@require_http_methods(['POST']) 
+def update_question_index(request, quiz_uuid):
+    # Update index and save to db
+    direction = int(request.POST.get('direction'))
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
+
+    if user_quiz_state.current_question_index == 0 and direction == -1:
+        # Prevent negative index
+        return JsonResponse({
+            'status': "Already on first question!"
+        })
+    elif user_quiz_state.current_question_index == quiz.questions.count() - 1 and direction == 1:
+        # Prevent index out of range
+        return JsonResponse({
+            'status': "Already on last question!"
+        })
+    else:
+        user_quiz_state.current_question_index += direction
+        user_quiz_state.save()
+        question_data = get_quiz_question(request.user, quiz_uuid)
+
+    return JsonResponse(question_data)
+
 
 
 @login_required
@@ -34,97 +76,29 @@ def take_quiz(request, quiz_uuid): # TODO: this should become get_quiz prob. All
 def check_answer(request, quiz_uuid):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
-    
-    button_clicked = request.POST.get('button')
     current_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-
-    # Handle navigation in review mode
-    if user_quiz_state.completed:
-        if button_clicked == 'back-btn' and user_quiz_state.current_question_index > 0:
-            user_quiz_state.current_question_index -= 1
-        elif button_clicked == 'check-answer-btn' and user_quiz_state.current_question_index < quiz.question_set.count() - 1:
-            user_quiz_state.current_question_index += 1
-        user_quiz_state.save()
-        # TODO: Also update time stamp
+    
+    print(f"Check answer button clicked: current_question_index: {user_quiz_state.current_question_index}") # At this point should still match inital page load
         
-        current_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-        # Get the user's previous answer for this question
-        saved_answer = UserQuizAnswer.objects.get(
-            user_quiz_state=user_quiz_state,
-            question=current_question
-        )
-        
-        return JsonResponse({
-            'is_correct': saved_answer.is_correct,
-            'explanation': current_question.explanation,
-            'is_complete': True,
-            'current_question_index': user_quiz_state.current_question_index,
-            'total_questions': quiz.question_set.count()
-        })
-
-    # TODO: current_question_index is not saving to db correcty
-    if button_clicked == 'check-answer-btn':
-        user_answer_id = request.POST.get('user_answer')
-        selected_answer = Answer.objects.get(id=user_answer_id)
-        UserQuizAnswer.objects.create(
-            user_quiz_state=user_quiz_state,
-            question=current_question,
-            selected_answer=selected_answer,
-            is_correct=selected_answer.is_correct
-        )
-        
-        return JsonResponse({
-            'is_correct': selected_answer.is_correct,
-            'explanation': current_question.explanation.text if hasattr(current_question.explanation, 'text') else current_question.explanation
-        })
-
-    if button_clicked == 'next-btn':    
-        is_last_question = user_quiz_state.current_question_index == quiz.question_set.count() - 1
-        
-        if not is_last_question:
-            user_quiz_state.current_question_index += 1
-            user_quiz_state.save()
-            next_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-            
-            return JsonResponse({
-                'next_question': {
-                    'text': next_question.text,
-                    'answers': list(next_question.answer_set.values('id', 'text'))
-                },
-                'is_complete': user_quiz_state.completed,
-                'current_question_index': user_quiz_state.current_question_index,
-                'total_questions': quiz.question_set.count()
-            })
-        else:
-            user_quiz_state.completed = True
-            user_quiz_state.save()
-            return JsonResponse({
-                'is_complete': True,
-                'message': 'Quiz completed'
-            })
-    elif button_clicked == 'back-btn':
-        if user_quiz_state.current_question_index > 0:
-            user_quiz_state.current_question_index -= 1
-            user_quiz_state.save()
-            
-        prev_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-        # Get the user's previous answer for this question
-        previous_answer = UserQuizAnswer.objects.get(
-            user_quiz_state=user_quiz_state,
-            question=prev_question
-        )
-        
-        return JsonResponse({
-            'next_question': {
-                'text': prev_question.text,
-                'answers': list(prev_question.answer_set.values('id', 'text'))
-            },
-            'previous_answer': {
-                'selected_answer_id': previous_answer.selected_answer.id,
-                'is_correct': previous_answer.is_correct,
-                'explanation': prev_question.explanation
-            },
-            'is_complete': user_quiz_state.completed,
-            'current_question_index': user_quiz_state.current_question_index,
-            'total_questions': quiz.question_set.count()
-        })
+    # Save new answer
+    user_answer_id = request.POST.get('user_answer')
+    selected_answer = Answer.objects.get(id=user_answer_id)
+    # UserQuizAnswer.objects.create(
+    #     user_quiz_state=user_quiz_state,
+    #     question=current_question,
+    #     selected_answer=selected_answer,
+    #     is_correct=selected_answer.is_correct
+    # )
+    
+    # Check if this was the last question.
+    # If so:
+    # 1. Save the user quiz state as completed
+    # 2. Tell front end not to display next on the last question
+    # is_last_question = user_quiz_state.current_question_index == quiz.questions.count() - 1
+    # if is_last_question:
+    #     user_quiz_state.completed = True
+    #     user_quiz_state.save()
+    #     return JsonResponse({
+    #         'is_last_question': is_last_question
+    #     })
+    
