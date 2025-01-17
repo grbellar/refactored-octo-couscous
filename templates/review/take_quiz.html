@@ -11,7 +11,7 @@ TODO: Should display category of exam at top and maybe more info about question
             <div>
                 <h2>{{ quiz_title }}</h2>
                 <div>
-                    <h6 id="question-number">1 / {{ total_questions }}</h6>
+                    <h6 id="question-number">{{ question_number }} / {{ total_questions }}</h6>
                     <p id="question-text">{{ question_text }}</p>
         
                     <form id="quiz-form">
@@ -19,7 +19,7 @@ TODO: Should display category of exam at top and maybe more info about question
                         <div class="form-check">
                             {% for answer in answers %}     
                             <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                            <input required class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                            <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                             <br>                         
                             {% endfor %}
                         </div>
@@ -58,7 +58,7 @@ TODO: Should display category of exam at top and maybe more info about question
     const backBtn = document.getElementById('back-btn');
     const explanationDiv = document.getElementById('explanation');
 
-  
+
     quizForm.addEventListener('submit', event => {
         event.preventDefault();
         
@@ -67,6 +67,13 @@ TODO: Should display category of exam at top and maybe more info about question
         const clickedButton = event.submitter.id;
 
         if (clickedButton == 'check-answer-btn'){
+            // Validate that an answer is selected when checking answer
+            const selectedAnswer = formData.get('user_answer');
+            if (!selectedAnswer) {
+                alert('Please select an answer before checking');
+                return;
+            }
+            
             // Submit user answer to database
             fetch(`{% url 'save-answer' quiz_uuid %}`, {
                 method: 'POST',
@@ -115,7 +122,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
                     <br>
                 `).join('');
                 document.querySelector('.form-check').innerHTML = answersHtml;
@@ -124,6 +131,7 @@ TODO: Should display category of exam at top and maybe more info about question
             if (data.is_last_question){
                 nextBtn.disabled = true;
             }
+            explanationDiv.innerHTML = "";
         }
         else if (clickedButton == 'back-btn'){
             data.append('direction', -1)
@@ -147,7 +155,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
                     <br>
                 `).join('');
                 document.querySelector('.form-check').innerHTML = answersHtml;
@@ -155,6 +163,11 @@ TODO: Should display category of exam at top and maybe more info about question
                 if (data.is_first_question){
                     backBtn.disabled = true;
                 }
+                // TODO: Back should always disable input and show previous answer and explanation. They aren't allowed to 
+                // skip questions.
+                explanationDiv.innerHTML = "";
+                
+
             });
         }
         
