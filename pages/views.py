@@ -45,7 +45,7 @@ def my_exams(request):
 @require_http_methods(["GET"])
 def my_quizzes(request):
         user = request.user
-        has_paid = user.has_paid
+        has_paid = user.has_paid_v2
         context = {"user_has_paid": has_paid}
         quizzes = Quiz.objects.annotate(question_count=Count('questions')).values('title', 'uuid', 'description', 'question_count')
         context['quizzes'] = quizzes
