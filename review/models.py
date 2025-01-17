@@ -8,7 +8,7 @@ from exams.models import Category, ExamType
 class Quiz(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     quiz_type = models.ForeignKey(ExamType, on_delete=models.SET_NULL, related_name="quizzes", null=True)
     questions = models.ManyToManyField('Question', related_name='questions', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -91,6 +91,9 @@ class UserQuizAnswer(models.Model):
         if self.question:
             self.question_text = self.question.text
         super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('user_quiz_state', 'question')
 
     def __str__(self):
         return f"Question: {self.question.id} for {self.user_quiz_state.user}"
