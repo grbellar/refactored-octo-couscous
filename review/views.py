@@ -5,17 +5,26 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
+import pprint
 
 
 with open('review/test-review-data.json', 'r') as file:
     quizzes = json.load(file)
 
 
+def get_user_answer(user, quiz_uuid, question):
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    user_quiz_state = UserQuizState.objects.get(user=user, quiz=quiz)
+    user_answer = UserQuizAnswer.objects.get(user_quiz_state=user_quiz_state, question=question)
+    pprint.pprint(user_answer.selected_answer.id)
+    return user_answer
+
+
 def get_quiz_question(user, quiz_uuid):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
-    quiz_state = UserQuizState.objects.get(user=user, quiz=quiz)
+    quiz_state= UserQuizState.objects.get_or_create(user=user, quiz=quiz)[0]
     quiz_question = quiz.questions.all()[quiz_state.current_question_index]
-    return {
+    question_data = {
         'question_id': quiz_question.id,
         'question_number': quiz_state.current_question_index + 1,
         'question_text': quiz_question.text,
@@ -23,8 +32,20 @@ def get_quiz_question(user, quiz_uuid):
         'explanation': quiz_question.explanation.text,
         'total_questions': quiz.questions.count(),
         'is_first_question': quiz_state.current_question_index == 0,
-        'is_last_question': quiz_state.current_question_index == quiz.questions.count() - 1
+        'is_last_question': quiz_state.current_question_index == quiz.questions.count() - 1,
     }
+    # If user answer exists, add it to the question data
+    try:
+        user_answer = get_user_answer(user, quiz_uuid, quiz_question)
+        question_data['user_answer_id'] = user_answer.selected_answer.id
+        question_data['is_correct'] = user_answer.is_correct
+    except (AttributeError, UserQuizAnswer.DoesNotExist):
+        # Handle case where user_answer or its attributes don't exist
+        print("User answer does not exist")
+    pprint.pprint(question_data)
+    return question_data
+
+
 
 
 @login_required

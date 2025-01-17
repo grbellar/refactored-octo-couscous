@@ -10,7 +10,7 @@ TODO: Should display category of exam at top and maybe more info about question
         <div class="col-md-8">
             <div>
                 <h2>{{ quiz_title }}</h2>
-                <div>
+                <div id="quiz-form-container">
                     <h6 id="question-number">{{ question_number }} / {{ total_questions }}</h6>
                     <p id="question-text">{{ question_text }}</p>
         
@@ -34,7 +34,6 @@ TODO: Should display category of exam at top and maybe more info about question
                         {% else %}
                         <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
                         {% endif %}
-                        <!-- There actually needs to be a seperate interace for chcking answer and then proceeding to next question-->
                     </form>
                 </div>
             </div>
@@ -58,6 +57,26 @@ TODO: Should display category of exam at top and maybe more info about question
     const backBtn = document.getElementById('back-btn');
     const explanationDiv = document.getElementById('explanation');
 
+    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
+        // Disable all radio inputs
+        document.querySelectorAll('.form-check-input').forEach(input => {
+            input.disabled = true;
+        });
+        
+        // Select the previously chosen answer
+        const selectedInput = document.querySelector(`#choice${selectedAnswerId}`);
+        if (selectedInput) {
+            selectedInput.checked = true;
+        }
+        
+        // TODO: Change to something not as jarring
+        const colorFeedback = document.getElementById('quiz-form-container');
+        colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
+        
+        // Show explanation
+        explanationDiv.innerHTML = explanation;
+        
+    }
 
     quizForm.addEventListener('submit', event => {
         event.preventDefault();
@@ -94,8 +113,11 @@ TODO: Should display category of exam at top and maybe more info about question
                 if (data.is_last_question){
                     nextBtn.disabled = true;
                 }
-                // Update explanation and is correct 
-                explanationDiv.innerHTML = data.explanation;
+                disableFormAndShowExplanation(
+                    data.user_answer_id,
+                    data.is_correct,
+                    data.explanation
+                );
             });
             
         }
@@ -113,9 +135,20 @@ TODO: Should display category of exam at top and maybe more info about question
             .then(response => response.json())
             .then(data => {
                 console.log(data)
-                checkAnswerBtn.style.display = 'inline';
-                nextBtn.style.display = 'none';
-                backBtn.disabled = false;
+                if (data.user_answer_id){
+                    disableFormAndShowExplanation(
+                        data.user_answer_id,
+                        data.is_correct,
+                        data.explanation
+                    );
+                }
+                // Else user hasn't answered yet
+                else {
+                    checkAnswerBtn.style.display = 'inline';
+                    nextBtn.style.display = 'none';
+                    backBtn.disabled = false;
+                    explanationDiv.innerHTML = "";
+                }
                 
                 // Populate new question
                 document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
@@ -131,8 +164,8 @@ TODO: Should display category of exam at top and maybe more info about question
             if (data.is_last_question){
                 nextBtn.disabled = true;
             }
-            explanationDiv.innerHTML = "";
         }
+
         else if (clickedButton == 'back-btn'){
             data.append('direction', -1)
             // Update question index
@@ -165,12 +198,13 @@ TODO: Should display category of exam at top and maybe more info about question
                 }
                 // TODO: Back should always disable input and show previous answer and explanation. They aren't allowed to 
                 // skip questions.
-                explanationDiv.innerHTML = "";
-                
-
+                disableFormAndShowExplanation(
+                    data.user_answer_id,
+                    data.is_correct,
+                    data.explanation
+                );
             });
         }
-        
     });
 
     {% comment %} function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
