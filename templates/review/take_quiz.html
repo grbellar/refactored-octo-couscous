@@ -11,21 +11,29 @@ TODO: Should display category of exam at top and maybe more info about question
             <div>
                 <h2>{{ quiz_title }}</h2>
                 <div>
-                    <h6 id="question-number"></h6>
-                    <p id="question-text"></p>
+                    <h6 id="question-number">1 / {{ total_questions }}</h6>
+                    <p id="question-text">{{ question_text }}</p>
         
                     <form id="quiz-form">
                         {% csrf_token %}
                         <div class="form-check">
                             {% for answer in answers %}     
-                            <label class="form-check-label" for="choice1">{{ answer.text }}</label>
-                            <input required class="form-check-input" id="choice1" type="radio" name="user_answer" value="1">
+                            <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                            <input required class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                             <br>                         
                             {% endfor %}
                         </div>
+                        {% if is_first_question %}
+                        <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                        {% else %}
                         <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                        {% endif %}
                         <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
+                        {% if is_last_question %}
+                        <input id="next-btn" class="btn btn-primary" type="submit" value="Next" disabled>
+                        {% else %}
                         <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
+                        {% endif %}
                         <!-- There actually needs to be a seperate interace for chcking answer and then proceeding to next question-->
                     </form>
                 </div>
@@ -71,8 +79,16 @@ TODO: Should display category of exam at top and maybe more info about question
             .then(response => response.json())
             .then(data => {
                 console.log(data)
+                document.querySelectorAll('.form-check-input').forEach(input => {
+                    input.disabled = true;
+                });
                 checkAnswerBtn.style.display = 'none';
                 nextBtn.style.display = 'inline';
+                if (data.is_last_question){
+                    nextBtn.disabled = true;
+                }
+                // Update explanation and is correct 
+                explanationDiv.innerHTML = data.explanation;
             });
             
         }
@@ -92,8 +108,22 @@ TODO: Should display category of exam at top and maybe more info about question
                 console.log(data)
                 checkAnswerBtn.style.display = 'inline';
                 nextBtn.style.display = 'none';
+                backBtn.disabled = false;
+                
                 // Populate new question
+                document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
+                document.getElementById('question-text').textContent = data.question_text;
+                const answersHtml = data.answers.map(answer => `
+                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
+                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <br>
+                `).join('');
+                document.querySelector('.form-check').innerHTML = answersHtml;
             });
+
+            if (data.is_last_question){
+                nextBtn.disabled = true;
+            }
         }
         else if (clickedButton == 'back-btn'){
             data.append('direction', -1)
@@ -111,7 +141,20 @@ TODO: Should display category of exam at top and maybe more info about question
                 console.log(data)
                 checkAnswerBtn.style.display = 'none';
                 nextBtn.style.display = 'inline';
+                nextBtn.disabled = false;
                 // Populate new question
+                document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
+                document.getElementById('question-text').textContent = data.question_text;
+                const answersHtml = data.answers.map(answer => `
+                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
+                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <br>
+                `).join('');
+                document.querySelector('.form-check').innerHTML = answersHtml;
+                
+                if (data.is_first_question){
+                    backBtn.disabled = true;
+                }
             });
         }
         

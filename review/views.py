@@ -20,7 +20,10 @@ def get_quiz_question(user, quiz_uuid):
         'question_number': quiz_state.current_question_index + 1,
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
-        'explanation': quiz_question.explanation.text
+        'explanation': quiz_question.explanation.text,
+        'total_questions': quiz.questions.count(),
+        'is_first_question': quiz_state.current_question_index == 0,
+        'is_last_question': quiz_state.current_question_index == quiz.questions.count() - 1
     }
 
 
@@ -38,9 +41,11 @@ def take_quiz(request, quiz_uuid):
 @require_http_methods(['POST']) 
 def save_answer(request, quiz_uuid):
     #TODO: Save to db
-    return JsonResponse({
-        'status': "Saved to db!"
-    })
+    # Get answer id
+    # Send back is correct
+    # Needs to send back is_last_question so I can disable next button
+    question_data = get_quiz_question(request.user, quiz_uuid)
+    return JsonResponse(question_data)
 
 
 @login_required
