@@ -18,9 +18,12 @@ TODO: Should display category of exam at top and maybe more info about question
                         {% csrf_token %}
                         <div class="form-check">
                             {% for answer in answers %}     
-                            <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                            <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
-                            <br>                         
+                            {% if user_answer_id %}
+                            <!--TODO: On page load need to determine if user has answered this question and show disabled radio button plus answer if so-->
+                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                            <br>    
+                            {% endif %}
                             {% endfor %}
                         </div>
                         {% if is_first_question %}
@@ -56,6 +59,8 @@ TODO: Should display category of exam at top and maybe more info about question
     const nextBtn = document.getElementById('next-btn');
     const backBtn = document.getElementById('back-btn');
     const explanationDiv = document.getElementById('explanation');
+    const colorFeedback = document.getElementById('quiz-form-container');
+
 
     function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
         // Disable all radio inputs
@@ -70,7 +75,6 @@ TODO: Should display category of exam at top and maybe more info about question
         }
         
         // TODO: Change to something not as jarring
-        const colorFeedback = document.getElementById('quiz-form-container');
         colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
         
         // Show explanation
@@ -148,6 +152,7 @@ TODO: Should display category of exam at top and maybe more info about question
                     nextBtn.style.display = 'none';
                     backBtn.disabled = false;
                     explanationDiv.innerHTML = "";
+                    colorFeedback.style.backgroundColor = '';
                 }
                 
                 // Populate new question
@@ -207,106 +212,5 @@ TODO: Should display category of exam at top and maybe more info about question
         }
     });
 
-    {% comment %} function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
-        // Disable all radio inputs
-        document.querySelectorAll('.form-check-input').forEach(input => {
-            input.disabled = true;
-        });
-        
-        // Select the previously chosen answer
-        const selectedInput = document.querySelector(`#choice${selectedAnswerId}`);
-        if (selectedInput) {
-            selectedInput.checked = true;
-        }
-        
-        // TODO: Change to something not as jarring
-        const colorFeedback = document.querySelector('.form-check');
-        colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
-        
-        // Show explanation
-        explanationDiv.innerHTML = explanation;
-        
-        // Show next button, hide check answer button
-        checkAnswerBtn.style.display = 'none';
-        nextBtn.style.display = 'inline';
-    } {% endcomment %}
-
-    {% comment %} quizForm.addEventListener('submit', event => {
-        event.preventDefault();
-        
-        const formData = new FormData(quizForm);
-        const data = new URLSearchParams(formData);
-        const clickedButton = event.submitter.id;
-        data.append('button', clickedButton);
-        if (clickedButton == 'check-answer-btn'){
-            fetch("{% url 'check-answer' quiz.uuid %}", {
-                method: 'POST',
-                credentials: 'same-origin', 
-                headers: {
-                    "X-CSRFToken": csrftoken
-                },
-                body: data
-            }).then(response => response.json()).then(data => {
-                disableFormAndShowExplanation(
-                    formData.get('user_answer'),
-                    data.is_correct,
-                    data.explanation
-            });
-        } else if (clickedButton === 'next-btn') {
-
-        }
-
-        fetch("{% url 'check-answer' quiz.uuid %}", {
-            method: 'POST',
-            credentials: 'same-origin', 
-            headers: {
-                "X-CSRFToken": csrftoken
-            },
-            body: data
-        }).then(response => response.json()).then(data => {
-            if (clickedButton === 'check-answer-btn') {
-                disableFormAndShowExplanation(
-                    formData.get('user_answer'),
-                    data.is_correct,
-                    data.explanation
-                );
-                // TODO: If we get is last question from server, don't display next button
-            } else if (clickedButton === 'next-btn') {
-                // Update question and answers
-                document.getElementById('question-text').textContent = data.next_question.text;
-                const answersHtml = data.next_question.answers.map(answer => `
-                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
-                    <br>
-                `).join('');
-                document.querySelector('.form-check').innerHTML = answersHtml;
-                
-                // Reset form state
-                explanationDiv.innerHTML = '';
-                checkAnswerBtn.style.display = 'inline';
-                nextBtn.style.display = 'none';
-                document.querySelectorAll('.form-check-input').forEach(input => {
-                    input.disabled = false;
-                });
-                document.querySelector('.form-check').style.backgroundColor = ''
-            } else if (clickedButton === 'back-btn') {
-                // Update question and answers
-                document.getElementById('question-text').textContent = data.next_question.text;
-                const answersHtml = data.next_question.answers.map(answer => `
-                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input required class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
-                    <br>
-                `).join('');
-                document.querySelector('.form-check').innerHTML = answersHtml;
-                
-                // Show previous answer and explanation
-                disableFormAndShowExplanation(
-                    data.previous_answer.selected_answer_id,
-                    data.previous_answer.is_correct,
-                    data.previous_answer.explanation
-                );
-            }
-        });
-    }); {% endcomment %}
 </script>
 {% endblock javascript %}

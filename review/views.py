@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 import json
-from .models import Quiz, UserQuizState, Answer, UserQuizAnswer
+from .models import Quiz, UserQuizState, Answer, UserQuizAnswer, Question
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -54,18 +54,33 @@ def take_quiz(request, quiz_uuid):
     context = get_quiz_question(request.user, quiz_uuid)
     context['quiz_title'] = Quiz.objects.get(uuid=quiz_uuid).title
     context['quiz_uuid'] = quiz_uuid
-    # Initial page load
+    # On initial page load should I l
     return render(request, "review/take_quiz.html", context=context)
 
 
 @login_required
 @require_http_methods(['POST']) 
 def save_answer(request, quiz_uuid):
-    #TODO: Save to db
-    # Get answer id
-    # Send back is correct
-    # Needs to send back is_last_question so I can disable next button
+    
+
+    chosen_answer_id = request.POST.get('user_answer')
+    chosen_answer = Answer.objects.get(id=chosen_answer_id)
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
+    quiz_question = quiz.questions.all()[quiz_state.current_question_index]
+
+    print(request.POST)
+    print(request.POST.get('user_answer'))
+    UserQuizAnswer.objects.create(
+        user_quiz_state=quiz_state,
+        question=quiz_question,
+        selected_answer=chosen_answer,
+        is_correct=chosen_answer.is_correct
+    )
+
+    # Needs to be last call so that user answer data is available to show and pass back to front end
     question_data = get_quiz_question(request.user, quiz_uuid)
+
     return JsonResponse(question_data)
 
 

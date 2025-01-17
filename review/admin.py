@@ -6,6 +6,7 @@ from .models import *
 admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(UserQuizAnswer)
+admin.site.register(UserQuizState)
 
 class QuizAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
