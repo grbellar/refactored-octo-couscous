@@ -13,10 +13,24 @@
               <div class="d-flex justify-content-between align-items-start">
                 <h5 class="card-title">{{ quiz.title }}</h5>
               </div>
+              <p class="text-muted-small"><em>
+                {% if quiz.not_started %}
+                8 hours to review once started.
+                {% elif quiz.is_expired %}
+                Review time has expired.
+                {% else %}
+                  {{ quiz.hours_remaining }} hours {{ quiz.minutes_remaining }} mins left to review
+                {% endif %}
+                </em>
+                </p>
               <p>{{ quiz.description }}</p>
               <p>{{ quiz.question_count }} questions</p>
               <div class="mt-auto">
-                <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Start Review</a>
+                {% if quiz.is_expired %}
+                  <a class="btn btn-primary w-100 disabled" aria-disabled="true">Review time has expired</a>
+                {% else %}
+                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Start Review</a>
+                {% endif %}
               </div>
             </div>
           </div>

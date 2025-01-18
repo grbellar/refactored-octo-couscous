@@ -9,7 +9,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os 
 import pprint
-from django.db.models import Count
+from django.db.models import Count, F, Q
+from django.utils import timezone
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,9 +49,46 @@ def my_quizzes(request):
         user = request.user
         has_paid = user.has_paid_v2
         context = {"user_has_paid": has_paid}
-        quizzes = Quiz.objects.annotate(question_count=Count('questions')).values('title', 'uuid', 'description', 'question_count')
-        context['quizzes'] = quizzes
+        
+        # Get quizzes with question count and join with UserQuizState
+        quizzes = Quiz.objects.annotate(
+            question_count=Count('questions')
+        ).values(
+            'title', 
+            'uuid', 
+            'description', 
+            'question_count',
+            'userquizstate__time_started',  # Just fetch the timestamp
+            'userquizstate__user'  # Add this to check if user has started
+        ).filter(
+            Q(userquizstate__user=user) | Q(userquizstate__user__isnull=True)
+        )
 
+        # Add is_expired flag, time_remaining, and not_started to each quiz
+        now = timezone.now()
+        for quiz in quizzes:
+            # Check if quiz hasn't been started by this user
+            quiz['not_started'] = quiz['userquizstate__user'] is None
+            
+            time_started = quiz['userquizstate__time_started']
+            if time_started is not None:
+                time_elapsed = now - time_started
+                is_expired = time_elapsed >= timedelta(hours=8)
+                quiz['is_expired'] = is_expired
+                if not is_expired:
+                    time_remaining = timedelta(hours=8) - time_elapsed
+                    # Convert timedelta to hours and minutes
+                    total_minutes = time_remaining.total_seconds() / 60
+                    hours = int(total_minutes // 60)
+                    minutes = int(total_minutes % 60)
+                    quiz['hours_remaining'] = hours
+                    quiz['minutes_remaining'] = minutes
+            else:
+                quiz['is_expired'] = False
+                quiz['hours_remaining'] = None
+                quiz['minutes_remaining'] = None
+        
+        context['quizzes'] = quizzes
         return render(request, 'review/my_quizzes.html', context)
                
      

@@ -28,7 +28,7 @@ def get_quiz_question(user, quiz_uuid):
     question_data = {
         'question_id': quiz_question.id,
         'question_number': quiz_state.current_question_index + 1,
-        'category': quiz_question.category,
+        'category': quiz_question.category.name,
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
         'explanation': quiz_question.explanation.text,
@@ -54,8 +54,19 @@ def get_quiz_question(user, quiz_uuid):
 @require_http_methods(['GET']) 
 def take_quiz(request, quiz_uuid):
     context = get_quiz_question(request.user, quiz_uuid)
-    context['quiz_title'] = Quiz.objects.get(uuid=quiz_uuid).title
-    context['quiz_uuid'] = quiz_uuid
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
+    
+    # Calculate end time in UTC
+    start_time = quiz_state.time_started
+    end_time = start_time + timezone.timedelta(hours=8)
+    
+    context.update({
+        'quiz_title': quiz.title,
+        'quiz_uuid': quiz_uuid,
+        'time_started': start_time.isoformat(),
+        'time_ends': end_time.isoformat(),
+    })
     return render(request, "review/take_quiz.html", context=context)
 
 
