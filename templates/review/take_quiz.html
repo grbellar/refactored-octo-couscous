@@ -11,7 +11,11 @@ TODO: Should display category of exam at top and maybe more info about question
             <div>
                 <h2>{{ quiz_title }}</h2>
                 <div id="quiz-form-container" style="{% if user_answer_id %}background-color: {% if is_correct %}#d4edda;{% else %}#f8d7da;{% endif %}{% endif %}">
-                    <h6 id="question-number">{{ question_number }} / {{ total_questions }}</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary rounded-pill" id="question-number">Question {{ question_number }} of {{ total_questions }}</span>
+                        <span class="text-muted-small">{{ category }}</span>
+                    </div>
+                    
                     <p id="question-text">{{ question_text }}</p>
         
                     <form id="quiz-form">
@@ -165,7 +169,7 @@ TODO: Should display category of exam at top and maybe more info about question
         
                     if (!data.status) {
                         // Populate new question
-                        document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
+                        document.getElementById('question-number').textContent = "Question " + data.question_number + " of " + data.total_questions;
                         document.getElementById('question-text').textContent = data.question_text;
                         const answersHtml = data.answers.map(answer => `
                                 <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
@@ -226,7 +230,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 nextBtn.style.display = 'inline';
                 nextBtn.disabled = false;
                 // Populate new question
-                document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
+                document.getElementById('question-number').textContent = data.question_number + " of " + data.total_questions;
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>

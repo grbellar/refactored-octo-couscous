@@ -28,6 +28,7 @@ def get_quiz_question(user, quiz_uuid):
     question_data = {
         'question_id': quiz_question.id,
         'question_number': quiz_state.current_question_index + 1,
+        'category': quiz_question.category,
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
         'explanation': quiz_question.explanation.text,
