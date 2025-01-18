@@ -10,39 +10,60 @@ TODO: Should display category of exam at top and maybe more info about question
         <div class="col-md-8">
             <div>
                 <h2>{{ quiz_title }}</h2>
-                <div id="quiz-form-container">
+                <div id="quiz-form-container" style="{% if user_answer_id %}background-color: {% if is_correct %}#d4edda;{% else %}#f8d7da;{% endif %}{% endif %}">
                     <h6 id="question-number">{{ question_number }} / {{ total_questions }}</h6>
                     <p id="question-text">{{ question_text }}</p>
         
                     <form id="quiz-form">
                         {% csrf_token %}
                         <div class="form-check">
-                            {% for answer in answers %}     
-                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                                <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
-                            <br>    
+                            {% for answer in answers %}
+                                {% if user_answer_id %}
+                                    <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                    {% if answer.id == user_answer_id %}
+                                        <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
+                                    {% else %}
+                                        <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                    {% endif %}
+                                        <br>  
+                                {% else %}   
+                                    <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                    <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                    <br>    
+                                {% endif %}
                             {% endfor %}
                         </div>
-                        {% if is_first_question %}
-                        <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                        {% if user_answer_id %}
+                            {% if is_first_question %}
+                                <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                                <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
+                            {% elif is_last_question%}
+                                <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                                <input id="next-btn" class="btn btn-primary" type="submit" value="Next" disabled>
+                            {% else %}
+                                <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                                <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
+                            {% endif %}
+                            <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer" style="display: none;">
                         {% else %}
-                        <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                            {% if is_first_question %}
+                                <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                            {% else %}
+                                <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                            {% endif %}
+                            <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
+                            <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
                         {% endif %}
-                        <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
-                        {% if is_last_question %}
-                        <input id="next-btn" class="btn btn-primary" type="submit" value="Next" disabled>
-                        {% else %}
-                        <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
-                        {% endif %}
+                        
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" style="background-color: #e6f3ff; margin-top: 10px; margin-bottom: 20px; border: 2px solid #cce0f5; border-radius: 5px;">
+    <div id="explanation-container" class="row" style="{% if not user_answer_id %}display: none; {% endif %}background-color: #e6f3ff; margin-top: 10px; margin-bottom: 20px; border: 2px solid #cce0f5; border-radius: 5px;">
         <div class="col-md-8" style="padding-top: 10px;">
             <h6>Explanation</h6>
-            <pre id="explanation" style="white-space: pre-wrap; font-family: inherit;"></pre>
+            <pre id="explanation" style="white-space: pre-wrap; font-family: inherit;">{{ explanation }}</pre>
         </div>
     </div>
 </div>
@@ -55,7 +76,8 @@ TODO: Should display category of exam at top and maybe more info about question
     const checkAnswerBtn = document.getElementById('check-answer-btn');
     const nextBtn = document.getElementById('next-btn');
     const backBtn = document.getElementById('back-btn');
-    const explanationDiv = document.getElementById('explanation');
+    const explanationPre = document.getElementById('explanation');
+    const explanationDiv = document.getElementById('explanation-container')
     const colorFeedback = document.getElementById('quiz-form-container');
 
 
@@ -75,7 +97,8 @@ TODO: Should display category of exam at top and maybe more info about question
         colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
         
         // Show explanation
-        explanationDiv.innerHTML = explanation;
+        explanationDiv.style.display = '';
+        explanationPre.innerHTML = explanation;
         
     }
 
@@ -115,6 +138,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 if (data.is_last_question){
                     nextBtn.disabled = true;
                 }
+
                 disableFormAndShowExplanation(
                     data.user_answer_id,
                     data.is_correct,
@@ -166,7 +190,8 @@ TODO: Should display category of exam at top and maybe more info about question
                             checkAnswerBtn.style.display = 'inline';
                             nextBtn.style.display = 'none';
                             backBtn.disabled = false;
-                            explanationDiv.innerHTML = "";
+                            explanationDiv.style.display = 'none';
+                            explanationPre.innerHTML = "";
                             colorFeedback.style.backgroundColor = '';
         
                         }
@@ -213,8 +238,6 @@ TODO: Should display category of exam at top and maybe more info about question
                 if (data.is_first_question){
                     backBtn.disabled = true;
                 }
-                // TODO: Back should always disable input and show previous answer and explanation. They aren't allowed to 
-                // skip questions.
                 disableFormAndShowExplanation(
                     data.user_answer_id,
                     data.is_correct,

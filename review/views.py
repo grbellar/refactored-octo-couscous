@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
+from django.utils import timezone
 import pprint
 
 
@@ -54,7 +55,6 @@ def take_quiz(request, quiz_uuid):
     context = get_quiz_question(request.user, quiz_uuid)
     context['quiz_title'] = Quiz.objects.get(uuid=quiz_uuid).title
     context['quiz_uuid'] = quiz_uuid
-    # On initial page load should I l
     return render(request, "review/take_quiz.html", context=context)
 
 
@@ -69,6 +69,8 @@ def save_answer(request, quiz_uuid):
     quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
     quiz_question = quiz.questions.all()[quiz_state.current_question_index]
 
+    # TODO: Should prob add a check for completed quiz state but oh well.
+
     print(request.POST)
     print(request.POST.get('user_answer'))
     UserQuizAnswer.objects.create(
@@ -80,6 +82,10 @@ def save_answer(request, quiz_uuid):
 
     # Needs to be last call so that user answer data is available to show and pass back to front end
     question_data = get_quiz_question(request.user, quiz_uuid)
+    if question_data['is_last_question']:
+        quiz_state.completed = True
+        quiz_state.time_completed = timezone.now()
+        quiz_state.save()
 
     return JsonResponse(question_data)
 
