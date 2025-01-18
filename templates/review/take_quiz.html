@@ -18,12 +18,9 @@ TODO: Should display category of exam at top and maybe more info about question
                         {% csrf_token %}
                         <div class="form-check">
                             {% for answer in answers %}     
-                            {% if user_answer_id %}
-                            <!--TODO: On page load need to determine if user has answered this question and show disabled radio button plus answer if so-->
                                 <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                                <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                             <br>    
-                            {% endif %}
                             {% endfor %}
                         </div>
                         {% if is_first_question %}
@@ -91,6 +88,7 @@ TODO: Should display category of exam at top and maybe more info about question
 
         if (clickedButton == 'check-answer-btn'){
             // Validate that an answer is selected when checking answer
+            console.log("check-answer-btn clicked")
             const selectedAnswer = formData.get('user_answer');
             if (!selectedAnswer) {
                 alert('Please select an answer before checking');
@@ -125,53 +123,67 @@ TODO: Should display category of exam at top and maybe more info about question
             });
             
         }
-        else if (clickedButton == 'next-btn'){
+        else if (clickedButton == 'next-btn') {
+            console.log("next-btn clicked")
             data.append('direction', 1)
             // Update question index
             fetch(`{% url 'update-question-index' quiz_uuid %}`, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    "X-CSRFToken": csrftoken
-                },
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                if (data.user_answer_id){
-                    disableFormAndShowExplanation(
-                        data.user_answer_id,
-                        data.is_correct,
-                        data.explanation
-                    );
-                }
-                // Else user hasn't answered yet
-                else {
-                    checkAnswerBtn.style.display = 'inline';
-                    nextBtn.style.display = 'none';
-                    backBtn.disabled = false;
-                    explanationDiv.innerHTML = "";
-                    colorFeedback.style.backgroundColor = '';
-                }
-                
-                // Populate new question
-                document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
-                document.getElementById('question-text').textContent = data.question_text;
-                const answersHtml = data.answers.map(answer => `
-                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
-                    <br>
-                `).join('');
-                document.querySelector('.form-check').innerHTML = answersHtml;
-            });
-
-            if (data.is_last_question){
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+        
+                    if (!data.status) {
+                        // Populate new question
+                        document.getElementById('question-number').textContent = data.question_number + " / " + data.total_questions;
+                        document.getElementById('question-text').textContent = data.question_text;
+                        const answersHtml = data.answers.map(answer => `
+                                <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
+                                <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                                <br>
+                            `).join('');
+                        document.querySelector('.form-check').innerHTML = answersHtml;
+        
+                        if (data.user_answer_id) {
+                            backBtn.disabled = false;
+                            if (data.is_last_question){
+                                nextBtn.disabled = true;
+                            }
+                            disableFormAndShowExplanation(
+                                data.user_answer_id,
+                                data.is_correct,
+                                data.explanation
+                            );
+                        }
+                        // Else user hasn't answered yet
+                        else {
+                            checkAnswerBtn.style.display = 'inline';
+                            nextBtn.style.display = 'none';
+                            backBtn.disabled = false;
+                            explanationDiv.innerHTML = "";
+                            colorFeedback.style.backgroundColor = '';
+        
+                        }
+                    }
+                    else {
+                        nextBtn.disabled = true;
+                    }
+        
+                });
+        
+            if (data.is_last_question) {
                 nextBtn.disabled = true;
             }
         }
 
         else if (clickedButton == 'back-btn'){
+            console.log("back-btn clicked")
             data.append('direction', -1)
             // Update question index
             fetch(`{% url 'update-question-index' quiz_uuid %}`, {
