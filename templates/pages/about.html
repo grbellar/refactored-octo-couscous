@@ -5,41 +5,43 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container">
+
     <!-- Header -->
     <header class="py-5">
       <div class="container px-5">
         <div class="row justify-content-center">
-          <div class="col-lg-8 col-xxl-6">
+          <div class="col-lg-8 col-xxl-8">
             <div class="text-center my-5">
-              <h1 class="fw-bolder mb-3">Pass the exam the first time.</h1>
-              <p class="lead fw-normal text-muted mb-4">In the years past, it has been difficult to study for cardiovascular perfusion board exams. Not anymore.</p>
+              <h1 class="fw-bolder mb-3">Our Mission</h1>
+              <p class="lead fw-normal text-muted mb-4">PerfusionBoardPrep is dedicated to helping recent cardiovascular perfusion graduates and professionals prepare for board certification exams. We offer a comprehensive set of study materials designed to build the knowledge and confidence required to succeed in both the Basic Science and Clinical Application portions of the certification exam.</p>
               <a class="btn btn-primary btn-lg" href="#scroll-target">How this works</a>
             </div>
           </div>
         </div>
       </div>
     </header>
-    <!-- About section one -->
+    <!-- Founder Section -->
     <section class="py-5 bg-light">
-      <div class="container px-5 my-5">
-        <div class="row gx-5 align-items-center">
-          <div class="col-lg-6">
-            <img class="img-fluid rounded mb-5 mb-lg-0" src="{% static 'images/logo-square-side.png' %}" alt="..." />
+      <div class="container">
+          <div class="row align-items-center">
+              <div class="col-lg-4 mb-4 mb-lg-0">
+                  <img src="" alt="John Englert" class="img-fluid rounded-3 shadow">
+              </div>
+              <div class="col-lg-8">
+                  <h2 class="mb-4">Meet Our Founder</h2>
+                  <p class="lead">John Englert founded PerfusionBoardPrep in 2023, bringing his extensive experience and passion for advancing the profession to help future generations of perfusionists.</p>
+                  <ul class="list-unstyled">
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Master of Science in Cardiovascular Perfusion from Rush University (2017)</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Lead editor for The Manual of Clinical Perfusion, 3rd Edition</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Active member of AmSECT Safety Committee for 4 years</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Adjunct faculty member at Rush University</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Author of multiple articles in AmSECT Today</li>
+                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Member of the Sanibel Symposium Planning Committee</li>
+                  </ul>
+              </div>
           </div>
-          <div class="col-lg-6">
-            <h2 class="fw-bolder">We understand.</h2>
-            <p class="lead fw-normal text-muted mb-0"></p>
-            <p>You've just graduated, and now you're gearing up for a comprehensive exam that stands between you and your CCP title—<em>and that well deserved salary boost</em>.</p>
-            <p>But there are so many questions.</p>
-            <p>How should I study? What areas should I focus on? What is the real exam like?</p>
-            <p>
-              <span><strong>We are here to help answer some of those questions.</strong></span>
-            </p>
-          </div>
-        </div>
       </div>
-    </section>
+  </section>
     <!-- About section two -->
     <section class="py-5" id="scroll-target">
       <div class="container px-5 my-5">
@@ -67,5 +69,4 @@
         </div>
       </div>
     </section>
-  </div>
 {% endblock %}

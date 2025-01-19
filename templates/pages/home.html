@@ -34,7 +34,7 @@
           <div class="col-lg-8 col-xl-7 col-xxl-6">
               <div class="my-5 text-center text-xl-start">
                   <h1 class="display-5 fw-bolder mb-2">Boost your confidence and master the exam</h1>
-                  <p class="lead fw-normal text-black-50 mb-4">We offer board like exams to help you pass your certification the first time. <span id="text-secondary">Built by Perfusionists.</span></p>
+                  <p class="lead fw-normal text-black-50 mb-4">We offer board like exams and over 1,500 review questions to help you pass your certification the first time. <span id="text-secondary">Built by Perfusionists.</span></p>
                   <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                       <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{% url 'account_signup' %}">Get Started</a>
                       <a class="btn btn-outline-secondary btn-lg px-4" href="{% url 'about' %}">Learn More</a>
@@ -50,40 +50,41 @@
 <section class="py-5" id="features">
     <div class="container">
         <div class="row gx-lg-5">
-            <div class="col-lg-6 col-xxl-3 mb-5">
+            <div class="col-lg-6 col-xxl-6 mb-5">
                 <div class="card bg-light border-0 h-100">
                     <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-check"></i></div>
-                        <h2 class="fs-4 fw-bold">Simple and easy to use
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-journal-text"></i></div>
+                        <h2 class="fs-4 fw-bold">Comprehensive Question Bank
                         </h2>
-                        <p class="mb-0">We make it easy to navigate through practice exams so you can focus on what matters—studying. Just log in, select your exam, and get started.</p>
+                        <p class="mb-0">Over 1,500 practice questions in our review question bank, each verified by at least 3 perfusion-specific sources. Detailed explanations and references are provided for in-depth study.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-xxl-3 mb-5">
+            <div class="col-lg-6 col-xxl-6 mb-5">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-clock-history"></i></div>
+                        <h2 class="fs-4 fw-bold">Timed Practice Exams</h2>
+                        <p class="mb-0">4 Timed Exams containing 100 questions each with a 2-hour time limit, simulating the real board exam experience.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xxl-6 mb-5">
               <div class="card bg-light border-0 h-100">
                   <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
                       <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-bullseye"></i></div>
                       <h2 class="fs-4 fw-bold">Targeted feedback</h2>
-                      <p class="mb-0">This program shows you exactly where to focus your studies for exam day.</p>
+                      <p class="mb-0">This program shows you exactly where to focus your studies with detailed explanations and score breakdown for each category.</p>
                   </div>
               </div>
             </div>
-            <div class="col-lg-6 col-xxl-3 mb-5">
+            
+            <div class="col-lg-6 col-xxl-6 mb-5">
                 <div class="card bg-light border-0 h-100">
                     <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-pencil"></i></div>
-                        <h2 class="fs-4 fw-bold">Know you're ready for the exam</h2>
-                        <p class="mb-0">Board-style questions in a board format ensure you're fully prepared for exam day.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-xxl-3 mb-5">
-                <div class="card bg-light border-0 h-100">
-                    <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-heart-pulse"></i></div>
-                        <h2 class="fs-4 fw-bold">We are subject matter experts</h2>
-                        <p class="mb-0">Our content is crafted by leading educators, textbook authors, and top-performing perfusionists.</p>
+                        <div id="iconBlue" class="feature text-white rounded-3 mb-4" style="margin-top: -40px;"><i class="bi bi-shield-check"></i></div>
+                        <h2 class="fs-4 fw-bold">Success Guarantee</h2>
+                        <p class="mb-0">We're confident in our program. If you complete it and don't pass your exam, we'll give you your money back!</p>
                     </div>
                 </div>
             </div>
@@ -91,8 +92,29 @@
     </div>
 </section>
 
+<!-- Academic Partnerships -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Academic Partnerships</h2>
+        <div class="row align-items-center">
+            <div class="col-lg-12">
+                <p class="lead">PerfusionBoardPrep has collaborated with leading cardiovascular perfusion programs to deliver the highest quality content and user experience.</p>
+            </div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-12">
+                <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+                    <img src="{% static 'images/logo-square-side.png' %}" alt="University of Arizona" class="img-fluid mb-3 mb-md-0" style="height: 125px;">
+                    <img src="{% static 'images/Arizona.svg.png' %}" alt="University of Arizona" class="img-fluid mb-3 mb-md-0" style="height: 125px;">
+                    <img src="{% static 'images/Rush.png' %}" alt="Rush University" class="img-fluid mb-3 mb-md-0" style="height: 150px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Testimonial section-->
-<div class="py-5 bg-light">
+<div class="py-5">
   <div class="container px-5 my-5">
       <div class="row gx-5 justify-content-center">
           <div class="col-lg-10 col-xl-7">
@@ -109,4 +131,13 @@
       </div>
   </div>
 </div>
+
+<!-- Call to Action -->
+<section class="py-5 text-white" style="background-color: #175781">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to start studying?</h2>
+        <p class="lead mb-4">Join the growing list of Perfusionists who trusted PerfusionBoardPrep for their exam preparation.</p>
+        <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg">Get Started Today</a>
+    </div>
+</section>
 {% endblock content %}
