@@ -4,75 +4,79 @@
 
 TODO: Should display category of exam at top and maybe more info about question
 {% block content %}
-<div class="container">
-    <h1 class="mt-4 mb-3">Review</h1>
+<div class="container py-5">
     <h6 id="countdown" style="float: right">8 hours left to review.</h6>
-    <div class="row">
-        <div class="col-md-8">
-            <div>
-                <h2>{{ quiz_title }}</h2>   
-                <div class="card border-0 shadow-sm mb-4" id="quiz-form-container" style="">
-                    <div class="card-header bg-primary bg-opacity-10 border-0 py-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary rounded-pill" id="question-number">Question {{ question_number }} of {{ total_questions }}</span>
-                            <span class="text-muted-small">{{ category }}</span>
-                        </div>
+    
+    <div>
+        <h2>{{ quiz_title }}</h2>   
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-primary bg-opacity-10 border-0 py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                    <span class="badge bg-primary rounded-pill" id="question-number">Question {{ question_number }} of {{ total_questions }}</span>
+                    {% comment %} <span>{% if user_answer_id %}{% if is_correct %}Correct!{% else %} Incorrect.{% endif %}{% endif %}</span> {% endcomment %}
                     </div>
-                    <div class="card-body p-4">
-                    <p class="card-text mb-4" id="question-text">{{ question_text }}</p>
-                    <div class="d-grid gap-3">
-                        <form id="quiz-form">
-                            {% csrf_token %}
-                            <div class="form-check">
-                                {% for answer in answers %}
-                                    {% if user_answer_id %}
-                                        <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                                        {% if answer.id == user_answer_id %}
-                                            <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
-                                        {% else %}
-                                            <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
-                                        {% endif %}
-                                            <br>  
-                                    {% else %}   
-                                        <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                                        <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
-                                        <br>    
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            {% if user_answer_id %}
-                                {% if is_first_question %}
-                                    <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
-                                    <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
-                                {% elif is_last_question%}
-                                    <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
-                                    <input id="next-btn" class="btn btn-primary" type="submit" value="Next" disabled>
-                                {% else %}
-                                    <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
-                                    <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
-                                {% endif %}
-                                <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer" style="display: none;">
-                            {% else %}
-                                {% if is_first_question %}
-                                    <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
-                                {% else %}
-                                    <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
-                                {% endif %}
-                                <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
-                                <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
-                            {% endif %}
-                        </form>
-                    </div>
-                    
-                    </div>
+                    <span class="text-muted-small">{{ category }}</span>
                 </div>
+            </div>
+            <div id="feedback-container" class="card-body p-4" style="{% if user_answer_id %}background-color: {% if is_correct %}#d4edda;{% else %}#f8d7da;{% endif %}{% endif %} font-size: 1.1rem;">
+            <p class="card-text mb-4" id="question-text">{{ question_text }}</p>
+            <div class="d-grid gap-3">
+                <form id="quiz-form">
+                    {% csrf_token %}
+                    <div class="form-check">
+                        {% for answer in answers %}
+                            {% if user_answer_id %}
+                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                {% if answer.id == user_answer_id %}
+                                    <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
+                                {% else %}
+                                    <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                {% endif %}
+                                    <br>  
+                            {% else %}   
+                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                <br>    
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% if user_answer_id %}
+                        {% if is_first_question %}
+                            <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                            <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
+                        {% elif is_last_question%}
+                            <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                            <input id="next-btn" class="btn btn-primary" type="submit" value="Next" disabled>
+                        {% else %}
+                            <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                            <input id="next-btn" class="btn btn-primary" type="submit" value="Next">
+                        {% endif %}
+                        <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer" style="display: none;">
+                    {% else %}
+                        {% if is_first_question %}
+                            <input id="back-btn" class="btn btn-primary" type="submit" value="Back" disabled>
+                        {% else %}
+                            <input id="back-btn" class="btn btn-primary" type="submit" value="Back">
+                        {% endif %}
+                        <input id="check-answer-btn" class="btn btn-primary m-2" type="submit" value="Check answer">
+                        <input id="next-btn" class="btn btn-primary" type="submit" value="Next" style="display: none;">
+                    {% endif %}
+                </form>
+            </div>
+            
             </div>
         </div>
     </div>
-    <div id="explanation-container" class="row" style="{% if not user_answer_id %}display: none; {% endif %}background-color: #e6f3ff; margin-top: 10px; margin-bottom: 20px; border: 2px solid #cce0f5; border-radius: 5px;">
-        <div class="col-md-8" style="padding-top: 10px;">
-            <h6>Explanation</h6>
-            <pre id="explanation" style="white-space: pre-wrap; font-family: inherit;">{{ explanation }}</pre>
+        
+
+     <!-- Explanation Card -->
+     <div id="explanation-container" class="card border-0 shadow-sm mb-4" style="{% if not user_answer_id %}display: none; {% endif %}">
+        <div class="card-header border-0" style="background-color: #e6f3ff;">
+            <h3 class="h5 mb-0">Explanation</h3>
+        </div>
+        <div class="card-body">
+            <pre id="explanation" style="white-space: pre-wrap; font-family: inherit; font-size: 1.1rem;">{{ explanation }}</pre>
         </div>
     </div>
 </div>
@@ -87,7 +91,7 @@ TODO: Should display category of exam at top and maybe more info about question
     const backBtn = document.getElementById('back-btn');
     const explanationPre = document.getElementById('explanation');
     const explanationDiv = document.getElementById('explanation-container')
-    const colorFeedback = document.getElementById('quiz-form-container');
+    const colorFeedback = document.getElementById('feedback-container');
 
 
     function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
@@ -235,7 +239,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 nextBtn.style.display = 'inline';
                 nextBtn.disabled = false;
                 // Populate new question
-                document.getElementById('question-number').textContent = data.question_number + " of " + data.total_questions;
+                document.getElementById('question-number').textContent = "Question " + data.question_number + " of " + data.total_questions;
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
