@@ -59,12 +59,14 @@ def my_quizzes(request):
             'description', 
             'question_count',
             'userquizstate__time_started',  # Just fetch the timestamp
-            'userquizstate__user'  # Add this to check if user has started
+            'userquizstate__user',  # Add this to check if user has started
+            'userquizstate__completed',  # Check if the quiz is completed
+            'userquizstate__score'  # Include the score
         ).filter(
             Q(userquizstate__user=user) | Q(userquizstate__user__isnull=True)
         )
 
-        # Add is_expired flag, time_remaining, and not_started to each quiz
+        # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
         now = timezone.now()
         for quiz in quizzes:
             # Check if quiz hasn't been started by this user
@@ -87,6 +89,13 @@ def my_quizzes(request):
                 quiz['is_expired'] = False
                 quiz['hours_remaining'] = None
                 quiz['minutes_remaining'] = None
+            
+            # Check if the quiz is completed and add score
+            quiz['completed'] = quiz['userquizstate__completed']
+            if quiz['completed']:
+                quiz['score'] = quiz['userquizstate__score']
+            else:
+                quiz['score'] = None
         
         context['quizzes'] = quizzes
         return render(request, 'review/my_quizzes.html', context)

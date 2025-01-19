@@ -13,6 +13,19 @@ with open('review/test-review-data.json', 'r') as file:
     quizzes = json.load(file)
 
 
+
+def grade_quiz(quiz_state):
+    num_correct = 0
+    for answer in quiz_state.user_answers.all():
+        if answer.is_correct:
+            num_correct +=1
+    score = num_correct / quiz_state.answers.count()
+
+    quiz_state.score = score * 100
+    quiz_state.save()
+    # save to db
+
+
 def get_user_answer(user, quiz_uuid, question):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     user_quiz_state = UserQuizState.objects.get(user=user, quiz=quiz)
@@ -95,6 +108,8 @@ def save_answer(request, quiz_uuid):
     # Needs to be last call so that user answer data is available to show and pass back to front end
     question_data = get_quiz_question(request.user, quiz_uuid)
     if question_data['is_last_question']:
+        # TODO: Calculate score
+        grade_quiz(quiz_state)
         quiz_state.completed = True
         quiz_state.time_completed = timezone.now()
         quiz_state.save()
