@@ -9,9 +9,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os 
 import pprint
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, Case, When, IntegerField
 from django.utils import timezone
 from datetime import timedelta
+from django.core.paginator import Paginator
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,61 +47,95 @@ def my_exams(request):
 @login_required
 @require_http_methods(["GET"])
 def my_quizzes(request):
-        user = request.user
-        has_paid = user.has_paid_v2
-        context = {"user_has_paid": has_paid}
-        
-        # Get quizzes with question count and join with UserQuizState
-        quizzes = Quiz.objects.annotate(
-            question_count=Count('questions')
-        ).values(
-            'title', 
-            'uuid', 
-            'description', 
-            'question_count',
-            'userquizstate__time_started',  # Just fetch the timestamp
-            'userquizstate__user',  # Add this to check if user has started
-            'userquizstate__completed',  # Check if the quiz is completed
-            'userquizstate__score'  # Include the score
-        ).filter(
-            Q(userquizstate__user=user) | Q(userquizstate__user__isnull=True)
-        )
+    user = request.user
+    has_paid = user.has_paid_v2
+    context = {"user_has_paid": has_paid}
+    
+    # Get the selected category from the request
+    selected_category = request.GET.get('category', None)
+    # Get quizzes with question count and join with UserQuizState
+    quizzes = Quiz.objects.annotate(
+        question_count=Count('questions')
+    ).values(
+        'title', 
+        'uuid', 
+        'description', 
+        'question_count',
+        'userquizstate__time_started',  # Just fetch the timestamp
+        'userquizstate__user',  # Add this to check if user has started
+        'userquizstate__completed',  # Check if the quiz is completed
+        'userquizstate__score',  # Include the score
+        'category'  # Include category
+    ).filter(
+        Q(userquizstate__user=user) | Q(userquizstate__user__isnull=True)
+    ).annotate(
+        in_progress=Case(
+            When(
+                Q(userquizstate__time_started__isnull=False) & Q(userquizstate__completed=False),
+                then=1
+            ),
+            default=0,
+            output_field=IntegerField(),
+        ),
+        completed=Case(When(userquizstate__completed=True, then=1),
+            default=0,
+            output_field=IntegerField(),
 
-        # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
-        now = timezone.now()
-        for quiz in quizzes:
-            # Check if quiz hasn't been started by this user
-            quiz['not_started'] = quiz['userquizstate__user'] is None
-            
-            time_started = quiz['userquizstate__time_started']
-            if time_started is not None:
-                time_elapsed = now - time_started
-                is_expired = time_elapsed >= timedelta(hours=8)
-                quiz['is_expired'] = is_expired
-                if not is_expired:
-                    time_remaining = timedelta(hours=8) - time_elapsed
-                    # Convert timedelta to hours and minutes
-                    total_minutes = time_remaining.total_seconds() / 60
-                    hours = int(total_minutes // 60)
-                    minutes = int(total_minutes % 60)
-                    quiz['hours_remaining'] = hours
-                    quiz['minutes_remaining'] = minutes
-            else:
-                quiz['is_expired'] = False
-                quiz['hours_remaining'] = None
-                quiz['minutes_remaining'] = None
-            
-            # Check if the quiz is completed and add score
-            quiz['completed'] = quiz['userquizstate__completed']
-            if quiz['completed']:
-                quiz['score'] = quiz['userquizstate__score']
-            else:
-                quiz['score'] = None
+        )
+    ).order_by('-in_progress', '-completed')  # Replace 'some_other_field' with another field for secondary ordering
+
+    # Filter quizzes by category if a category is selected
+    
+    if selected_category:
+        quizzes = quizzes.filter(category=selected_category)
+
+    # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
+    now = timezone.now()
+    for quiz in quizzes:
+        # Check if quiz hasn't been started by this user
+        quiz['not_started'] = quiz['userquizstate__user'] is None
         
-        context['quizzes'] = quizzes
-        return render(request, 'review/my_quizzes.html', context)
-               
-     
+        time_started = quiz['userquizstate__time_started']
+        if time_started is not None:
+            time_elapsed = now - time_started
+            is_expired = time_elapsed >= timedelta(hours=8)
+            quiz['is_expired'] = is_expired
+            if not is_expired:
+                time_remaining = timedelta(hours=8) - time_elapsed
+                # Convert timedelta to hours and minutes
+                total_minutes = time_remaining.total_seconds() / 60
+                hours = int(total_minutes // 60)
+                minutes = int(total_minutes % 60)
+                quiz['hours_remaining'] = hours
+                quiz['minutes_remaining'] = minutes
+        else:
+            quiz['is_expired'] = False
+            quiz['hours_remaining'] = None
+            quiz['minutes_remaining'] = None
+        
+        # Check if the quiz is completed and add score
+        quiz['completed'] = quiz['userquizstate__completed']
+        if quiz['completed']:
+            quiz['score'] = quiz['userquizstate__score']
+        else:
+            quiz['score'] = None
+    
+    # Implement pagination
+    paginator = Paginator(quizzes, 10)  # Show 10 quizzes per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    print(page_obj)
+    print(selected_category)
+
+    # Get all unique categories for filter buttons, excluding None
+    categories = Quiz.objects.values_list('category__name', 'category').distinct()
+    categories = [cat for cat in categories if cat[0] is not None]
+
+    context['page_obj'] = page_obj
+    context['categories'] = categories
+    context['selected_category'] = selected_category
+    return render(request, 'review/my_quizzes.html', context)
+
 @login_required
 @require_http_methods(["GET"])
 def my_results(request):

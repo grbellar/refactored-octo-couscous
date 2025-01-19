@@ -10,6 +10,7 @@ class Quiz(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     quiz_type = models.ForeignKey(ExamType, on_delete=models.SET_NULL, related_name="quizzes", null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     questions = models.ManyToManyField('Question', related_name='questions', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
