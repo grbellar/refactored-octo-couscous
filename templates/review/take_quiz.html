@@ -273,7 +273,7 @@ TODO: Should display category of exam at top and maybe more info about question
                 // Time's up - show message and then redirect after a delay
                 document.getElementById("countdown").innerHTML = "Time expired. Redirecting...";
                 setTimeout(() => {
-                    window.location.href = "{% url 'my-quizzes' %}";
+                    window.location.href = "{% url 'choose-quiz' %}";
                 }, 3000); // 3000 milliseconds = 3 seconds delay
                 return;
             }

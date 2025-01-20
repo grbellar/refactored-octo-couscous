@@ -8,6 +8,7 @@ urlpatterns = [
     path("my-exams/", my_exams, name="my-exams"),
     path("my-results/", my_results, name="my-results"),
     path("my-results/result/<int:id>", single_result, name="single-result"),
-    path('my-quizzes/', my_quizzes, name='my-quizzes'),
+    path('my-quizzes/<str:quiz_type_name>', my_quizzes, name='my-quizzes'),
+    path('choose-quiz', choose_quiz, name='choose-quiz')
 
 ]

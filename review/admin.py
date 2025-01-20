@@ -3,7 +3,10 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('text', 'category')
+
+admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer)
 admin.site.register(UserQuizAnswer)
 admin.site.register(UserQuizState)

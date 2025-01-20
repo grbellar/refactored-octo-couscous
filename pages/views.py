@@ -1,8 +1,8 @@
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from exams.models import Exam, UserExamState
+from django.shortcuts import render, get_object_or_404
+from exams.models import Exam, UserExamState, ExamType
 from review.models import Quiz
 from collections import defaultdict
 from pathlib import Path
@@ -44,17 +44,42 @@ def my_exams(request):
 
         return render(request, 'exams/my_exams.html', context)
 
+
 @login_required
 @require_http_methods(["GET"])
-def my_quizzes(request):
+def choose_quiz(request):
+
+    exam_types = ExamType.objects.all()
+    context = {
+        'exam_types': [
+            {
+                'name': exam_type.name,
+                'id': exam_type.id
+            }
+            for exam_type in exam_types
+        ]
+    }
+
+    return render(request, 'review/quiz_type.html', context)
+
+
+
+@login_required
+@require_http_methods(["GET"])
+def my_quizzes(request, quiz_type_name):
     user = request.user
     has_paid = user.has_paid_v2
     context = {"user_has_paid": has_paid}
     
     # Get the selected category from the request
     selected_category = request.GET.get('category', None)
-    # Get quizzes with question count and join with UserQuizState
-    quizzes = Quiz.objects.annotate(
+    
+    # Get the ExamType object based on the quiz_type_name
+    exam_type = get_object_or_404(ExamType, name=quiz_type_name)
+    # TODO: Need to do something about if someone just make a request to my quizzes without a exam type parameter
+    
+    # Filter quizzes by quiz_type
+    quizzes = Quiz.objects.filter(quiz_type=exam_type).annotate(
         question_count=Count('questions')
     ).values(
         'title', 
@@ -80,7 +105,6 @@ def my_quizzes(request):
         completed=Case(When(userquizstate__completed=True, then=1),
             default=0,
             output_field=IntegerField(),
-
         )
     ).order_by('-in_progress', '-completed')  # Replace 'some_other_field' with another field for secondary ordering
 

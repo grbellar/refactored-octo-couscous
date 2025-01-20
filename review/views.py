@@ -9,11 +9,6 @@ from django.utils import timezone
 import pprint
 
 
-with open('review/test-review-data.json', 'r') as file:
-    quizzes = json.load(file)
-
-
-
 def grade_quiz(quiz_state):
     num_correct = 0
     for answer in quiz_state.user_answers.all():
