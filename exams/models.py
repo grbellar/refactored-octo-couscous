@@ -27,7 +27,7 @@ class Category(models.Model):
     exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="categories", null=True)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.exam_type}'
     
     class Meta:
         verbose_name = "Category"
