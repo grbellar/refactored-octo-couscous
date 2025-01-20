@@ -3,13 +3,13 @@ import django
 import random
 
 # Set the settings module for your Django project
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.local_settings')
 
 # Initialize Django
 django.setup()
 
 from review.models import Quiz, Question
-from exams.models import Category
+from exams.models import Category, ExamType
 
 # Fetch all categories
 all_categories = Category.objects.all()
@@ -27,7 +27,11 @@ for category in all_categories:
 
     for i in range(num_quizzes):
         # Create a new quiz for the current category
-        new_quiz = Quiz.objects.create(title=f"{category.name}: Quiz {i+1}")
+        new_quiz = Quiz.objects.create(
+            title=f"{category.name}: Quiz {i+1}",
+            category=category,  # Set the category for the quiz
+            quiz_type=category.exam_type 
+        )
         print(f"\nCreated {new_quiz.title}")
 
         # Assign 10 questions to the quiz
