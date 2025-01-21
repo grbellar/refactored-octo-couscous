@@ -135,38 +135,3 @@ def update_question_index(request, quiz_uuid):
         user_quiz_state.save()
         question_data = get_quiz_question(request.user, quiz_uuid)
         return JsonResponse(question_data)
-
-
-
-@login_required
-@require_http_methods(['POST'])
-@requires_csrf_token
-def check_answer(request, quiz_uuid):
-    quiz = Quiz.objects.get(uuid=quiz_uuid)
-    user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
-    current_question = get_quiz_question(quiz_uuid, user_quiz_state.current_question_index)
-    
-    print(f"Check answer button clicked: current_question_index: {user_quiz_state.current_question_index}") # At this point should still match inital page load
-        
-    # Save new answer
-    user_answer_id = request.POST.get('user_answer')
-    selected_answer = Answer.objects.get(id=user_answer_id)
-    # UserQuizAnswer.objects.create(
-    #     user_quiz_state=user_quiz_state,
-    #     question=current_question,
-    #     selected_answer=selected_answer,
-    #     is_correct=selected_answer.is_correct
-    # )
-    
-    # Check if this was the last question.
-    # If so:
-    # 1. Save the user quiz state as completed
-    # 2. Tell front end not to display next on the last question
-    # is_last_question = user_quiz_state.current_question_index == quiz.questions.count() - 1
-    # if is_last_question:
-    #     user_quiz_state.completed = True
-    #     user_quiz_state.save()
-    #     return JsonResponse({
-    #         'is_last_question': is_last_question
-    #     })
-    
