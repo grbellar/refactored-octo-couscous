@@ -35,7 +35,7 @@ class CustomUserAdmin(UserAdmin):
         (
             'Paid Status',
             {
-                "fields": ["has_paid", "exam_tokens"]
+                "fields": ["has_paid_v2"]
             }
         ),
     ]
