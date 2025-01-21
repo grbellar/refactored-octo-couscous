@@ -5,67 +5,93 @@
 {% endblock %}
 
 {% block content %}
-  <!-- Pricing section -->
-  <section class="bg-light py-5">
-    <div class="container px-3 my-3">
-      <div class="text-center mb-5">
-        <h1 class="fw-bolder">Full Site Access</h1>
-        <p class="lead fw-normal text-muted mb-0">Our entire suite of tools. Designd to give you confidence on exam day.</p>
-        <br>
-        {% if not request.user.is_authenticated %}
-        <p>Create an account or log in to get started.</p>
-        <a class="btn btn-primary" href="{% url 'account_signup' %}">Create account</a>
-        <a class="btn btn-outline-secondary" href="{% url 'account_login' %}">Log in</a>
-        {% endif %}
-      </div>
-      <div class="row gx-5 justify-content-center">
 
-        <div class="col-lg-6 col-xl-4">
-          <div class="card mb-5 mb-xl-0">
-            <div class="card-body p-5">
-              <div class="small text-uppercase fw-bold">
-                <i class="bi bi-star-fill text-warning"></i>
-                Full Access
-              </div>
-              <div class="mb-3">
-                <span class="display-5 fw-bold">$99.99</span>
-              </div>
-              <ul class="list-unstyled mb-4">
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>Over 1,500 review questions</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  <strong>400 board like exam questions</strong>
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  4 timed practice exams
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Detailed explanations
-                </li>
-                <li class="mb-2">
-                  <i class="bi bi-check text-primary"></i>
-                  Targeted feedback
-                </li>
-                
-              </ul>
-              <div class="d-grid">
-                {% if request.user.is_authenticated %}
-                  <form action="{% url 'stripe-checkout' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="price-id" value="{{ fullaccess }}" />
-                    <button class="btn btn-primary" type="submit" id="checkout-button">Buy access</button>
-                  </form>
-                {% endif %}
-              </div>
-            </div>
-          </div>
+
+  <!-- Hero Section -->
+  <section class="text-white py-5 mb-5" style="background-color: #175781;">
+      <div class="container text-center">
+          <h1 class="display-4 fw-bold mb-3 text-white">Full Site Access</h1>
+          <p class="lead mb-0">Our entire suite of tools. Designed to give you confidence on exam day.</p>
+          {% if not request.user.is_authenticated %}
+          <p>Create an account or log in to get started.</p>
+          <a class="btn btn-primary" href="{% url 'account_signup' %}">Create account</a>
+          <a class="btn btn-outline-secondary" href="{% url 'account_login' %}">Log in</a>
+          {% endif %}
         </div>
-      </div>
-    </div>
   </section>
+        
+        
+
+  <!-- Pricing Section -->
+  <section class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <span class="badge bg-warning text-dark mb-2">FULL ACCESS</span>
+                        <div class="pricing-header">
+                            <span class="display-4 fw-bold">$99.99</span>
+                            <span class="text-muted">/lifetime access</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Over 1,500 review questions</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>4 timed practice exams</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Detailed answer explanations</strong>
+                        </li>
+                        
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Category specific feedback
+                        </li>
+                        <li class="mb-3">
+                          <i class="bi bi-check-circle-fill text-success me-2"></i>
+                          Made by Perfusionists
+                        </li>
+                    </ul>
+                    
+                    {% if request.user.is_authenticated %}
+                      <form action="{% url 'stripe-checkout' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="price-id" value="{{ fullaccess }}"/>
+                        <button class="btn btn-primary btn-lg w-100 mb-3" type="submit" id="checkout-button">Buy access</button>
+                      </form>
+                    {% endif %}
+                    <p class="text-center text-muted small mb-0">Secure payment powered by Stripe</p>
+                </div>
+            </div>
+
+            <!-- Trust Indicators -->
+            <div class="text-center mt-4">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock text-success me-2"></i>
+                            <span>Instant Access</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-check text-success me-2"></i>
+                            <span>Success Gaurantee</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
