@@ -50,6 +50,7 @@ def my_exams(request):
 def choose_quiz(request):
 
     exam_types = ExamType.objects.all()
+    #TODO: Pass in Clinical Application, etc... instead of abbreviation
     context = {
         'exam_types': [
             {
@@ -60,7 +61,7 @@ def choose_quiz(request):
         ]
     }
 
-    return render(request, 'review/quiz_type.html', context)
+    return render(request, 'review/choose_quiz.html', context)
 
 
 

@@ -12,7 +12,10 @@
         <div class="card h-100">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title"> {{ exam_type.name }} Review</h5>
-                <p class="card-text">Something something about what kind of questions this type contains.</p>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65% Complete</div>
+                </div>
+                <p class="text-muted">Track your progress as you work through the {{ exam_type.name }} review materials.</p>
                 <div class="mt-auto">
                     <a href="{% url 'my-quizzes' exam_type.name%}" class="btn btn-primary w-100">View available {{exam_type.name}} quizzes</a>
                 </div>

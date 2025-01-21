@@ -1,12 +1,9 @@
-from django.shortcuts import render, redirect
-import json
-from .models import Quiz, UserQuizState, Answer, UserQuizAnswer, Question
-from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
+from .models import Quiz, UserQuizState, Answer, UserQuizAnswer
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import requires_csrf_token
 from django.utils import timezone
-import pprint
 
 
 def grade_quiz(quiz_state):
@@ -25,7 +22,6 @@ def get_user_answer(user, quiz_uuid, question):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     user_quiz_state = UserQuizState.objects.get(user=user, quiz=quiz)
     user_answer = UserQuizAnswer.objects.get(user_quiz_state=user_quiz_state, question=question)
-    pprint.pprint(user_answer.selected_answer.id)
     return user_answer
 
 
@@ -52,7 +48,6 @@ def get_quiz_question(user, quiz_uuid):
     except (AttributeError, UserQuizAnswer.DoesNotExist):
         # Handle case where user_answer or its attributes don't exist
         print("User answer does not exist")
-    pprint.pprint(question_data)
     return question_data
 
 
@@ -91,8 +86,6 @@ def save_answer(request, quiz_uuid):
 
     # TODO: Should prob add a check for completed quiz state but oh well.
 
-    print(request.POST)
-    print(request.POST.get('user_answer'))
     UserQuizAnswer.objects.create(
         user_quiz_state=quiz_state,
         question=quiz_question,
