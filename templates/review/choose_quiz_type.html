@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+{% block title %}Your Quizzes{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-3">What would you like to review?</h1>
+    <p class="lead">You have access to both Basic Science and Clinical Application exam preparation materials. Each section contains targeted quizzes organized by categories you will see on the real exam. Track your progress, review explanations, and build confidence for exam day by practicing below.</p>
+<div class="row">
+    {% for exam_type in exam_types %}
+    
+    <div class="col-md-6 p-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title"> {{ exam_type.name }} Review</h5>
+                <div class="mt-auto">
+                    <a href="{% url 'choose-quiz-category' exam_type.name %}" class="btn btn-primary w-100">View categories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock content %}

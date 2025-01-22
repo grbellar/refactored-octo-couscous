@@ -33,6 +33,7 @@ def get_quiz_question(user, quiz_uuid):
         'question_id': quiz_question.id,
         'question_number': quiz_state.current_question_index + 1,
         'category': quiz_question.category.name,
+        'category_id': quiz_question.category.id,
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
         'explanation': quiz_question.explanation.text,
@@ -67,6 +68,7 @@ def take_quiz(request, quiz_uuid):
     context.update({
         'quiz_title': quiz.title,
         'quiz_uuid': quiz_uuid,
+        'quiz_type': quiz.quiz_type,
         'time_started': start_time.isoformat(),
         'time_ends': end_time.isoformat(),
     })

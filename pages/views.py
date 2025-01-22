@@ -2,7 +2,8 @@ from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from exams.models import Exam, UserExamState, ExamType
+from django.http import HttpResponse
+from exams.models import Exam, UserExamState, ExamType, Category
 from review.models import Quiz
 from collections import defaultdict
 from pathlib import Path
@@ -47,7 +48,7 @@ def my_exams(request):
 
 @login_required
 @require_http_methods(["GET"])
-def choose_quiz(request):
+def choose_quiz_type(request):
 
     exam_types = ExamType.objects.all()
     #TODO: Pass in Clinical Application, etc... instead of abbreviation
@@ -61,26 +62,47 @@ def choose_quiz(request):
         ]
     }
 
-    return render(request, 'review/choose_quiz.html', context)
-
+    return render(request, 'review/choose_quiz_type.html', context)
 
 
 @login_required
 @require_http_methods(["GET"])
-def my_quizzes(request, quiz_type_name):
+def choose_quiz_category(request, quiz_type_name):
+    # return all categories and data about quiz type from request
+    # Get the ExamType object based on the quiz_type_name
+    exam_type = ExamType.objects.get(name=quiz_type_name)
+    print(type(exam_type))
+    categories = exam_type.categories.all()
+    print(categories)
+    
+    context = {
+        'categories': [
+            {
+                'id': category.id,
+                'name': category.name,
+            }
+            for category in categories
+        ],
+        'exam_type_name': exam_type.name
+    }
+    print(context)
+    
+    return render(request, 'review/choose_category.html', context=context)
+
+
+@login_required
+@require_http_methods(["GET"])
+def choose_quiz(request, _quiz_type_name, _category_name, category_id):
     user = request.user
     has_paid = user.has_paid_v2
     context = {"user_has_paid": has_paid}
     
     # Get the selected category from the request
-    selected_category = request.GET.get('category', None)
-    
-    # Get the ExamType object based on the quiz_type_name
-    exam_type = get_object_or_404(ExamType, name=quiz_type_name)
-    # TODO: Need to do something about if someone just make a request to my quizzes without a exam type parameter
-    
+    selected_category = Category.objects.get(id=category_id)
+    print(selected_category)
+        
     # Filter quizzes by quiz_type
-    quizzes = Quiz.objects.filter(quiz_type=exam_type).annotate(
+    quizzes = Quiz.objects.filter(category=selected_category).annotate(
         question_count=Count('questions')
     ).values(
         'title', 
@@ -109,10 +131,6 @@ def my_quizzes(request, quiz_type_name):
         )
     ).order_by('-in_progress', '-completed')  # Replace 'some_other_field' with another field for secondary ordering
 
-    # Filter quizzes by category if a category is selected
-    
-    if selected_category:
-        quizzes = quizzes.filter(category=selected_category)
 
     # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
     now = timezone.now()
@@ -152,14 +170,10 @@ def my_quizzes(request, quiz_type_name):
     print(page_obj)
     print(selected_category)
 
-    # Get all unique categories for filter buttons, excluding None
-    categories = Quiz.objects.values_list('category__name', 'category').distinct()
-    categories = [cat for cat in categories if cat[0] is not None]
-
     context['page_obj'] = page_obj
-    context['categories'] = categories
     context['selected_category'] = selected_category
-    return render(request, 'review/my_quizzes.html', context)
+
+    return render(request, 'review/choose_quiz.html', context)
 
 @login_required
 @require_http_methods(["GET"])
