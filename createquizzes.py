@@ -23,7 +23,7 @@ for category in all_categories:
     random.shuffle(category_questions)
 
     # Determine the number of quizzes to create for this category
-    num_quizzes = len(category_questions) // 10
+    num_quizzes = max(1, len(category_questions) // 10)  # Ensure at least one quiz is created
 
     for i in range(num_quizzes):
         # Create a new quiz for the current category
@@ -32,9 +32,9 @@ for category in all_categories:
             category=category,  # Set the category for the quiz
             quiz_type=category.exam_type 
         )
-        print(f"\nCreated {new_quiz.title}")
+        print(f"\nCreated {new_quiz.title}\n{category.name}")
 
-        # Assign 10 questions to the quiz
+        # Assign questions to the quiz
         quiz_questions = category_questions[i*10:(i+1)*10]
         for question in quiz_questions:
             new_quiz.questions.add(question)
