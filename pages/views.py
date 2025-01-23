@@ -80,6 +80,7 @@ def choose_quiz_category(request, quiz_type_name):
             {
                 'id': category.id,
                 'name': category.name,
+                'icon': category.icon
             }
             for category in categories
         ],

@@ -25,6 +25,7 @@ class Exam(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=300)
     exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="categories", null=True)
+    icon = models.CharField(max_length=300, null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} - {self.exam_type}'

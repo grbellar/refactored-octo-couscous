@@ -11,14 +11,12 @@
         <div class="col-md-4 p-4">
             <div class="card h-100">
                 <div class="card-body d-flex flex-column text-center">
-                    <i class="bi bi-heart-pulse"></i>
+                    <i class="{{ category.icon }} category-icon"></i>
                     <h5 class="card-title fw-bold m-3"> {{ category.name }}</h5>
-                    <div class="progress mb-3" style="height: 20px;">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 50%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
                     </div>
-                    <a class="btn btn-primary" href="{% url 'choose-quiz' exam_type_name category.name category.id%}">View quizzes</a>
-                    <div class="mt-auto">
-                    </div>
+                    <a class="btn btn-quizzes" href="{% url 'choose-quiz' exam_type_name category.name category.id%}">Start quizzes</a>
                 </div>
             </div>
         </div>

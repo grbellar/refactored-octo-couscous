@@ -17,6 +17,24 @@ h1 {
     background-color: #175781;
     border-color: #175781;
 }
+
+.btn-quizzes {
+    background-color: #175781;
+    border-color: #175781;
+    border-radius: 25px;
+    padding: 10px 20px;
+    color: white;
+    width: 50%;
+    margin: 0 auto;
+    display: block;
+}
+
+.btn-quizzes:hover{
+    background-color: #F34C4C;
+    border-color: #F34C4C;
+    color: white;
+}
+
 .btn-outline-secondary:hover {
     background-color: #175781;
 }
@@ -45,7 +63,9 @@ h1 {
 
 .category-icon {
     font-size: 2.5rem;
-    background: linear-gradient(90deg, #4481eb, #04befe);
+    background: linear-gradient(90deg, #F34C4C, #175781);
+    background-clip: text;
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
