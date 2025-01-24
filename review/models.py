@@ -50,7 +50,7 @@ def get_sentinel_quiz():
     return Quiz.objects.get_or_create(title="Deleted Quiz", description="This quiz has been deleted")[0]
 
 class UserQuizState(models.Model):
-    quiz = models.ForeignKey('Quiz', on_delete=models.SET(get_sentinel_quiz))
+    quiz = models.ForeignKey('Quiz', on_delete=models.SET_NULL, null=True)
     quiz_title_snapshot = models.CharField(max_length=300, blank=True)
     user = models.ForeignKey(
         AUTH_USER_MODEL, 
@@ -65,7 +65,8 @@ class UserQuizState(models.Model):
     time_completed = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.quiz.title}"
+        quiz_title = self.quiz.title if self.quiz and self.quiz.title else self.quiz_title_snapshot
+        return f"{self.user.username} - {quiz_title}"
 
     class Meta:
         verbose_name = "User Quiz State"
