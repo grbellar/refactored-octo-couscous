@@ -2,7 +2,6 @@
 
 {% block title %}Review{% endblock %}
 
-TODO: Should display category of exam at top and maybe more info about question
 {% block content %}
 <div class="container py-5">
     <h6 id="countdown" style="float: right">8 hours left to review.</h6>
@@ -77,6 +76,12 @@ TODO: Should display category of exam at top and maybe more info about question
         </div>
         <div class="card-body">
             <pre id="explanation" style="white-space: pre-wrap; font-family: inherit; font-size: 1.1rem;">{{ explanation }}</pre>
+            <h4 class="h5 mb-0">Sources:</h4>
+            <ul id="sources">
+                {% for source in sources %}
+                <li><em>{{ source }}</em></li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
@@ -91,10 +96,11 @@ TODO: Should display category of exam at top and maybe more info about question
     const backBtn = document.getElementById('back-btn');
     const explanationPre = document.getElementById('explanation');
     const explanationDiv = document.getElementById('explanation-container')
+    const sourcesList = document.getElementById('sources')
     const colorFeedback = document.getElementById('feedback-container');
 
 
-    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation) {
+    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation, sources) {
         // Disable all radio inputs
         document.querySelectorAll('.form-check-input').forEach(input => {
             input.disabled = true;
@@ -106,12 +112,13 @@ TODO: Should display category of exam at top and maybe more info about question
             selectedInput.checked = true;
         }
         
-        // TODO: Change to something not as jarring
         colorFeedback.style.backgroundColor = isCorrect ? '#d4edda' : '#f8d7da';
         
         // Show explanation
         explanationDiv.style.display = '';
         explanationPre.innerHTML = explanation;
+        const sourceItems = sources.map(source => `<li><em>${source}<em></li>`).join('');
+        sourcesList.innerHTML = sourceItems
         
     }
 
@@ -142,7 +149,6 @@ TODO: Should display category of exam at top and maybe more info about question
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 document.querySelectorAll('.form-check-input').forEach(input => {
                     input.disabled = true;
                 });
@@ -155,7 +161,8 @@ TODO: Should display category of exam at top and maybe more info about question
                 disableFormAndShowExplanation(
                     data.user_answer_id,
                     data.is_correct,
-                    data.explanation
+                    data.explanation,
+                    data.sources
                 );
             });
             
@@ -174,7 +181,6 @@ TODO: Should display category of exam at top and maybe more info about question
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
         
                     if (!data.status) {
                         // Populate new question
@@ -195,7 +201,8 @@ TODO: Should display category of exam at top and maybe more info about question
                             disableFormAndShowExplanation(
                                 data.user_answer_id,
                                 data.is_correct,
-                                data.explanation
+                                data.explanation,
+                                data.sources
                             );
                         }
                         // Else user hasn't answered yet
@@ -205,6 +212,7 @@ TODO: Should display category of exam at top and maybe more info about question
                             backBtn.disabled = false;
                             explanationDiv.style.display = 'none';
                             explanationPre.innerHTML = "";
+                            sourcesList.innerHTML = "";
                             colorFeedback.style.backgroundColor = '';
         
                         }
@@ -234,7 +242,6 @@ TODO: Should display category of exam at top and maybe more info about question
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 checkAnswerBtn.style.display = 'none';
                 nextBtn.style.display = 'inline';
                 nextBtn.disabled = false;
@@ -254,7 +261,8 @@ TODO: Should display category of exam at top and maybe more info about question
                 disableFormAndShowExplanation(
                     data.user_answer_id,
                     data.is_correct,
-                    data.explanation
+                    data.explanation,
+                    data.sources
                 );
             });
         }

@@ -37,6 +37,7 @@ def get_quiz_question(user, quiz_uuid):
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
         'explanation': quiz_question.explanation.text,
+        'sources': quiz_question.explanation.sources,
         'total_questions': quiz.questions.count(),
         'is_first_question': quiz_state.current_question_index == 0,
         'is_last_question': quiz_state.current_question_index == quiz.questions.count() - 1,
