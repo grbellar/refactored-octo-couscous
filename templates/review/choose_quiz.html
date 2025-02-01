@@ -3,8 +3,9 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-4 mb-3">Review Decks</h1>
-    <p>Once you start, you will have 8 hours to complete the quiz and review your answers.</p>
+    <h5 class="mt-4 mb-1">{{ quiz_type }}</h5>
+    <h1 class="mt-2 mb-4">{{ category_name }} <i class="{{ selected_category.icon }} category-icon"></i></h1>
+    <p>Once you start a quiz you will have 8 hours to complete the quiz and review your answers.</p>
 
     <div class="row">
       {% for quiz in page_obj %}
@@ -17,13 +18,13 @@
                 <span class="badge bg-primary">Score: {{ quiz.score }}%</span>
                 {% endif %}
               </div>
-              <p class="text-muted-small">
+              <p class="text-muted-small" style="font-style: italic;">
                 {% if quiz.not_started %}
                 8 hours to review once started.
                 {% elif quiz.is_expired %}
                 <span class="text-success">Quiz Complete</span>
                 {% else %}
-                  {{ quiz.hours_remaining }} hours {{ quiz.minutes_remaining }} mins left to review ⏳
+                  {{ quiz.hours_remaining }} hours {{ quiz.minutes_remaining }} mins left to review
                 {% endif %}
                 
                 </p>

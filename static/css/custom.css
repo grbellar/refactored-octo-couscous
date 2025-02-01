@@ -30,8 +30,8 @@ h1 {
 }
 
 .btn-quizzes:hover{
-    background-color: #F34C4C;
-    border-color: #F34C4C;
+    background-color: #85556B;
+    border-color: #175781;
     color: white;
 }
 
@@ -40,12 +40,20 @@ h1 {
 }
 
 .btn-primary:hover{
-    background-color: #F34C4C;
-    border-color: #F34C4C;
+    background-color: #85556B;
+    border-color: #175781;
 }
 
 .bg-primary {
     background-color: #175781;
+}
+
+.btn-header {
+    background-color: #f25757;
+}
+
+.btn-header:hover{
+    background-color: #BE505C;
 }
 
 .bg-dark {
@@ -90,8 +98,14 @@ a:hover {
     color: #175781 !important; 
 }
 
+.gradient {
+    background: linear-gradient(90deg, #175781, #BF515C);
+}
+
 #text-secondary {
-    color: #F34C4C;
+    color: white;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 #logo {

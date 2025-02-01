@@ -8,14 +8,14 @@
 
 
   <!-- Hero Section -->
-  <section class="text-white py-5 mb-5" style="background-color: #175781;">
+  <section class="text-white py-5 mb-5 gradient">
       <div class="container text-center">
-          <h1 class="display-4 fw-bold mb-3 text-white">Full Site Access</h1>
-          <p class="lead mb-0">Our entire suite of tools. Designed to give you confidence on exam day.</p>
+          <h1 class="display-4 fw-bold mb-3 text-white">Get full access to all exams & quizzes</h1>
+          <p class="lead mb-0">Our entire database of study material. Designed to give you confidence on exam day.</p>
           {% if not request.user.is_authenticated %}
           <p>Create an account or log in to get started.</p>
-          <a class="btn btn-primary" href="{% url 'account_signup' %}">Create account</a>
-          <a class="btn btn-outline-secondary" href="{% url 'account_login' %}">Log in</a>
+          <a class="btn btn-light" href="{% url 'account_signup' %}">Create account</a>
+          <a class="btn btn-primary" href="{% url 'account_login' %}">Log in</a>
           {% endif %}
         </div>
   </section>
@@ -23,13 +23,13 @@
         
 
   <!-- Pricing Section -->
-  <section class="container mb-5">
+  <section class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-lg border-0">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <span class="badge bg-warning text-dark mb-2">Coming soon</span>
+                        <span class="badge text-white mb-2 fs-6" style="background-color: #85556B;">FULL ACCESS</span>
                         <div class="pricing-header">
                             <span class="display-4 fw-bold">$99.99</span>
                         </div>
@@ -37,14 +37,14 @@
                     
                     <hr class="my-4">
                     
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Over 1,500 review questions</strong>
-                        </li>
+                    <ul class="list-unstyled mb-4 text-center">
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
                             <strong>4 timed practice exams</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Over 1,500 review questions</strong>
                         </li>
                         <li class="mb-3">
                             <i class="bi bi-check-circle-fill text-success me-2"></i>
@@ -62,7 +62,10 @@
                     </ul>
                     
                     {% if request.user.is_authenticated %}
-                      <form action="{% url 'stripe-checkout' %}" method="POST">                       
+                      <form action="{% url 'stripe-checkout' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="price-id" value="{{ fullaccess }}"/>
+                        <button class="btn btn-quizzes btn-lg w-50 mt-4 mb-3" type="submit" id="checkout-button">Buy access</button>
                       </form>
                       <button disabled class="btn btn-primary btn-lg w-100 mb-3">Access coming soon!</button>
                     {% endif %}

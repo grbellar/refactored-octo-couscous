@@ -7,16 +7,31 @@ from django.utils import timezone
 
 
 def grade_quiz(quiz_state):
-    num_correct = 0
-    for answer in quiz_state.user_answers.all():
+    num_correct = 0 
+    user_answers = quiz_state.user_answers.all()
+    score = 0
+    for answer in user_answers:
         if answer.is_correct:
             num_correct +=1
-    score = num_correct / quiz_state.answers.count()
-
+    if user_answers.count() > 0:
+        score = num_correct / user_answers.count()
     quiz_state.score = score * 100
     quiz_state.save()
-    # save to db
 
+
+@login_required
+@require_http_methods(['POST']) 
+def set_quiz_complete(request, quiz_uuid):
+    is_complete = int(request.POST.get('complete'))
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
+    if is_complete:
+        user_quiz_state.completed = True
+        user_quiz_state.time_completed = timezone.now()
+        user_quiz_state.save()
+        grade_quiz(user_quiz_state)
+        return JsonResponse({'status': 'success'}, status=200)
+    return JsonResponse({'status': 'got bad is_complete variable'}, status=400)
 
 def get_user_answer(user, quiz_uuid, question):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
@@ -37,6 +52,7 @@ def get_quiz_question(user, quiz_uuid):
         'question_text': quiz_question.text,
         'answers': list(quiz_question.answer_set.values('id', 'text', 'choice_count')),
         'explanation': quiz_question.explanation.text,
+        'sources': quiz_question.explanation.sources,
         'total_questions': quiz.questions.count(),
         'is_first_question': quiz_state.current_question_index == 0,
         'is_last_question': quiz_state.current_question_index == quiz.questions.count() - 1,
@@ -98,7 +114,6 @@ def save_answer(request, quiz_uuid):
     # Needs to be last call so that user answer data is available to show and pass back to front end
     question_data = get_quiz_question(request.user, quiz_uuid)
     if question_data['is_last_question']:
-        # TODO: Calculate score
         grade_quiz(quiz_state)
         quiz_state.completed = True
         quiz_state.time_completed = timezone.now()

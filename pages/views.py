@@ -61,6 +61,8 @@ def choose_quiz_type(request):
             for exam_type in exam_types
         ]
     }
+    context["user_has_paid"] = request.user.has_paid_v2
+    print(context['user_has_paid'])
 
     return render(request, 'review/choose_quiz_type.html', context)
 
@@ -72,22 +74,39 @@ def choose_quiz_category(request, quiz_type_name):
     # Get the ExamType object based on the quiz_type_name
     return HttpResponse("The ability to take quizzes is currently under construction. Please check back later.")
     exam_type = ExamType.objects.get(name=quiz_type_name)
-    print(type(exam_type))
     categories = exam_type.categories.all()
-    print(categories)
     
+    # Get the current user
+    user = request.user
+    
+    categories_data = []
+    for category in categories:
+        quiz_count = category.quiz_set.count()
+        completed_quiz_count = Quiz.objects.filter(
+            category=category,
+            userquizstate__user=user,
+            userquizstate__completed=True
+        ).count()
+        if quiz_count != 0:
+            percentage_done = round(completed_quiz_count / quiz_count * 100)
+            print(percentage_done)
+        else:
+            percentage_done = 0
+
+        category_data = {
+            'id': category.id,
+            'name': category.name,
+            'icon': category.icon,
+            'quiz_count': quiz_count,
+            'completed_quiz_count': completed_quiz_count,
+            'percentage_done': percentage_done
+        }
+        categories_data.append(category_data)
+
     context = {
-        'categories': [
-            {
-                'id': category.id,
-                'name': category.name,
-                'icon': category.icon
-            }
-            for category in categories
-        ],
+        'categories': categories_data,
         'exam_type_name': exam_type.name
     }
-    print(context)
     
     return render(request, 'review/choose_category.html', context=context)
 
@@ -174,6 +193,8 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id):
 
     context['page_obj'] = page_obj
     context['selected_category'] = selected_category
+    context['quiz_type'] = _quiz_type_name
+    context['category_name'] = _category_name
 
     return render(request, 'review/choose_quiz.html', context)
 

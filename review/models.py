@@ -66,7 +66,7 @@ class UserQuizState(models.Model):
 
     def __str__(self):
         quiz_title = self.quiz.title if self.quiz and self.quiz.title else self.quiz_title_snapshot
-        return f"{self.user.username} - {quiz_title}"
+        return f"{self.user.username} - {self.quiz.quiz_type} - {quiz_title}"
 
     class Meta:
         verbose_name = "User Quiz State"
@@ -96,6 +96,3 @@ class UserQuizAnswer(models.Model):
 
     class Meta:
         unique_together = ('user_quiz_state', 'question')
-
-    def __str__(self):
-        return f"Question: {self.question.id} for {self.user_quiz_state.user}"

@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('text', 'category')
+    list_filter = ('category',)
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer)
@@ -42,10 +43,12 @@ class UserQuizStateAdmin(admin.ModelAdmin):
         return [field.name for field in self.model._meta.fields]
 
 admin.site.register(UserQuizState, UserQuizStateAdmin)
+
 class QuizAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
     readonly_fields = ('uuid',)
     list_display = ('title', 'category', 'uuid')
+    list_filter = ('category',)
 
 admin.site.register(Quiz, QuizAdmin)
 
