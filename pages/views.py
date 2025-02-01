@@ -89,6 +89,8 @@ def choose_quiz_category(request, quiz_type_name):
         if quiz_count != 0:
             percentage_done = round(completed_quiz_count / quiz_count * 100)
             print(percentage_done)
+        else:
+            percentage_done = 0
 
         category_data = {
             'id': category.id,
