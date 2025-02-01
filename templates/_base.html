@@ -46,19 +46,14 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center align-items-center mb-md-0">
 
           <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="300px" height="auto" src="{% static 'images/new-logo-higher-res.jpg' %}" alt="Perfusion Board Prep Logo"></a></li>
-          {% comment %} <span id="logo"><i class="bi bi-heart-pulse-fill" id="logo-heart"></i></i>PerfusionBoardPrep</span> {% endcomment %}
           <li><a href="{% url 'about' %}" class="nav-link px-2 link-dark">About</a></li>
-
-
-          {% if user.is_authenticated and user.has_paid %}
-          <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Buy tokens</a></li>
-          {% else %}
+          {% if not user.has_paid_v2 %}
           <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Get Access</a></li>
           {%endif%}
           <li><a href="{% url 'my-exams' %}" class="nav-link px-2 link-dark">Practice Exams</a></li>
           <li><a href="{% url 'choose-quiz-type' %}" class="nav-link px-2 link-dark">Quizzes</a></li>
           <li><a href="{% url 'my-results' %}" class="nav-link px-2 link-dark">Exam Results</a></li>
-          <!--<li><em><span id="exam-countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>-->
+          <span id="exam-countdown" class="text-primary" style="font-size: 12px">xx days until boards!</span></em></li>
         </ul>
 
         <div class="dropdown text-end">
@@ -119,7 +114,7 @@
 
     function updateCountdown() {
       // Set the date we're counting down to
-      const targetDate = new Date(new Date().getFullYear(), 9, 22); // October is month 9 (0-indexed)
+      const targetDate = new Date(new Date().getFullYear(), 4, 7); // October is month 9 (0-indexed)
 
       // Get today's date and time
       const now = new Date();
@@ -140,10 +135,10 @@
   }
 
     // Update the countdown on page load
-    // updateCountdown();
+    updateCountdown();
 
     // Update the countdown daily at midnight
-    // setInterval(updateCountdown, 1000 * 60 * 60 * 24);
+    setInterval(updateCountdown, 1000 * 60 * 60 * 24);
   </script>
 
   {% block javascript %}
