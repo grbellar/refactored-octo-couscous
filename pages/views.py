@@ -61,6 +61,8 @@ def choose_quiz_type(request):
             for exam_type in exam_types
         ]
     }
+    context["user_has_paid"] = request.user.has_paid_v2
+    print(context['user_has_paid'])
 
     return render(request, 'review/choose_quiz_type.html', context)
 

@@ -12,7 +12,12 @@
                     <div class="card-body d-flex flex-column">
                         <h4 class="card-title mt-1 mb-3"> {{ exam_type.name }} Review</h4> 
                         <div class="mt-auto">
-                            <a href="{% url 'choose-quiz-category' exam_type.name %}" class="btn btn-primary w-100">View categories</a>
+                            {% if user_has_paid %}
+                                <a href="{% url 'choose-quiz-category' exam_type.name %}" class="btn btn-primary w-100">View categories</a>
+                            {% else %}
+                                <a href="{% url 'get-access-buy' %}" class="btn btn-primary w-100">Get Access</a>
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </div>
