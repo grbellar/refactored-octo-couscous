@@ -5,6 +5,20 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 
+
+def grade_quiz(quiz_state):
+    num_correct = 0 
+    user_answers = quiz_state.user_answers.all()
+    score = 0
+    for answer in user_answers:
+        if answer.is_correct:
+            num_correct +=1
+    if user_answers.count() > 0:
+        score = num_correct / user_answers.count()
+    quiz_state.score = score * 100
+    quiz_state.save()
+
+
 @login_required
 @require_http_methods(['POST']) 
 def set_quiz_complete(request, quiz_uuid):
@@ -15,17 +29,7 @@ def set_quiz_complete(request, quiz_uuid):
         user_quiz_state.completed = True
         user_quiz_state.time_completed = timezone.now()
         user_quiz_state.save()
-
-def grade_quiz(quiz_state):
-    num_correct = 0
-    for answer in quiz_state.user_answers.all():
-        if answer.is_correct:
-            num_correct +=1
-    score = num_correct / quiz_state.answers.count()
-
-    quiz_state.score = score * 100
-    quiz_state.save()
-    # save to db
+        grade_quiz(user_quiz_state)
 
 
 def get_user_answer(user, quiz_uuid, question):
@@ -109,7 +113,6 @@ def save_answer(request, quiz_uuid):
     # Needs to be last call so that user answer data is available to show and pass back to front end
     question_data = get_quiz_question(request.user, quiz_uuid)
     if question_data['is_last_question']:
-        # TODO: Calculate score
         grade_quiz(quiz_state)
         quiz_state.completed = True
         quiz_state.time_completed = timezone.now()
