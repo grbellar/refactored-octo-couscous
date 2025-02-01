@@ -4,24 +4,25 @@
 {% block content %}
 <div class="container">
     <h1 class="mt-4 mb-3">Choose a {{ exam_type_name }} Category:</h1>
-<div class="row">
-    
-    {% for category in categories %}
-    
-        <div class="col-md-4 p-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column text-center">
-                    <i class="{{ category.icon }} category-icon"></i>
-                    <h5 class="card-title fw-bold m-3"> {{ category.name }}</h5>
-                    <div class="progress mb-3" style="height: 25px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ category.percentage_done }}%;" aria-valuenow="{{ category.percentage_done }}" aria-valuemin="0" aria-valuemax="100">{{ category.percentage_done }}%</div>
+    <div class="row">
+        
+        {% for category in categories %}
+        
+            <div class="col-md-4 p-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column text-center">
+                        <i class="{{ category.icon }} category-icon"></i>
+                        <h5 class="card-title fw-bold m-3"> {{ category.name }}</h5>
+                        <div class="progress mb-3" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ category.percentage_done }}%;" aria-valuenow="{{ category.percentage_done }}" aria-valuemin="0" aria-valuemax="100">{{ category.percentage_done }}%</div>
+                        </div>
+                        <p>{{ category.quiz_count }} quizzes</p>
+                        <a class="btn btn-quizzes" href="{% url 'choose-quiz' exam_type_name category.name category.id%}">View quizzes</a>
                     </div>
-                    <p>{{ category.quiz_count }} quizzes</p>
-                    <a class="btn btn-quizzes" href="{% url 'choose-quiz' exam_type_name category.name category.id%}">View quizzes</a>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
 
+    </div>
 </div>
 {% endblock content %}
