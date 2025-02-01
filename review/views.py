@@ -30,7 +30,8 @@ def set_quiz_complete(request, quiz_uuid):
         user_quiz_state.time_completed = timezone.now()
         user_quiz_state.save()
         grade_quiz(user_quiz_state)
-
+        return JsonResponse({'status': 'success'}, status=200)
+    return JsonResponse({'status': 'got bad is_complete variable'}, status=400)
 
 def get_user_answer(user, quiz_uuid, question):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
