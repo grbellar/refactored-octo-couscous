@@ -49,7 +49,6 @@ def my_exams(request):
 @login_required
 @require_http_methods(["GET"])
 def choose_quiz_type(request):
-    return HttpResponse("The ability to take quizzes is currently under construction. Please check back later.")
     exam_types = ExamType.objects.all()
     #TODO: Pass in Clinical Application, etc... instead of abbreviation
     context = {
@@ -72,7 +71,6 @@ def choose_quiz_type(request):
 def choose_quiz_category(request, quiz_type_name):
     # return all categories and data about quiz type from request
     # Get the ExamType object based on the quiz_type_name
-    return HttpResponse("The ability to take quizzes is currently under construction. Please check back later.")
     exam_type = ExamType.objects.get(name=quiz_type_name)
     categories = exam_type.categories.all()
     
