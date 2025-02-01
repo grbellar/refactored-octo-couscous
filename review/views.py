@@ -5,6 +5,16 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 
+@login_required
+@require_http_methods(['POST']) 
+def set_quiz_complete(request, quiz_uuid):
+    is_complete = int(request.POST.get('complete'))
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    user_quiz_state = UserQuizState.objects.get(user=request.user, quiz=quiz)
+    if is_complete:
+        user_quiz_state.completed = True
+        user_quiz_state.time_completed = timezone.now()
+        user_quiz_state.save()
 
 def grade_quiz(quiz_state):
     num_correct = 0
