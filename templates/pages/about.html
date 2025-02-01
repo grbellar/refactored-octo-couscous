@@ -20,53 +20,64 @@
         </div>
       </div>
     </header>
-    <!-- Founder Section -->
-    <section class="py-5 bg-light">
-      <div class="container">
-          <div class="row align-items-center">
-              <div class="col-lg-4 mb-4 mb-lg-0">
-                  <img src="{% static 'images/John.png' %}" alt="John Englert" class="img-fluid rounded-3 shadow">
-              </div>
-              <div class="col-lg-8">
-                  <h2 class="mb-4">Meet Our Founder</h2>
-                  <p class="lead">John Englert founded PerfusionBoardPrep in 2023, bringing his extensive experience and passion for advancing the profession to help future generations of perfusionists.</p>
-                  <ul class="list-unstyled">
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Master of Science in Cardiovascular Perfusion from Rush University (2017)</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Lead editor for The Manual of Clinical Perfusion, 3rd Edition</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Active member of AmSECT Safety Committee for 4 years</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Adjunct faculty member at Rush University</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Author of multiple articles in AmSECT Today</li>
-                      <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Member of the Sanibel Symposium Planning Committee</li>
-                  </ul>
-              </div>
-          </div>
-      </div>
-  </section>
-    <!-- About section two -->
-    <section class="py-5" id="scroll-target">
+
+    <!-- How this works -->
+    <section class="py-1" id="scroll-target">
       <div class="container px-5 my-5">
         <div class="row gx-5 align-items-center">
-          <div class="col-lg-6 order-first order-lg-last">
-            <img class="img-fluid rounded mb-5 mb-lg-0" style="width:400px; float: right;" src="{% static 'images/results-sample.jpg' %}" alt="..." />
-            
-          </div>
-          <div class="col-lg-6">
+          <div class="col-lg-12">
             <h2 class="fw-bolder">How this works</h2>
-            <p class="lead fw-normal text-muted mb-0">Prepare with four practice exams.</p>
-            <p>
-              <ul>
-                <li>2 Basic Science Exams</li>
-                <li>2 Clinical Application Exams</li>
-              </ul>
+            <p class="lead fw-normal text-muted">Prepare with four practice exams and over 1400 quizzes.</p>
             <p id="text-primary">
               <strong>Each exam consists of 100 questions and has a 2 hour time limit—exactly half the length of the real board exam.</strong>
             </p>
-            <p>After completing each practice exam, you'll receive a detailed breakdown of your performance across 11 key categories, mirroring the structure of the real board exam.</p>
-            <p id="text-primary"><strong>This analysis will highlight your strengths and pinpoint the areas where you need to focus your studies.</strong></p>
-            <p>Use the first exam to identify and address any problem areas, then take the second exam to solidify your knowledge and build confidence before the big day.</p>
-            <a class="btn btn-primary" href="{% url 'account_signup' %}">Create an account to get started</a>
+            <p>After completing each practice exam, you'll receive a detailed breakdown of your performance across 11 key categories. This mirrors the structure of the real board exam.</p>
+            <p id="text-primary"><strong>Quizzes offer immediate feedback and detailed answer explanations. </strong></p>
+            <p>Textbook sources are provided for further studying. Most quizzes have 10 questions and allow you to go at your own pace. You'll have 8 hours to review each quiz once started.</p>
+
           </div>
         </div>
+        <div class="row justify-content-center">
+          <div class="col-lg-4">
+            <img class="img-fluid rounded mb-5 mb-lg-0" src="{% static 'images/results-sample.jpg' %}" alt="Preview of exam results." />
+          </div>
+          <div class="col-lg-8">
+            <img class="img-fluid rounded mb-5 mb-lg-0" src="{% static 'images/quiz-preview.jpg' %}" alt="Preview of quiz taking and the feedback provided." />
+          </div>
+        </div>
+        </div>
+        
       </div>
     </section>
+    
+    <!-- Call to Action -->
+  <section class="py-5 my-5 text-white gradient">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to start studying?</h2>
+        <p class="lead mb-4">Join the growing list of Perfusionists who trusted PerfusionBoardPrep.com for their exam preparation.</p>
+        <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg">Create an account to get started</a>
+    </div>
+  </section>
+
+  <!-- Founder Section -->
+  <section class="py-5 my-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <img src="{% static 'images/John.png' %}" alt="John Englert" class="img-fluid rounded-3 shadow">
+            </div>
+            <div class="col-lg-8">
+                <h2 class="mb-4">Meet Our Founder</h2>
+                <p class="lead">John Englert founded PerfusionBoardPrep in 2023, bringing his extensive experience and passion for advancing the profession to help future generations of perfusionists.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Master of Science in Cardiovascular Perfusion from Rush University (2017)</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Lead editor for The Manual of Clinical Perfusion, 3rd Edition</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Active member of AmSECT Safety Committee for 4 years</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Adjunct faculty member at Rush University</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i>Member of the Sanibel Symposium Planning Committee</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
