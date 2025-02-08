@@ -23,6 +23,8 @@ class Question(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    flagged = models.BooleanField(default=False)
+    flag_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.text
@@ -96,3 +98,18 @@ class UserQuizAnswer(models.Model):
 
     class Meta:
         unique_together = ('user_quiz_state', 'question')
+
+
+class QuestionFlag(models.Model):
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.question.text}"
+    
+    class Meta:
+        verbose_name = "Flagged Question"
+        verbose_name_plural = "Flagged Questions"

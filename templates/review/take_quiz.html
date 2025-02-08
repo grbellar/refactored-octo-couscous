@@ -29,14 +29,14 @@
                             {% if user_answer_id %}
                                 <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
                                 {% if answer.id == user_answer_id %}
-                                    <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
+                                    <input disabled class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
                                 {% else %}
-                                    <input disabled class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                    <input disabled class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                                 {% endif %}
                                     <br>  
                             {% else %}   
                                 <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
-                                <input class="form-check-input" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                <input class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                                 <br>    
                             {% endif %}
                         {% endfor %}
@@ -85,11 +85,59 @@
             </ul>
         </div>
     </div>
+
+       
+
+    <div id="flag-question" style="position: fixed; right: 20px; bottom: 20px; background-color: blanchedalmond; padding: 10px; border-radius: 5px;">
+        <form id="unclear-question-form" style="display: none;">
+            <div class="form-check">
+                <input class="form-check-input form-check-input-flag" type="radio" name="reason" id="wrong-answer" value="Wrong answer">
+                <label class="form-check-label" for="wrong-answer">
+                  Wrong answer
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input form-check-input-flag" type="radio" name="reason" id="poor-wording" value="Poor question wording">
+                <label class="form-check-label" for="poor-wording">
+                  Poor question wording
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input form-check-input-flag" type="radio" name="reason" id="unclear-explanation" value="Explanation unclear">
+                <label class="form-check-label" for="unclear-explanation">
+                  Explanation unclear
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input form-check-input-flag" type="radio" name="reason" id="misspelling-or-formatting" value="Misspelling or incorrect formatting">
+                <label class="form-check-label" for="misspelling-or-formatting">
+                  Misspelling or incorrect formatting
+                </label>
+              </div>
+              <div class="form-group">
+                <label style="font-size: .8rem;" for="unclear-question-text">Care to elaborate?</label><br>
+                <input type="text" name="unclear-question-text" id="unclear-question-text" style="margin-bottom: 10px;" placeholder="...">
+              </div>
+              <input type="submit" id="cancel-unclear-form" class="btn btn-secondary btn-sm" value="Cancel">
+              <input type="submit" id="submit-unclear-form" class="btn btn-primary btn-sm" value="Submit">
+        </form>
+        <button onclick="showUnclearForm()" id="flag-question-btn" class="btn btn-primary btn-sm" data-bs-placement="left" data-bs-toggle="tooltip" data-bs-title="Think something is wrong with the question? Let us know by flagging it and we will take a look.">Flag question</button>
+    </div>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script>
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    const flagQuestion = document.getElementById('flag-question')
+    const tooltip = new bootstrap.Tooltip(flagQuestion)
+
+    const unclearForm = document.getElementById("unclear-question-form")
+    const flagQuestionBtn = document.getElementById("flag-question-btn")
+
     quizForm = document.getElementById('quiz-form');
     const csrftoken = quizForm.querySelector('[name=csrfmiddlewaretoken]').value;
     const checkAnswerBtn = document.getElementById('check-answer-btn');
@@ -103,7 +151,7 @@
 
     function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation, sources) {
         // Disable all radio inputs
-        document.querySelectorAll('.form-check-input').forEach(input => {
+        document.querySelectorAll('.form-check-input-answer').forEach(input => {
             input.disabled = true;
         });
         
@@ -122,6 +170,11 @@
         sourcesList.innerHTML = sourceItems
         
     }
+
+    function showUnclearForm(){
+        unclearForm.style.display = '';
+        flagQuestionBtn.style.display = 'none';
+    };
 
     quizForm.addEventListener('submit', event => {
         event.preventDefault();
@@ -150,7 +203,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.querySelectorAll('.form-check-input').forEach(input => {
+                document.querySelectorAll('.form-check-input-answer').forEach(input => {
                     input.disabled = true;
                 });
                 checkAnswerBtn.style.display = 'none';
@@ -189,7 +242,7 @@
                         document.getElementById('question-text').textContent = data.question_text;
                         const answersHtml = data.answers.map(answer => `
                                 <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                                <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                                <input class="form-check-input form-check-input-answer" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
                                 <br>
                             `).join('');
                         document.querySelector('.form-check').innerHTML = answersHtml;
@@ -252,7 +305,7 @@
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
                     <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
-                    <input class="form-check-input" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <input class="form-check-input form-check-input-answer" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
                     <br>
                 `).join('');
                 document.querySelector('.form-check').innerHTML = answersHtml;
@@ -268,6 +321,49 @@
                 );
             });
         }
+    });
+
+    unclearForm.addEventListener('submit', event => {
+        event.preventDefault();
+        console.log("Submit detected")
+
+        unclearForm.style.display = 'none';
+
+        const formData = new FormData(unclearForm);
+        const data = new URLSearchParams(formData);
+
+        if (event.submitter.id == 'cancel-unclear-form'){
+            const radioInputs = unclearForm.querySelectorAll('input[type="radio"]');
+            radioInputs.forEach(input => {
+                if (input.checked) {
+                    input.checked = false;
+                }
+            });
+            console.log("Cancel")
+            flagQuestionBtn.style.display = 'inline';
+        }
+        else if (event.submitter.id == 'submit-unclear-form'){
+            console.log("Submit")
+            console.log("Form data:", data.get('reason'));
+            // TODO: Send post request to server to update quiz_question_flag variable
+            fetch(`{% url 'save-feedback' quiz_uuid %}`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status)
+                flagQuestionBtn.style.display = 'none';
+                flagQuestion.innerHTML = '<div id="flag-question-thankyou"><span><em>Feedback submitted. Thanks for your help!</em></span></div>';
+            })
+            
+
+        }
+        
     });
 
     function startQuizCountdown() {

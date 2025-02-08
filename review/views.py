@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Quiz, UserQuizState, Answer, UserQuizAnswer
+from .models import Quiz, UserQuizState, Answer, UserQuizAnswer, QuestionFlag
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -98,6 +98,10 @@ def save_answer(request, quiz_uuid):
 
     chosen_answer_id = request.POST.get('user_answer')
     chosen_answer = Answer.objects.get(id=chosen_answer_id)
+    # print(chosen_answer.choice_count)
+    # chosen_answer.choice_count += 1
+    # print(chosen_answer.choice_count)
+
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
     quiz_question = quiz.questions.all()[quiz_state.current_question_index]
@@ -145,3 +149,29 @@ def update_question_index(request, quiz_uuid):
         user_quiz_state.save()
         question_data = get_quiz_question(request.user, quiz_uuid)
         return JsonResponse(question_data)
+
+
+@login_required
+@require_http_methods(['POST']) 
+def save_feedback(request, quiz_uuid):
+    reason = request.POST.get('reason')
+    print(reason)
+
+    quiz = Quiz.objects.get(uuid=quiz_uuid)
+    quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
+    quiz_question = quiz.questions.all()[quiz_state.current_question_index]
+    if not quiz_question.flagged:
+        quiz_question.flagged = True
+
+
+    quiz_question.flag_count += 1
+    quiz_question.save()
+
+    QuestionFlag.objects.create(
+        user=request.user,
+        question=quiz_question,
+        reason=reason
+    )
+
+
+    return JsonResponse({'status': 'feedback saved'}, status=200)
