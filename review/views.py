@@ -98,9 +98,8 @@ def save_answer(request, quiz_uuid):
 
     chosen_answer_id = request.POST.get('user_answer')
     chosen_answer = Answer.objects.get(id=chosen_answer_id)
-    # print(chosen_answer.choice_count)
-    # chosen_answer.choice_count += 1
-    # print(chosen_answer.choice_count)
+    chosen_answer.choice_count += 1
+    chosen_answer.save()
 
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
