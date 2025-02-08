@@ -121,6 +121,9 @@
               <input type="submit" id="cancel-unclear-form" class="btn btn-secondary btn-sm" value="Cancel">
               <input type="submit" id="submit-unclear-form" class="btn btn-primary btn-sm" value="Submit">
         </form>
+        <div id="flag-question-thankyou" style="display: none;">
+            <span><em>Feedback submitted. Thanks for your help!</em></span>
+        </div>
         <button onclick="showUnclearForm()" id="flag-question-btn" class="btn btn-primary btn-sm" data-bs-placement="left" data-bs-toggle="tooltip" data-bs-title="Think something is wrong with the question? Let us know by flagging it and we will take a look.">Flag question</button>
     </div>
 </div>
@@ -137,6 +140,7 @@
 
     const unclearForm = document.getElementById("unclear-question-form")
     const flagQuestionBtn = document.getElementById("flag-question-btn")
+    const flagQuestionThankyou = document.getElementById("flag-question-thankyou")
 
     quizForm = document.getElementById('quiz-form');
     const csrftoken = quizForm.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -174,6 +178,7 @@
     function showUnclearForm(){
         unclearForm.style.display = '';
         flagQuestionBtn.style.display = 'none';
+        flagQuestionThankyou.style.display = 'none';
     };
 
     quizForm.addEventListener('submit', event => {
@@ -281,6 +286,9 @@
                 nextBtn.disabled = true;
 
             }
+            flagQuestionThankyou.style.display = 'none';
+            flagQuestionBtn.style.display = '';
+            unclearForm.style.display = 'none';
         }
 
         else if (clickedButton == 'back-btn'){
@@ -320,6 +328,9 @@
                     data.sources
                 );
             });
+            flagQuestionThankyou.style.display = 'none';
+            flagQuestionBtn.style.display = '';
+            unclearForm.style.display = 'none';
         }
     });
 
@@ -358,7 +369,7 @@
             .then(data => {
                 console.log(data.status)
                 flagQuestionBtn.style.display = 'none';
-                flagQuestion.innerHTML = '<div id="flag-question-thankyou"><span><em>Feedback submitted. Thanks for your help!</em></span></div>';
+                flagQuestionThankyou.style.display = '';
             })
             
 
