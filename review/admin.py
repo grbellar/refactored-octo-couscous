@@ -78,17 +78,10 @@ admin.site.register(Quiz, QuizAdmin)
 class QuestionFlagAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         if obj:  # Only apply to existing objects
-            return ('reason', 'question', 'user', 'created_at')
+            return ('reason', 'question', 'user', 'created_at', 'reason_explained')
         return ('user', 'created_at')  # Allow question selection on creation
     
-    def question_link(self, obj):
-        if obj.question:
-            return mark_safe(f'<a href="/admin/review/question/{obj.question.id}/change/">{obj.question}</a>')
-        return "No question"
-    
-    question_link.short_description = "Question"
-    
-    list_display = ('question_link', 'reason', 'user', 'created_at')
+    list_display = ('question', 'reason', 'user', 'created_at')
     list_filter = ('reason',)
 
 admin.site.register(QuestionFlag, QuestionFlagAdmin)
