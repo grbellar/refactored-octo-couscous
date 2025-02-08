@@ -155,8 +155,9 @@ def update_question_index(request, quiz_uuid):
 @require_http_methods(['POST']) 
 def save_feedback(request, quiz_uuid):
     reason = request.POST.get('reason')
+    reason_explained = request.POST.get('reason-explained')
     print(reason)
-
+    print(reason_explained)
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
     quiz_question = quiz.questions.all()[quiz_state.current_question_index]
@@ -167,11 +168,19 @@ def save_feedback(request, quiz_uuid):
     quiz_question.flag_count += 1
     quiz_question.save()
 
-    QuestionFlag.objects.create(
-        user=request.user,
-        question=quiz_question,
-        reason=reason
-    )
+    if reason_explained:
+        QuestionFlag.objects.create(
+            user=request.user,
+            question=quiz_question,
+            reason=reason,
+            reason_explained=reason_explained
+        )
+    else:
+        QuestionFlag.objects.create(
+            user=request.user,
+            question=quiz_question,
+            reason=reason
+        )
 
 
     return JsonResponse({'status': 'feedback saved'}, status=200)

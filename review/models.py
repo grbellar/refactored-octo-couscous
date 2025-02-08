@@ -104,6 +104,7 @@ class QuestionFlag(models.Model):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     reason = models.TextField()
+    reason_explained = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
