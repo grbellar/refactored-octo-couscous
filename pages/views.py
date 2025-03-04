@@ -120,10 +120,6 @@ def choose_quiz_category(request, quiz_type_name):
 @require_http_methods(["GET"])
 def choose_quiz(request, _quiz_type_name, _category_name, category_id):
     
-    #TODO: Need to investigate this whole view. For one quizzes are not uniformly displayed all the time. I need to set the display order so they're always alphabetical sometimes it's wonky and numbers are out of order.
-    # Also for devices and equipment and probably other categories. The same amount of quizzes are not being displayed for each user. For example, my user has quizzes one through nine but two of them are duplicates, and the dummy user is missing quiz two even though it exist in the database.
-    
-    
     user = request.user
     has_paid = user.has_paid_v2
     context = {"user_has_paid": has_paid}
@@ -135,10 +131,18 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id):
     print(f"Name: {selected_category.name}")
     print(f"Icon: {selected_category.icon}")
     print(f"Exam Type: {selected_category.exam_type}")
-    quizzestest = Quiz.objects.filter(category=selected_category)
-    print(quizzestest)
+    
+    # Debug ALL quizzes in this category before any filtering
+    all_quizzes = Quiz.objects.filter(category=selected_category)
+    print(f"\nTotal quizzes in category before filtering: {all_quizzes.count()}")
+    print("All quiz details:")
+    for q in all_quizzes:
+        print(f"ID: {q.id}, UUID: {q.uuid}, Title: {q.title}")
+        # Check if quiz has questions
+        question_count = q.questions.count()
+        print(f"  Question count: {question_count}")
         
-    # Filter quizzes by quiz_type
+    # Filter quizzes by quiz_type with the complex query
     quizzes = Quiz.objects.filter(category=selected_category).annotate(
         question_count=Count('questions')
     ).annotate(
@@ -166,7 +170,16 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id):
         )
     ).order_by('-in_progress', '-completed', 'title')
 
-
+    # Debug after filtering
+    print(f"\nTotal quizzes after filtering: {len(quizzes)}")
+    print("Filtered quiz details:")
+    for q in quizzes:
+        print(f"UUID: {q['uuid']}, Title: {q['title']}")
+        print(f"  Question count: {q['question_count']}")
+        print(f"  User state: {q['userquizstate__user']}")
+        print(f"  In progress: {q['in_progress']}")
+        print(f"  Completed: {q['completed']}")
+    
     # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
     now = timezone.now()
     print(quizzes)  
