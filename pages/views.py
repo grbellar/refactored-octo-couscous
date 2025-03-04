@@ -49,7 +49,7 @@ def my_exams(request):
 @login_required
 @require_http_methods(["GET"])
 def choose_quiz_type(request):
-    exam_types = ExamType.objects.all()
+    exam_types = ExamType.objects.all().order_by('name')
     #TODO: Pass in Clinical Application, etc... instead of abbreviation
     context = {
         'exam_types': [
@@ -72,14 +72,22 @@ def choose_quiz_category(request, quiz_type_name):
     # return all categories and data about quiz type from request
     # Get the ExamType object based on the quiz_type_name
     exam_type = ExamType.objects.get(name=quiz_type_name)
+    print(f"Exam type: {exam_type}")
     categories = exam_type.categories.all()
+    print(categories)
     
     # Get the current user
     user = request.user
     
     categories_data = []
     for category in categories:
+        print("\nCategory info:")
+        print(f"ID: {category.id}")
+        print(f"Name: {category.name}")
+        print(f"Icon: {category.icon}")
+        print(f"Exam Type: {category.exam_type}")
         quiz_count = category.quiz_set.count()
+        print(f"Quiz count: {quiz_count}")
         completed_quiz_count = Quiz.objects.filter(
             category=category,
             userquizstate__user=user,
@@ -87,7 +95,6 @@ def choose_quiz_category(request, quiz_type_name):
         ).count()
         if quiz_count != 0:
             percentage_done = round(completed_quiz_count / quiz_count * 100)
-            print(percentage_done)
         else:
             percentage_done = 0
 
@@ -112,29 +119,38 @@ def choose_quiz_category(request, quiz_type_name):
 @login_required
 @require_http_methods(["GET"])
 def choose_quiz(request, _quiz_type_name, _category_name, category_id):
+    
+    #TODO: Need to investigate this whole view. For one quizzes are not uniformly displayed all the time. I need to set the display order so they're always alphabetical sometimes it's wonky and numbers are out of order.
+    # Also for devices and equipment and probably other categories. The same amount of quizzes are not being displayed for each user. For example, my user has quizzes one through nine but two of them are duplicates, and the dummy user is missing quiz two even though it exist in the database.
+    
+    
     user = request.user
     has_paid = user.has_paid_v2
     context = {"user_has_paid": has_paid}
     
     # Get the selected category from the request
     selected_category = Category.objects.get(id=category_id)
-    print(selected_category)
+    print("\nSelected Category Details:")
+    print(f"ID: {selected_category.id}")
+    print(f"Name: {selected_category.name}")
+    print(f"Icon: {selected_category.icon}")
+    print(f"Exam Type: {selected_category.exam_type}")
+    quizzestest = Quiz.objects.filter(category=selected_category)
+    print(quizzestest)
         
     # Filter quizzes by quiz_type
     quizzes = Quiz.objects.filter(category=selected_category).annotate(
         question_count=Count('questions')
+    ).annotate(
+        user_state=Case(
+            When(userquizstate__user=user, then=F('userquizstate')),
+            default=None,
+            output_field=IntegerField(),
+        )
     ).values(
-        'title', 
-        'uuid', 
-        'description', 
-        'question_count',
-        'userquizstate__time_started',  # Just fetch the timestamp
-        'userquizstate__user',  # Add this to check if user has started
-        'userquizstate__completed',  # Check if the quiz is completed
-        'userquizstate__score',  # Include the score
-        'category'  # Include category
-    ).filter(
-        Q(userquizstate__user=user) | Q(userquizstate__user__isnull=True)
+        'title', 'uuid', 'description', 'question_count',
+        'userquizstate__time_started', 'userquizstate__user',
+        'userquizstate__completed', 'userquizstate__score', 'category'
     ).annotate(
         in_progress=Case(
             When(
@@ -148,11 +164,12 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id):
             default=0,
             output_field=IntegerField(),
         )
-    ).order_by('-in_progress', '-completed')  # Replace 'some_other_field' with another field for secondary ordering
+    ).order_by('-in_progress', '-completed', 'title')
 
 
     # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
     now = timezone.now()
+    print(quizzes)  
     for quiz in quizzes:
         # Check if quiz hasn't been started by this user
         quiz['not_started'] = quiz['userquizstate__user'] is None
@@ -186,7 +203,9 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id):
     paginator = Paginator(quizzes, 10)  # Show 10 quizzes per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    print(page_obj)
+    print(f"Page obj: {page_obj}")
+    for obj in page_obj:
+        print(obj)
     print(selected_category)
 
     context['page_obj'] = page_obj
