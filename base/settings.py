@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "debug_toolbar",
+    "impersonate",
     # My apps
     "accounts",
     "pages",
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # django-allauth
+    "impersonate.middleware.ImpersonateMiddleware", # Impersonate package
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -192,6 +194,8 @@ ACCOUNT_FORMS = {'signup': 'accounts.forms.MyCustomSignupForm'}
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
+
+ADMINS = [("Grant Bellar", "grbellar@gmail.com")]
 
 
 # Override production variables if DJANGO_DEVELOPMENT env variable is true
