@@ -16,7 +16,7 @@
                         <div class="progress mb-3" style="height: 25px;">
                             <div class="progress-bar bg-success" role="progressbar" style="width: {{ category.percentage_done }}%;" aria-valuenow="{{ category.percentage_done }}" aria-valuemin="0" aria-valuemax="100">{{ category.percentage_done }}%</div>
                         </div>
-                        <p>{{ category.quiz_count }} quizzes</p>
+                        <p>{{ category.quiz_count }} quiz{{ category.quiz_count|pluralize:"zes" }}</p>
                         <a class="btn btn-quizzes" href="{% url 'choose-quiz' exam_type_name category.name category.id%}">View quizzes</a>
                     </div>
                 </div>

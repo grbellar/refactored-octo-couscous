@@ -4,16 +4,17 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from exams.models import Exam, UserExamState, ExamType, Category
-from review.models import Quiz
+from review.models import Quiz, UserQuizState
 from collections import defaultdict
 from pathlib import Path
 from dotenv import load_dotenv
 import os 
-import pprint
-from django.db.models import Count, F, Q, Case, When, IntegerField
+from pprint import pprint
+from django.db.models import Count, F, Q, Case, When, IntegerField, Exists, OuterRef, Subquery
 from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
+import re
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,113 +119,83 @@ def choose_quiz_category(request, quiz_type_name):
 
 @login_required
 @require_http_methods(["GET"])
-def choose_quiz(request, _quiz_type_name, _category_name, category_id):
+def choose_quiz(request, _quiz_type_name, _category_name, category_id): # TODO: technically should rename _quiz_type_name since it is used
     
     user = request.user
-    has_paid = user.has_paid_v2
-    context = {"user_has_paid": has_paid}
-    
-    # Get the selected category from the request
     selected_category = Category.objects.get(id=category_id)
-    print("\nSelected Category Details:")
-    print(f"ID: {selected_category.id}")
-    print(f"Name: {selected_category.name}")
-    print(f"Icon: {selected_category.icon}")
-    print(f"Exam Type: {selected_category.exam_type}")
-    
-    # Debug ALL quizzes in this category before any filtering
-    all_quizzes = Quiz.objects.filter(category=selected_category)
-    print(f"\nTotal quizzes in category before filtering: {all_quizzes.count()}")
-    print("All quiz details:")
-    for q in all_quizzes:
-        print(f"ID: {q.id}, UUID: {q.uuid}, Title: {q.title}")
-        # Check if quiz has questions
-        question_count = q.questions.count()
-        print(f"  Question count: {question_count}")
-        
-    # Filter quizzes by quiz_type with the complex query
-    quizzes = Quiz.objects.filter(category=selected_category).annotate(
-        question_count=Count('questions')
-    ).annotate(
-        user_state=Case(
-            When(userquizstate__user=user, then=F('userquizstate')),
-            default=None,
-            output_field=IntegerField(),
-        )
-    ).values(
-        'title', 'uuid', 'description', 'question_count',
-        'userquizstate__time_started', 'userquizstate__user',
-        'userquizstate__completed', 'userquizstate__score', 'category'
-    ).annotate(
-        in_progress=Case(
-            When(
-                Q(userquizstate__time_started__isnull=False) & Q(userquizstate__completed=False),
-                then=1
-            ),
-            default=0,
-            output_field=IntegerField(),
-        ),
-        completed=Case(When(userquizstate__completed=True, then=1),
-            default=0,
-            output_field=IntegerField(),
-        )
-    ).order_by('-in_progress', '-completed', 'title')
 
-    # Debug after filtering
-    print(f"\nTotal quizzes after filtering: {len(quizzes)}")
-    print("Filtered quiz details:")
-    for q in quizzes:
-        print(f"UUID: {q['uuid']}, Title: {q['title']}")
-        print(f"  Question count: {q['question_count']}")
-        print(f"  User state: {q['userquizstate__user']}")
-        print(f"  In progress: {q['in_progress']}")
-        print(f"  Completed: {q['completed']}")
+    # Get all quizzes for the category
+    quizzes = Quiz.objects.filter(category=selected_category)
     
-    # Add is_expired flag, time_remaining, not_started, completed, and score to each quiz
+    # Annotate with other fields as before
+    quizzes = quizzes.annotate(
+        has_started=Exists(
+            UserQuizState.objects.filter(
+                quiz=OuterRef('pk'),
+                user=user, 
+                time_started__isnull=False
+            )
+        ),
+        completed=UserQuizState.objects.filter(quiz=OuterRef('pk'),user=user).values('completed'),
+        time_started=UserQuizState.objects.filter(quiz=OuterRef('pk'), user=user).values('time_started'),
+        score=UserQuizState.objects.filter(quiz=OuterRef('pk'),user=user).values('score'),
+        question_count=Count('questions')
+    )
+    
+    # Get quizzes and sort them in Python with natural sorting
+    quiz_list = list(quizzes)
+    
+    # Define a function for natural sorting
+    def natural_sort_key(quiz):
+        # Extract number from quiz title (assuming format like "Quiz X")
+        match = re.search(r'(\d+)', quiz.title)
+        if match:
+            return int(match.group(1))
+        return 0  # Default if no number found
+    
+    # Sort the quiz list using the natural sort key
+    quiz_list.sort(key=natural_sort_key)
+    
+    # Continue with the rest of your view using quiz_list instead of quizzes
     now = timezone.now()
-    print(quizzes)  
-    for quiz in quizzes:
-        # Check if quiz hasn't been started by this user
-        quiz['not_started'] = quiz['userquizstate__user'] is None
+    processed_quizzes = []
+    for quiz in quiz_list:
+        quiz_data = {
+            'uuid': quiz.uuid,
+            'title': quiz.title,
+            'has_started': quiz.has_started,
+            'completed': quiz.completed,
+            'score': quiz.score,
+            'question_count': quiz.question_count
+        }
         
-        time_started = quiz['userquizstate__time_started']
-        if time_started is not None:
-            time_elapsed = now - time_started
+        if quiz.has_started:
+            time_elapsed = now - quiz.time_started
             is_expired = time_elapsed >= timedelta(hours=8)
-            quiz['is_expired'] = is_expired
+            quiz_data['is_expired'] = is_expired
             if not is_expired:
                 time_remaining = timedelta(hours=8) - time_elapsed
                 # Convert timedelta to hours and minutes
                 total_minutes = time_remaining.total_seconds() / 60
                 hours = int(total_minutes // 60)
                 minutes = int(total_minutes % 60)
-                quiz['hours_remaining'] = hours
-                quiz['minutes_remaining'] = minutes
+                quiz_data['hours_remaining'] = hours
+                quiz_data['minutes_remaining'] = minutes
         else:
-            quiz['is_expired'] = False
-            quiz['hours_remaining'] = None
-            quiz['minutes_remaining'] = None
-        
-        # Check if the quiz is completed and add score
-        quiz['completed'] = quiz['userquizstate__completed']
-        if quiz['completed']:
-            quiz['score'] = quiz['userquizstate__score']
-        else:
-            quiz['score'] = None
-    
-    # Implement pagination
-    paginator = Paginator(quizzes, 10)  # Show 10 quizzes per page
+            quiz_data['is_expired'] = False
+            quiz_data['hours_remaining'] = None
+            quiz_data['minutes_remaining'] = None
+            
+        processed_quizzes.append(quiz_data)
+
+    paginator = Paginator(processed_quizzes, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    print(f"Page obj: {page_obj}")
-    for obj in page_obj:
-        print(obj)
-    print(selected_category)
-
+    context = {}
     context['page_obj'] = page_obj
     context['selected_category'] = selected_category
     context['quiz_type'] = _quiz_type_name
-    context['category_name'] = _category_name
+    context['category_name'] = selected_category.name
 
     return render(request, 'review/choose_quiz.html', context)
 
