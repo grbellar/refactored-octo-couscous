@@ -45,7 +45,7 @@
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center align-items-center mb-md-0">
 
-          <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="300px" height="auto" src="{% static 'images/new-logo-higher-res.jpg' %}" alt="Perfusion Board Prep Logo"></a></li>
+          <li><a href="{% url 'home' %}"><img style="padding-right: 20px;" width="160px" height="auto" src="{% static 'images/new-logo.png' %}" alt="Perfusion Board Prep Logo"></a></li>
           <li><a href="{% url 'about' %}" class="nav-link px-2 link-dark">About</a></li>
           {% if not user.has_paid_v2 %}
           <li><a href="{% url 'get-access-buy' %}" class="nav-link px-2 link-dark">Get Access</a></li>
