@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import Answer, Explanation, Question, QuestionFlag, Quiz, UserQuizAnswer, UserQuizState
 from django.utils.safestring import mark_safe
 
 # Register your models here.
@@ -90,10 +90,13 @@ class QuestionFlagAdmin(admin.ModelAdmin):
         return ('user', 'created_at')  # Allow question selection on creation
     
     def count(self, obj):
+        print("In count:", obj)
         return obj.question.questionflag_set.count()
+
     
     count.short_description = "Count"
-    count.admin_order_field = 'question__flag_count'  # Make column sortable
+    # count.admin_order_field = 'question__flag_count'  # Make column sortable
+    # If this doesn't work try adding flag_count back to the question model. Don't exclude it. Django might be struggling to query the data because of that.
     
     list_display = ('question', 'reason', 'user', 'created_at', 'count')
     list_filter = ('reason',)

@@ -23,8 +23,8 @@ class Question(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    flagged = models.BooleanField(default=False)
-    flag_count = models.IntegerField(default=0)
+    flagged = models.BooleanField(default=False) # This isn't being reset when a flag is deleted.
+    flag_count = models.IntegerField(default=0) # This isn't being incremented down when a flag is deleted.
 
     def __str__(self):
         return self.text
