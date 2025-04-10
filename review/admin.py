@@ -7,8 +7,15 @@ from django.utils.safestring import mark_safe
 class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 0
-    readonly_fields = ('choice_count',)
+    readonly_fields = ('choice_count', 'answer_link')
     can_delete = False
+
+    def answer_link(self, obj):
+        if obj.id:
+            return mark_safe(f'<a href="/admin/review/answer/{obj.id}/change/">View Answer</a>')
+        return "-"
+    
+    answer_link.short_description = "Link to Answer"
 
 class ExplanationInline(admin.TabularInline):
     model = Explanation
@@ -16,10 +23,11 @@ class ExplanationInline(admin.TabularInline):
     can_delete = False
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('text', 'category', 'flag_count')
+    list_display = ('text', 'category')
     list_filter = ('category',)
-    readonly_fields = ('category', 'flag_reasons', 'flag_count')
+    readonly_fields = ('category', 'flag_reasons')
     inlines = [AnswerInline, ExplanationInline]
+    exclude = ('flagged', 'flag_count')
 
     def flag_reasons(self, obj):
         flags = obj.questionflag_set.all()
@@ -81,7 +89,13 @@ class QuestionFlagAdmin(admin.ModelAdmin):
             return ('reason', 'question', 'user', 'created_at', 'reason_explained')
         return ('user', 'created_at')  # Allow question selection on creation
     
-    list_display = ('question', 'reason', 'user', 'created_at')
+    def count(self, obj):
+        return obj.question.questionflag_set.count()
+    
+    count.short_description = "Count"
+    count.admin_order_field = 'question__flag_count'  # Make column sortable
+    
+    list_display = ('question', 'reason', 'user', 'created_at', 'count')
     list_filter = ('reason',)
 
 admin.site.register(QuestionFlag, QuestionFlagAdmin)
