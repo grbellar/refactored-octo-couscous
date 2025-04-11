@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import time
 from django.core.management.base import BaseCommand
 from exams.models import Category, Question, Choice, Explanation
 
@@ -85,10 +86,13 @@ class Command(BaseCommand):
             return
             
         start_msg = f"Approved. Starting data import for {exam_type} Categories..."
+        time.sleep(2)
         self.stdout.write(start_msg)
         logger.info(start_msg)
         
-        total_questions_imported = [] # Stores a tuple like this, ("Clinical Application - Anatomy and Physiology (ID: 1)", 56)
+        import_summary = [] # Stores a tuple like this, ("Clinical Application - Anatomy and Physiology (ID: 1)", 56)
+        total_questions_imported = 0
+
 
         for category in categories:
             question_import_counter = 0
@@ -144,7 +148,8 @@ class Command(BaseCommand):
                     logger.info(explanation_msg)
                     logger.info(sources_msg)
                 
-                total_questions_imported.append((f"\n{category_exam_type} - {category_name} - ID: {category_id}", f"({question_import_counter})"))
+                import_summary.append((f"\n{category_exam_type} - {category_name} - ID: {category_id}", f"({question_import_counter})"))
+                total_questions_imported += question_import_counter
             except FileNotFoundError:
                 error_msg = f"Warning: Could not find file for category {category_name}"
                 self.stderr.write(error_msg)
@@ -156,8 +161,8 @@ class Command(BaseCommand):
                 logger.error(error_msg)
                 continue
         
-        success_msg = f"Data import completed successfully! Total questions imported: "
-        for tup in total_questions_imported:
+        success_msg = f"Data import completed successfully! Total questions imported {total_questions_imported}: "
+        for tup in import_summary:
             success_msg += f"{tup[0]} - {tup[1]}, "
         self.stdout.write(self.style.SUCCESS(success_msg))
         logger.info(success_msg) 
