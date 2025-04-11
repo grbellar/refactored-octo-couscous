@@ -13,33 +13,59 @@
   <h1 class="mt-4 mb-3">Exam Previews</h1>
   {% endif %}
   
+  <!-- Regular Exams Section -->
   <div class="row">
     {% for exam in exams %}
       {% if exam.is_active or request.user.is_staff %}
-        <div class="col-md-4 p-4">
-          <div class="card h-100">
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex justify-content-between align-items-start">
-                <h5 class="card-title">{{ exam.name }}</h5>
-                
-              </div>
-              <p>2 hours to complete</p>
-              <p>{{ exam.question_count }} questions</p>
-              <div class="mt-auto">
-                {% if request.user.is_staff and not exam.is_active %}
-                  <p class="text-danger mb-2">Not open to the public. You are seeing this exam because you are an admin.</p>
-                {% elif request.user.is_staff %}
-                  <p class="text-success mb-2">Open to the public.</p>
-                {% endif %}
-                {% if user_has_paid %}
-                  <button class="btn btn-primary w-100 start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
-                {% else %}
-                  <a href="{% url 'get-access-buy' %}" class="btn btn-primary w-100">Get Access</a>
-                {% endif %}
+        {% if not exam.exam_type or exam.exam_type.name != 'Promo' %}
+          <div class="col-md-4 p-4">
+            <div class="card h-100">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h5 class="card-title">{{ exam.name }}</h5>
+                </div>
+                <p>2 hours to complete</p>
+                <p>{{ exam.question_count }} questions</p>
+                <div class="mt-auto">
+                  {% if request.user.is_staff and not exam.is_active %}
+                    <p class="text-danger mb-2">Not open to the public. You are seeing this exam because you are an admin.</p>
+                  {% elif request.user.is_staff %}
+                    <p class="text-success mb-2">Open to the public.</p>
+                  {% endif %}
+                  {% if user_has_paid %}
+                    <button class="btn btn-primary w-100 start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+                  {% else %}
+                    <a href="{% url 'get-access-buy' %}" class="btn btn-primary w-100">Get Access</a>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Promo Exams Section -->
+  <h1 class="mb-4 mt-5">Promo Exams</h1>
+  <div class="row">
+    {% for exam in exams %}
+      {% if exam.is_promo %}
+          <div class="col-md-4 p-4">
+            <div class="card h-100">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h5 class="card-title">{{ exam.name }}</h5>
+                </div>
+                <p>{{ exam.description }}</p>
+                <p>2 hours to complete</p>
+                <p>{{ exam.question_count }} questions</p>
+                <div class="mt-auto">
+                  <button class="btn btn-primary w-100 start-quiz" data-exam-id="{{ exam.uuid }}">Start exam</button>
+                </div>
+              </div>
+            </div>
+          </div>
       {% endif %}
     {% endfor %}
   </div>

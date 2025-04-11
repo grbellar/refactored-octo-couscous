@@ -1,16 +1,14 @@
 from django.views.generic import TemplateView
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import render
 from exams.models import Exam, UserExamState, ExamType, Category
 from review.models import Quiz, UserQuizState
 from collections import defaultdict
 from pathlib import Path
 from dotenv import load_dotenv
 import os 
-from pprint import pprint
-from django.db.models import Count, F, Q, Case, When, IntegerField, Exists, OuterRef, Subquery
+from django.db.models import Count, Exists, OuterRef
 from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
@@ -37,7 +35,7 @@ def my_exams(request):
         user = request.user
         has_paid = user.has_paid_v2
         context = {"user_has_paid": has_paid}
-        exams = Exam.objects.annotate(question_count=Count('questions')).values('name', 'uuid', 'is_active', 'question_count')        
+        exams = Exam.objects.annotate(question_count=Count('questions')).values('name', 'uuid', 'is_active', 'question_count', 'is_promo', 'description')        
         context['exams'] = exams
 
         # TODO: add a flag to show user that they have taken exam. button should say view results instead.

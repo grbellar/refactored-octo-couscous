@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.forms import ModelChoiceField
-from django.http.request import HttpRequest
 from .models import *
 
 # Register your models here.
@@ -42,7 +41,8 @@ class QuestionInline(admin.TabularInline):
 
 class CategoryAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
-    list_display = ['name', 'exam_type']
+    list_display = ['name', 'id', 'exam_type']
+    list_filter = ['exam_type']
 
 
 admin.site.register(Category, CategoryAdmin)
@@ -69,6 +69,17 @@ class ChoiceInline(admin.StackedInline):
         return extra
 
 
+class ExplanationInline(admin.StackedInline):
+    model = Explanation
+    fields = ['text', 'sources']
+    can_delete = False
+    max_num = 1
+    min_num = 1
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
 class CategoryChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         # Check if exam_type exists for the category
@@ -79,7 +90,7 @@ class CategoryChoiceField(ModelChoiceField):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    inlines = [ChoiceInline]
+    inlines = [ChoiceInline, ExplanationInline]
     list_display = ['text', 'id']
 
 

@@ -16,7 +16,10 @@ class Exam(models.Model):
     name = models.CharField(max_length=300)
     questions = models.ManyToManyField('Question', blank=True)
     exam_type = models.ForeignKey("ExamType", on_delete=models.SET_NULL, related_name="exams", null=True)
+    description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
+    is_promo = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f'{self.name}'
@@ -62,6 +65,12 @@ class Choice(models.Model):
     
     class Meta:
         verbose_name = "Question Choice"
+
+
+class Explanation(models.Model):
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='explanation')
+    text = models.TextField()
+    sources = models.JSONField(default=list, blank=True)
 
 
 class UserExamState(models.Model):
