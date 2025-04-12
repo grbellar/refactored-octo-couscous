@@ -32,3 +32,7 @@ zfinal-json
 zreview-questions-final-json
 createquestionslog.txt
 createquizzeslog.txt
+
+zdata-to-import
+zfiles-to-rerun
+zlogs
