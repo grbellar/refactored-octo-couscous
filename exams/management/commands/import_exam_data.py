@@ -161,6 +161,7 @@ class Command(BaseCommand):
                 logger.error(error_msg)
                 continue
         
+        # TODO: Add better logging for files that fail. Currently they fail silently and it acts like they all completed even though there might be fine now found errors.
         success_msg = f"Data import completed successfully! Total questions imported {total_questions_imported}: "
         for tup in import_summary:
             success_msg += f"{tup[0]} - {tup[1]}, "
