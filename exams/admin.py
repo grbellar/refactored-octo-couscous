@@ -48,13 +48,20 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
-#TODO: Add question display name similar to question admin and how it displays more info about Category
 #TODO: Filter the question dropdown to only display questions of the categories that belong the selected ExamType.
 #       i.e., only show PSBE or CAPE questions based on what kind of exam I'm creating.
 class ExamAdmin(admin.ModelAdmin):
-    # filter_horizontal = ('questions')
     readonly_fields = ["uuid"]
+    autocomplete_fields = ['questions']
+    search_fields = ['name', 'questions__text']
+    list_display = ['name']
     
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        # Set the width of the autocomplete field
+        form.base_fields['questions'].widget.attrs['style'] = 'width: 800px;'
+        return form
+
 
 admin.site.register(Exam, ExamAdmin)
 
@@ -92,7 +99,8 @@ class CategoryChoiceField(ModelChoiceField):
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline, ExplanationInline]
     list_display = ['text', 'id']
-
+    search_fields = ['text', 'category__name', 'category__exam_type__name']
+    list_filter = ['category__exam_type', 'category']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "category":

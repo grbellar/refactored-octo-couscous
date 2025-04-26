@@ -49,7 +49,7 @@ class Question(models.Model):
         else:
             category_name = "No category assigned"
             exam_type = "No exam_type assigned"
-        return f'{category_name} - {exam_type} - Q.{self.id}'
+        return f'Q.{self.id}: {category_name} - {exam_type} - {self.text[:50]}...'
 
     class Meta:
         ordering = ["id"]
