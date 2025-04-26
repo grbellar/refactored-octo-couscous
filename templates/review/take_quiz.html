@@ -27,16 +27,16 @@
                     <div class="form-check" style="padding-bottom: 20px">
                         {% for answer in answers %}
                             {% if user_answer_id %}
-                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
                                 {% if answer.id == user_answer_id %}
                                     <input disabled class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}" checked>
                                 {% else %}
                                     <input disabled class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
                                 {% endif %}
-                                    <br>  
-                            {% else %}   
                                 <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
+                                <br>  
+                            {% else %}   
                                 <input class="form-check-input form-check-input-answer" id="choice{{ answer.id }}" type="radio" name="user_answer" value="{{ answer.id }}">
+                                <label class="form-check-label" for="choice{{ answer.id }}">{{ answer.text }}</label>
                                 <br>    
                             {% endif %}
                         {% endfor %}
@@ -153,11 +153,27 @@
     const colorFeedback = document.getElementById('feedback-container');
 
 
-    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation, sources) {
+    function disableFormAndShowExplanation(selectedAnswerId, isCorrect, explanation, sources, answers) {
         // Disable all radio inputs
         document.querySelectorAll('.form-check-input-answer').forEach(input => {
             input.disabled = true;
         });
+
+        // Add choice count to each answer if available
+        if (answers && Array.isArray(answers)) {
+            answers.forEach(answer => {
+                const answerLabel = document.querySelector(`label[for="choice${answer.id}"]`);
+                if (answerLabel) {
+                    // Append the choice count in a small, muted format
+                    const countSpan = document.createElement('span');
+                    countSpan.style.fontSize = '0.9rem';
+                    countSpan.style.fontWeight = 'bold';
+                    countSpan.style.marginLeft = '5px';
+                    countSpan.textContent = `(${answer.choice_count} ${answer.choice_count === 1 ? 'person' : 'people'} chose this)`;
+                    answerLabel.appendChild(countSpan);
+                }
+            });
+        }
         
         // Select the previously chosen answer
         const selectedInput = document.querySelector(`#choice${selectedAnswerId}`);
@@ -221,7 +237,8 @@
                     data.user_answer_id,
                     data.is_correct,
                     data.explanation,
-                    data.sources
+                    data.sources,
+                    data.answers
                 );
             });
             
@@ -246,8 +263,8 @@
                         document.getElementById('question-number').textContent = "Question " + data.question_number + " of " + data.total_questions;
                         document.getElementById('question-text').textContent = data.question_text;
                         const answersHtml = data.answers.map(answer => `
-                                <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
                                 <input class="form-check-input form-check-input-answer" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                                <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
                                 <br>
                             `).join('');
                         document.querySelector('.form-check').innerHTML = answersHtml;
@@ -261,7 +278,8 @@
                                 data.user_answer_id,
                                 data.is_correct,
                                 data.explanation,
-                                data.sources
+                                data.sources,
+                                data.answers
                             );
                         }
                         // Else user hasn't answered yet
@@ -312,8 +330,8 @@
                 document.getElementById('question-number').textContent = "Question " + data.question_number + " of " + data.total_questions;
                 document.getElementById('question-text').textContent = data.question_text;
                 const answersHtml = data.answers.map(answer => `
-                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
                     <input class="form-check-input form-check-input-answer" id="choice${answer.id}" type="radio" name="user_answer" value="${answer.id}">
+                    <label class="form-check-label" for="choice${answer.id}">${answer.text}</label>
                     <br>
                 `).join('');
                 document.querySelector('.form-check').innerHTML = answersHtml;
@@ -325,7 +343,8 @@
                     data.user_answer_id,
                     data.is_correct,
                     data.explanation,
-                    data.sources
+                    data.sources,
+                    data.answers
                 );
             });
             flagQuestionThankyou.style.display = 'none';
