@@ -18,8 +18,7 @@
                 {% if not quiz.has_started %}
                 Not started.
                 {% elif quiz.has_started and not quiz.completed %}
-                <span class="text-success">In progress.</span>
-                <p>Question {{ quiz.current_question_index | add:1 }} / {{ quiz.question_count }}</p>
+                Question {{ quiz.current_question_index | add:1 }} / {{ quiz.question_count }}
                 {% elif quiz.completed %}
                 <span class="text-success">Quiz Complete. You can still review your answers.</span>
                 {% endif %}
