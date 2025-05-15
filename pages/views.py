@@ -137,7 +137,8 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id): # TODO: 
         completed=UserQuizState.objects.filter(quiz=OuterRef('pk'),user=user).values('completed'),
         time_started=UserQuizState.objects.filter(quiz=OuterRef('pk'), user=user).values('time_started'),
         score=UserQuizState.objects.filter(quiz=OuterRef('pk'),user=user).values('score'),
-        question_count=Count('questions')
+        question_count=Count('questions'),
+        current_question_index=UserQuizState.objects.filter(quiz=OuterRef('pk'), user=user).values('current_question_index')
     )
     
     # Get quizzes and sort them in Python with natural sorting
@@ -164,7 +165,8 @@ def choose_quiz(request, _quiz_type_name, _category_name, category_id): # TODO: 
             'has_started': quiz.has_started,
             'completed': quiz.completed,
             'score': quiz.score,
-            'question_count': quiz.question_count
+            'question_count': quiz.question_count,
+            'current_question_index': quiz.current_question_index
         }
         
         if quiz.has_started:

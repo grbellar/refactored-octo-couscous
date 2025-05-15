@@ -5,7 +5,6 @@
 <div class="container">
     <h5 class="mt-4 mb-1">{{ quiz_type }}</h5>
     <h1 class="mt-2 mb-4">{{ category_name }} <i class="{{ selected_category.icon }} category-icon"></i></h1>
-    <p>Once you start a quiz you will have 8 hours to complete the quiz and review your answers.</p>
 
     <div class="row">
       {% for quiz in page_obj %}
@@ -18,10 +17,11 @@
               <p class="text-muted-small">
                 {% if not quiz.has_started %}
                 Not started.
-                {% elif quiz.is_expired %}
-                <span class="text-success">Quiz Complete</span>
-                {% else %}
-                  <span><strong>{{ quiz.hours_remaining }} hours {{ quiz.minutes_remaining }} mins</strong><span> left to review
+                {% elif quiz.has_started and not quiz.completed %}
+                <span class="text-success">In progress.</span>
+                <p>Question {{ quiz.current_question_index | add:1 }} / {{ quiz.question_count }}</p>
+                {% elif quiz.completed %}
+                <span class="text-success">Quiz Complete. You can still review your answers.</span>
                 {% endif %}
               </p>
               <p>{{ quiz.question_count }} questions</p>
@@ -29,12 +29,12 @@
                 <p><span style="font-size: 14px" class="badge bg-primary">Score: {{ quiz.score }}%</span></p>
               {% endif %}
               <div class="mt-auto">
-                {% if quiz.is_expired %}
-                  <a class="btn btn-primary w-100 disabled" aria-disabled="true">Review complete.</a>
-                {% elif quiz.has_started and not quiz.is_expired %}
-                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Continue review</a>
+                {% if quiz.completed %}
+                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Review answers</a>
+                {% elif quiz.has_started and not quiz.completed %}
+                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Continue quiz</a>
                 {% else %}
-                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Start</a>
+                  <a href="{% url 'take-quiz' quiz.uuid %}" class="btn btn-primary w-100">Start quiz</a>
                 {% endif %}
               </div>
             </div>
