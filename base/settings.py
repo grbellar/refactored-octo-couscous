@@ -190,6 +190,11 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_FORMS = {'signup': 'accounts.forms.MyCustomSignupForm'}
 
+# Session timeout settings
+SESSION_COOKIE_AGE = 1800  # 30 minutes in seconds
+SESSION_SAVE_EVERY_REQUEST = True  # Update session expiry on every request
+
+
 # Django Deployment Checklist
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
