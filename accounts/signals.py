@@ -8,6 +8,7 @@ from allauth.account.signals import user_logged_out
 @receiver(user_logged_in)
 def kill_other_sessions(sender, request, user, **kwargs):
     current_session_key = request.session.session_key
+    sessions_deleted = False
 
     # Loop through all sessions
     sessions = Session.objects.filter(expire_date__gte=timezone.now())
@@ -21,12 +22,7 @@ def kill_other_sessions(sender, request, user, **kwargs):
                 session.session_data = Session.objects.encode(data)
                 session.save()
                 session.delete()
+                sessions_deleted = True
 
-@receiver(user_logged_out)
-def handle_force_logout(sender, request, **kwargs):
-    if request.session.get('force_logged_out', False):
-        messages.warning(request, "You have been logged out because a new login was detected from another device.")
-        # Clear the flag
-        request.session.pop('force_logged_out', None)
-
-# This works. Add a message to the user that new login was detected.
+    if sessions_deleted:
+        messages.info(request, 'Your other active sessions have been logged out for security.')
