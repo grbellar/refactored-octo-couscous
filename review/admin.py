@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Answer, Explanation, Question, QuestionFlag, Quiz, UserQuizAnswer, UserQuizState
+from .models import Answer, Explanation, Question, Quiz, UserQuizAnswer, UserQuizState
 from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 
 # Register your models here.
 
@@ -23,23 +24,76 @@ class ExplanationInline(admin.TabularInline):
     can_delete = False
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('text', 'category')
-    list_filter = ('category',)
-    readonly_fields = ('category', 'flag_reasons')
+    list_display = ('text', 'category', 'flagged', 'flag_count', 'flag_summary')
+    list_filter = ('category', 'flagged')
+    readonly_fields = ('flag_count', 'flag_details', 'clear_flags_button')
     inlines = [AnswerInline, ExplanationInline]
-    exclude = ('flagged', 'flag_count')
-
-    def flag_reasons(self, obj):
-        flags = obj.questionflag_set.all()
-        if not flags:
-            return "No flags"
-        
-        reasons = [f"- {flag.reason} (by {flag.user})" for flag in flags]
-        return mark_safe("<br>".join(reasons))
+    search_fields = ('text',)
+    list_per_page = 50
+    exclude = ('flag_reasons',)
     
-    flag_reasons.short_description = "Flag Reasons"
+    def clear_flags_button(self, obj):
+        if obj.flagged:
+            return mark_safe(
+                f'<a href="/admin/review/question/{obj.id}/clear-flags/" '
+                f'class="button" style="background: #008000; color: white; padding: 8px 12px; '
+                f'text-decoration: none; border-radius: 4px;">Mark as fixed</a>'
+            )
+        return "No flags to clear"
+    clear_flags_button.short_description = "Actions"
+    
+    def flag_summary(self, obj):
+        if obj.flagged and obj.flag_reasons:
+            return f"{len(obj.flag_reasons)} flag(s)"
+        return "No flags"
+    flag_summary.short_description = "Flags"
+    
+    def flag_details(self, obj):
+        if obj.flagged and obj.flag_reasons:
+            details = []
+            for flag in obj.flag_reasons:
+                detail = f"<strong>{flag.get('username', 'Unknown')}</strong>: {flag.get('reason', 'No reason')}"
+                if flag.get('reason_explained'):
+                    detail += f"<br><em>Explanation: {flag.get('reason_explained')}</em>"
+                details.append(detail)
+            return mark_safe("<br><br>".join(details))
+        return "No flags"
+    flag_details.short_description = "Flag Details"
+    
+
+    
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                '<int:question_id>/clear-flags/',
+                self.admin_site.admin_view(self.clear_flags_view),
+                name='question-clear-flags',
+            ),
+        ]
+        return custom_urls + urls
+    
+    def clear_flags_view(self, request, question_id):
+        from django.shortcuts import redirect
+        from django.contrib import messages
+        
+        try:
+            question = Question.objects.get(id=question_id)
+            if question.flagged:
+                question.flag_reasons = []
+                question.flagged = False
+                question.save()
+                messages.success(request, f"Flags cleared for question: {question.text[:50]}...")
+            else:
+                messages.warning(request, "This question has no flags to clear.")
+        except Question.DoesNotExist:
+            messages.error(request, "Question not found.")
+        
+        return redirect(f'/admin/review/question/{question_id}/change/')
 
 admin.site.register(Question, QuestionAdmin)
+
 admin.site.register(Answer)
 
 class ExplanationAdmin(admin.ModelAdmin):
@@ -82,24 +136,4 @@ class QuizAdmin(admin.ModelAdmin):
     list_filter = ('category',)
 
 admin.site.register(Quiz, QuizAdmin)
-
-class QuestionFlagAdmin(admin.ModelAdmin):
-    def get_readonly_fields(self, request, obj=None):
-        if obj:  # Only apply to existing objects
-            return ('reason', 'question', 'user', 'created_at', 'reason_explained')
-        return ('user', 'created_at')  # Allow question selection on creation
-    
-    def count(self, obj):
-        print("In count:", obj)
-        return obj.question.questionflag_set.count()
-
-    
-    count.short_description = "Count"
-    # count.admin_order_field = 'question__flag_count'  # Make column sortable
-    # If this doesn't work try adding flag_count back to the question model. Don't exclude it. Django might be struggling to query the data because of that.
-    
-    list_display = ('question', 'reason', 'user', 'created_at', 'count')
-    list_filter = ('reason',)
-
-admin.site.register(QuestionFlag, QuestionFlagAdmin)
 

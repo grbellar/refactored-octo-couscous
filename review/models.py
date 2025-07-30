@@ -23,11 +23,51 @@ class Question(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    flagged = models.BooleanField(default=False) # This isn't being reset when a flag is deleted.
-    flag_count = models.IntegerField(default=0) # This isn't being incremented down when a flag is deleted.
+    flagged = models.BooleanField(default=False)
+    flag_reasons = models.JSONField(default=list, blank=True)  # List of flag objects
 
     def __str__(self):
         return self.text
+    
+    @property
+    def flag_count(self):
+        return len(self.flag_reasons) if self.flag_reasons else 0
+    
+    def add_flag(self, user, reason, reason_explained=None):
+        """Add a flag reason to the question"""
+        from django.utils import timezone
+        
+        flag_data = {
+            'user_id': user.id,
+            'username': user.username,
+            'reason': reason,
+            'reason_explained': reason_explained,
+            'created_at': timezone.now().isoformat()
+        }
+        
+        if not self.flag_reasons:
+            self.flag_reasons = []
+        
+        # Check if user already flagged this question
+        for flag in self.flag_reasons:
+            if flag.get('user_id') == user.id:
+                # Update existing flag
+                flag.update(flag_data)
+                break
+        else:
+            # Add new flag
+            self.flag_reasons.append(flag_data)
+        
+        self.flagged = True
+        self.save()
+    
+    def remove_flag(self, user_id):
+        """Remove a flag by user ID"""
+        if self.flag_reasons:
+            self.flag_reasons = [flag for flag in self.flag_reasons if flag.get('user_id') != user_id]
+            if not self.flag_reasons:
+                self.flagged = False
+            self.save()
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -98,19 +138,3 @@ class UserQuizAnswer(models.Model):
 
     class Meta:
         unique_together = ('user_quiz_state', 'question')
-
-
-class QuestionFlag(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    reason = models.TextField()
-    reason_explained = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.user.username} - {self.question.text}"
-    
-    class Meta:
-        verbose_name = "Flagged Question"
-        verbose_name_plural = "Flagged Questions"

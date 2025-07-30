@@ -1,9 +1,10 @@
-from django.shortcuts import render
-from .models import Quiz, UserQuizState, Answer, UserQuizAnswer, QuestionFlag
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 from django.utils import timezone
+from .models import Quiz, UserQuizState, Answer, UserQuizAnswer, Question
+from django.db import transaction
 
 
 def grade_quiz(quiz_state):
@@ -160,26 +161,8 @@ def save_feedback(request, quiz_uuid):
     quiz = Quiz.objects.get(uuid=quiz_uuid)
     quiz_state= UserQuizState.objects.get(user=request.user, quiz=quiz)
     quiz_question = quiz.questions.all()[quiz_state.current_question_index]
-    if not quiz_question.flagged:
-        quiz_question.flagged = True
-
-
-    quiz_question.flag_count += 1
-    quiz_question.save()
-
-    if reason_explained:
-        QuestionFlag.objects.create(
-            user=request.user,
-            question=quiz_question,
-            reason=reason,
-            reason_explained=reason_explained
-        )
-    else:
-        QuestionFlag.objects.create(
-            user=request.user,
-            question=quiz_question,
-            reason=reason
-        )
-
+    
+    # Add flag to the question
+    quiz_question.add_flag(request.user, reason, reason_explained)
 
     return JsonResponse({'status': 'feedback saved'}, status=200)
