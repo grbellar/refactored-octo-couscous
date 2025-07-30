@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Answer, Explanation, Question, Quiz, UserQuizAnswer, UserQuizState
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
+from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import PermissionDenied
 
 # Register your models here.
 
@@ -32,6 +34,28 @@ class QuestionAdmin(admin.ModelAdmin):
     list_per_page = 50
     exclude = ('flag_reasons',)
     
+    def has_module_permission(self, request):
+        """Allow access if user is superuser or in Question Editor group"""
+        if request.user.is_superuser:
+            return True
+        return request.user.groups.filter(name='Question Editor').exists()
+    
+    def has_view_permission(self, request, obj=None):
+        """Allow view if user has question view permission"""
+        return request.user.has_perm('review.view_question')
+    
+    def has_add_permission(self, request):
+        """Allow add if user has question add permission"""
+        return request.user.has_perm('review.add_question')
+    
+    def has_change_permission(self, request, obj=None):
+        """Allow change if user has question change permission"""
+        return request.user.has_perm('review.change_question')
+    
+    def has_delete_permission(self, request, obj=None):
+        """Allow delete if user has question delete permission"""
+        return request.user.has_perm('review.delete_question')
+    
     def clear_flags_button(self, obj):
         if obj.flagged:
             return mark_safe(
@@ -59,9 +83,7 @@ class QuestionAdmin(admin.ModelAdmin):
             return mark_safe("<br><br>".join(details))
         return "No flags"
     flag_details.short_description = "Flag Details"
-    
 
-    
     def get_urls(self):
         from django.urls import path
         urls = super().get_urls()
@@ -77,6 +99,10 @@ class QuestionAdmin(admin.ModelAdmin):
     def clear_flags_view(self, request, question_id):
         from django.shortcuts import redirect
         from django.contrib import messages
+        
+        # Check permission
+        if not request.user.has_perm('review.change_question'):
+            raise PermissionDenied("You don't have permission to clear flags")
         
         try:
             question = Question.objects.get(id=question_id)
@@ -94,10 +120,23 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 
-admin.site.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    def has_module_permission(self, request):
+        """Allow access if user is superuser or in Question Editor group"""
+        if request.user.is_superuser:
+            return True
+        return request.user.groups.filter(name='Question Editor').exists()
+
+admin.site.register(Answer, AnswerAdmin)
 
 class ExplanationAdmin(admin.ModelAdmin):
     readonly_fields = ('question',)
+    
+    def has_module_permission(self, request):
+        """Allow access if user is superuser or in Question Editor group"""
+        if request.user.is_superuser:
+            return True
+        return request.user.groups.filter(name='Question Editor').exists()
 
 admin.site.register(Explanation, ExplanationAdmin)
 
@@ -119,6 +158,10 @@ class UserQuizAnswerAdmin(admin.ModelAdmin):
     question_explanation.short_description = "Explanation"
     
     list_display = ('question',)
+    
+    def has_module_permission(self, request):
+        """Only superusers can access user quiz answers"""
+        return request.user.is_superuser
 
 admin.site.register(UserQuizAnswer, UserQuizAnswerAdmin)
 
@@ -126,6 +169,10 @@ class UserQuizStateAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         # Make all fields read-only
         return [field.name for field in self.model._meta.fields]
+    
+    def has_module_permission(self, request):
+        """Only superusers can access user quiz states"""
+        return request.user.is_superuser
 
 admin.site.register(UserQuizState, UserQuizStateAdmin)
 
@@ -134,6 +181,10 @@ class QuizAdmin(admin.ModelAdmin):
     readonly_fields = ('uuid',)
     list_display = ('title', 'category', 'uuid')
     list_filter = ('category',)
+    
+    def has_module_permission(self, request):
+        """Only superusers can access quizzes"""
+        return request.user.is_superuser
 
 admin.site.register(Quiz, QuizAdmin)
 

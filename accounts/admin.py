@@ -22,15 +22,21 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
     
-    list_display = ['email', 'first_name', 'last_name', 'school', 'date_joined', 'has_paid_v2', 'legacy_has_paid_token', 'email_verified']
-    readonly_fields = ['uuid', 'date_joined', 'last_login', 'email_verified']
-    list_filter = ('is_staff', 'is_active')
+    list_display = ['email', 'first_name', 'last_name', 'school', 'date_joined', 'has_paid_v2', 'legacy_has_paid_token', 'email_verified', 'is_question_editor']
+    readonly_fields = ['uuid', 'date_joined', 'last_login', 'email_verified', 'is_question_editor']
+    list_filter = ('is_staff', 'is_active', 'groups')
 
     fieldsets = [
         (
             'User Information',
             {
-                "fields": ["first_name", "last_name", "email", "school", "date_joined", "uuid", "password", "email_verified"]
+                "fields": ["first_name", "last_name", "username", "email", "school", "date_joined", "uuid", "password", "email_verified"]
+            }
+        ),
+        (
+            'Permissions',
+            {
+                "fields": ["is_active", "is_staff", "is_superuser", "groups", "user_permissions", "is_question_editor"]
             }
         ),
         (
@@ -40,6 +46,11 @@ class CustomUserAdmin(UserAdmin):
             }
         ),
     ]
+    
+    def is_question_editor(self, obj):
+        return obj.groups.filter(name='Question Editor').exists()
+    is_question_editor.boolean = True
+    is_question_editor.short_description = "Question Editor"
     
     def email_verified(self, obj):
         email_address = EmailAddress.objects.filter(user=obj, email=obj.email).first()
