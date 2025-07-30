@@ -10,36 +10,50 @@ def migrate_questionflag_to_json(apps, schema_editor):
     """
     Question = apps.get_model('review', 'Question')
     QuestionFlag = apps.get_model('review', 'QuestionFlag')
+    User = apps.get_model('accounts', 'CustomUser')  # Use your custom user model
     
     # Group flags by question
     flagged_questions = {}
+    migrated_count = 0
     
-    for flag in QuestionFlag.objects.all():
+    for flag in QuestionFlag.objects.select_related('user', 'question').all():
         question_id = flag.question_id
         if question_id not in flagged_questions:
             flagged_questions[question_id] = []
         
+        # Get username safely
+        username = 'Unknown'
+        if flag.user_id:
+            try:
+                user = flag.user
+                username = user.username if user else 'Unknown'
+            except:
+                username = 'Unknown'
+        
         # Create flag data structure matching our new format
         flag_data = {
-            'user_id': flag.user_id if flag.user else None,
-            'username': flag.user.username if flag.user else 'Unknown',
-            'reason': flag.reason,
-            'reason_explained': flag.reason_explained if flag.reason_explained else None,
-            'created_at': flag.created_at.isoformat() if hasattr(flag, 'created_at') and flag.created_at else timezone.now().isoformat()
+            'user_id': flag.user_id if flag.user_id else None,
+            'username': username,
+            'reason': flag.reason if flag.reason else '',
+            'reason_explained': flag.reason_explained if hasattr(flag, 'reason_explained') and flag.reason_explained else None,
+            'created_at': flag.created_at.isoformat() if flag.created_at else timezone.now().isoformat()
         }
         flagged_questions[question_id].append(flag_data)
+        migrated_count += 1
     
     # Update questions with the migrated flag data
+    questions_updated = 0
     for question_id, flags in flagged_questions.items():
         try:
             question = Question.objects.get(id=question_id)
             question.flag_reasons = flags
             question.flagged = True
             question.save()
+            questions_updated += 1
         except Question.DoesNotExist:
             continue  # Question was deleted, skip
     
-    print(f"Migrated flags for {len(flagged_questions)} questions")
+    print(f"Migrated {migrated_count} flags for {questions_updated} questions")
 
 
 def reverse_migration(apps, schema_editor):
