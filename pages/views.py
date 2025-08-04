@@ -28,6 +28,10 @@ class AboutPageView(TemplateView):
     template_name = "pages/about.html"
 
 
+class PodcastPageView(TemplateView):
+    template_name = "pages/podcast.html"
+
+
 #TODO: Figure out how to add a message to the page. Currently it takes user directly to login screen. 
 @login_required
 @require_http_methods(["GET"])
