@@ -252,23 +252,46 @@ def single_result(request, id):
         exam_type_name = exam_type
 
     exam_score = round(exam_result.score)
-    predicted_score_file = exam.predicted_score_file.name
+    print(f"DEBUG: Exam score calculated as: {exam_score}")
     
     matching_row_data = None
-    if predicted_score_file:
-        with open(os.path.join(settings.MEDIA_ROOT, predicted_score_file), 'r') as file:
-            reader = csv.reader(file)
-            header = next(reader)  # Skip header row
+    try:
+        # Check if exam has predicted_score_file
+        if hasattr(exam, 'predicted_score_file') and exam.predicted_score_file:
+            predicted_score_file = exam.predicted_score_file.name
+            file_path = os.path.join(settings.MEDIA_ROOT, predicted_score_file)
             
-            for row in reader:
-                if row and int(row[0]) == exam_score:  # First column is Practice Score
-                    matching_row_data = {
-                        'practice_score': int(row[0]),
-                        'predicted_score': int(row[1]),
-                        'lower_bound': int(row[2]),
-                        'upper_bound': int(row[3])
-                    }
-                    break
+            print(f"DEBUG: Looking for file at: {file_path}")
+            print(f"DEBUG: File exists: {os.path.exists(file_path)}")
+            
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as file:
+                    reader = csv.reader(file)
+                    header = next(reader)  # Skip header row
+                    
+                    for row in reader:
+                        if row and len(row) >= 4 and row[0].strip():  # More robust validation
+                            try:
+                                row_score = int(row[0])
+                                if row_score == exam_score:
+                                    matching_row_data = {
+                                        'practice_score': int(row[0]),
+                                        'predicted_score': int(row[1]),
+                                        'lower_bound': int(row[2]),
+                                        'upper_bound': int(row[3])
+                                    }
+                                    break
+                            except (ValueError, IndexError) as e:
+                                print(f"DEBUG: Error processing row {row}: {e}")
+                                continue
+            else:
+                print(f"DEBUG: Predicted score file not found: {file_path}")
+        else:
+            print(f"DEBUG: No predicted_score_file for exam: {exam.name}")
+            
+    except Exception as e:
+        print(f"DEBUG: Error in predicted score processing: {e}")
+        # Continue without predicted scores rather than crashing
     if matching_row_data:
         # Handle predicted score
         if matching_row_data["predicted_score"] > 470:
