@@ -13,6 +13,8 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
 import re
+import csv
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -241,6 +243,32 @@ def single_result(request, id):
 
     exam_result = UserExamState.objects.get(id=id)
     exam = exam_result.exam
+    exam_type = exam.exam_type.name
+    if exam_type == "Basic Science":
+        exam_type_name = "PBSE"
+    elif exam_type == "Clinical Application":
+        exam_type_name = "CAPE"
+    else:
+        exam_type_name = exam_type
+
+    exam_score = round(exam_result.score)
+    predicted_score_file = exam.predicted_score_file.name
+    
+    matching_row_data = None
+    if predicted_score_file:
+        with open(os.path.join(settings.MEDIA_ROOT, predicted_score_file), 'r') as file:
+            reader = csv.reader(file)
+            header = next(reader)  # Skip header row
+            
+            for row in reader:
+                if row and int(row[0]) == exam_score:  # First column is Practice Score
+                    matching_row_data = {
+                        'practice_score': int(row[0]),
+                        'predicted_score': int(row[1]),
+                        'lower_bound': int(row[2]),
+                        'upper_bound': int(row[3])
+                    }
+                    break
 
     #TODO: This should be refactored into my grade method so the data can be saved in the database.
     #   I don't think I want to be running this computation every time a user looks at their results.
@@ -252,6 +280,7 @@ def single_result(request, id):
     # Create a dictionary to store the count of correct questions and total questions for each category.
     category_data = defaultdict(lambda: {'correct': 0, 'total': 0})
 
+    # TODO: IF A QUESTION IS DELETED IT WILL THROWN AN ERROR WHEN TRYING TO DISPLAY A RESULT BECAUSE THE QUESTION DOESN'T EXIST. NEED TO HANDLE THIS 
     # Loop through UserAnswer instances associated with the given UserExamState.
     for user_answer in exam_result.user_answers.all():
         question = user_answer.question
@@ -279,7 +308,9 @@ def single_result(request, id):
         "exam_result": exam_result,
         "category_scores": category_scores_list,
         "user_full_name": f"{request.user.first_name} {request.user.last_name}",
-        "unanswered": unanswered
+        "unanswered": unanswered,
+        "matching_row_data": matching_row_data,
+        "exam_type_name": exam_type_name
     }
     
     return render(request, "exams/results_single.html", context)

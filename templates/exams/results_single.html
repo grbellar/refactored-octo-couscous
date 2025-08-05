@@ -6,8 +6,41 @@
 <div class="container">
   <h3>{{ exam_result.exam_name }}</h3>
   <p>Results for: <span><strong>{{user_full_name}}</strong></span></p>
-  <p>Score: <span><strong>{{ exam_result.score }}%</strong></span></p>
-  <p>{{ exam_result.num_correct }} / {{ exam_result.num_questions }}</p>
+  {% if matching_row_data %}
+  <div class="card border-0 bg-light p-3 mb-3">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-graph-up text-primary me-2" style="font-size: 1.2em;"></i>
+        <div>
+          <div class="fw-medium text-muted mb-1" style="font-size: 0.9em;">Predicted {{ exam_type_name }} Score</div>
+          <div class="fs-4 fw-bold text-primary">{{ matching_row_data.predicted_score }}</div>
+        </div>
+      </div>
+      <div class="text-end">
+        <div class="text-muted mb-1" style="font-size: 0.85em;">Confidence Range</div>
+        <div class="fw-medium">{{ matching_row_data.lower_bound }} - {{ matching_row_data.upper_bound }}</div>
+      </div>
+    </div>
+    <div class="mt-2 pt-2 border-top">
+      <small class="text-muted">
+        <i class="bi bi-info-circle me-1"></i>
+        Based on your practice exam performance. Please note this is not a gaurantee of real exam performance and is provided to help guide you in your studies. A score of 400 and above is passing.
+      </small>
+    </div>
+  </div>
+  {% else %}
+  <div class="card border-0 bg-light p-3 mb-3">
+    <div class="d-flex align-items-center">
+      <div>
+        <div class="fw-medium text-muted mb-1" style="font-size: 0.9em;">Final Score</div>
+        <div class="fs-4 fw-bold text-primary">{{ exam_result.score }}%</div>
+        <div class="text-muted mt-1" style="font-size: 0.9em;">
+          {{ exam_result.num_correct }} correct out of {{ exam_result.num_questions }} questions
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -36,6 +69,10 @@
           <td>Totals</td>
           <td class="text-success">{{ exam_result.num_correct }}</td>
           <td>{{ exam_result.num_questions }}</td>
+        </tr>
+        <tr class="table-primary">
+          <td><strong>Final Score</strong></td>
+          <td colspan="2" class="text-center"><strong>{{ exam_result.score }}%</strong></td>
         </tr>
       </tfoot>
     </tbody>

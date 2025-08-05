@@ -19,6 +19,7 @@ class Exam(models.Model):
     description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_promo = models.BooleanField(default=False)
+    predicted_score_file = models.FileField(upload_to='predicted_scores/', null=True, blank=True)
 
 
     def __str__(self):

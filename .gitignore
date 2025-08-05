@@ -36,3 +36,6 @@ createquizzeslog.txt
 zdata-to-import
 zfiles-to-rerun
 zlogs
+CLAUDE.md
+predicted_scores/
+zpredicted_scores/
