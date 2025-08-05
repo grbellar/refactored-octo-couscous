@@ -254,6 +254,7 @@ def single_result(request, id):
     exam_score = round(exam_result.score)
     print(f"DEBUG: Exam score calculated as: {exam_score}")
     
+    # TODO: Each deploy overwrites the csv file. Need to add permanent file storage somewhere.
     matching_row_data = None
     try:
         # Check if exam has predicted_score_file
