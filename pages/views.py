@@ -269,6 +269,24 @@ def single_result(request, id):
                         'upper_bound': int(row[3])
                     }
                     break
+    if matching_row_data:
+        # Handle predicted score
+        if matching_row_data["predicted_score"] > 470:
+            matching_row_data["predicted_score"] = ">470"
+        
+        # Handle bounds more intelligently
+        lower = matching_row_data["lower_bound"]
+        upper = matching_row_data["upper_bound"]
+        
+        if lower > 470 and upper > 470:
+            # Both bounds exceed 470, show as single value
+            matching_row_data["confidence_range"] = ">470"
+        elif upper > 470:
+            # Only upper bound exceeds 470
+            matching_row_data["confidence_range"] = f"{lower} - >470"
+        else:
+            # Normal range, both bounds are <= 470
+            matching_row_data["confidence_range"] = f"{lower} - {upper}"
 
     #TODO: This should be refactored into my grade method so the data can be saved in the database.
     #   I don't think I want to be running this computation every time a user looks at their results.
