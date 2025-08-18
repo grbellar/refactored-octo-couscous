@@ -84,6 +84,9 @@ class Explanation(models.Model):
     question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='explanation')
     text = models.TextField()
     sources = models.JSONField(default=list, blank=True)
+
+    def __str__(self):
+        return self.text
     
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username='deleted')[0]

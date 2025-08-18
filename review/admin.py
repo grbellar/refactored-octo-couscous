@@ -121,6 +121,19 @@ class QuestionAdmin(admin.ModelAdmin):
 admin.site.register(Question, QuestionAdmin)
 
 class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('answer_text', 'question_text', 'is_correct')
+    readonly_fields = ('question', 'choice_count')
+    list_filter = ('is_correct',)
+    search_fields = ('text',)
+    
+    def answer_text(self, obj):
+        return obj.text[:150] + "..." if len(obj.text) > 150 else obj.text
+    answer_text.short_description = "Answer"
+    
+    def question_text(self, obj):
+        return obj.question.text[:150] + "..." if len(obj.question.text) > 150 else obj.question.text
+    question_text.short_description = "Question"
+    
     def has_module_permission(self, request):
         """Allow access if user is superuser or in Question Editor group"""
         if request.user.is_superuser:
@@ -130,7 +143,17 @@ class AnswerAdmin(admin.ModelAdmin):
 admin.site.register(Answer, AnswerAdmin)
 
 class ExplanationAdmin(admin.ModelAdmin):
+    list_display = ('explanation_text', 'question_text')
     readonly_fields = ('question',)
+    search_fields = ('text', 'question__text')
+    
+    def explanation_text(self, obj):
+        return obj.text[:150] + "..." if len(obj.text) > 150 else obj.text
+    explanation_text.short_description = "Explanation"
+    
+    def question_text(self, obj):
+        return obj.question.text[:150] + "..." if len(obj.question.text) > 150 else obj.question.text
+    question_text.short_description = "Question"
     
     def has_module_permission(self, request):
         """Allow access if user is superuser or in Question Editor group"""
