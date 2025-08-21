@@ -97,7 +97,7 @@ class CategoryChoiceField(ModelChoiceField):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    inlines = [ChoiceInline, ExplanationInline]
+    inlines = [ChoiceInline,]
     list_display = ['text', 'id']
     search_fields = ['text', 'category__name', 'category__exam_type__name']
     list_filter = ['category__exam_type', 'category']
