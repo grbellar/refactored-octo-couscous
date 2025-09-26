@@ -131,8 +131,7 @@ class UserExamStateAdmin(admin.ModelAdmin):
         return False
     
     def has_delete_permission(self, request, obj=None):
-        return False
-
+        return request.user.is_superuser
 
 admin.site.register(UserExamState, UserExamStateAdmin)
 
@@ -142,6 +141,6 @@ class UserAnswerAdmin(admin.ModelAdmin):
         return False
     
     def has_delete_permission(self, request, obj=None):
-        return False
+        return request.user.is_superuser
 
 admin.site.register(UserAnswer, UserAnswerAdmin)
