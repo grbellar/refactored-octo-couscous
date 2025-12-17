@@ -143,9 +143,10 @@ class AnswerAdmin(admin.ModelAdmin):
 admin.site.register(Answer, AnswerAdmin)
 
 class ExplanationAdmin(admin.ModelAdmin):
-    list_display = ('explanation_text', 'question_text')
+    list_display = ('explanation_text', 'question_text', 'flagged')
     readonly_fields = ('question',)
     search_fields = ('text', 'question__text')
+    list_filter = ('flagged',)
     
     def explanation_text(self, obj):
         return obj.text[:150] + "..." if len(obj.text) > 150 else obj.text

@@ -84,6 +84,7 @@ class Explanation(models.Model):
     question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='explanation')
     text = models.TextField()
     sources = models.JSONField(default=list, blank=True)
+    flagged = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
