@@ -11,3 +11,13 @@ Major TODO:
 Enforced required selection of choice for each question
 
 Require First Name Last Name on registration
+
+
+2026-02-07
+
+add terms of use agreement and acceptance before they can create an account. need form john
+change countdown to april 18
+update predicated score algormith with more data. need from john
+add  pediatric section to the ancillary topics. need from john
+change polling to a percentage instead of number of people
+fix this?  After you take a quiz, it sends you back to the very beginning. And you have find the page with the next quiz to begin. Is there a way to make it flow a little better?

@@ -158,17 +158,18 @@
             input.disabled = true;
         });
 
-        // Add choice count to each answer if available
+        // Add choice percentage to each answer if available
         if (answers && Array.isArray(answers)) {
+            const totalCount = answers.reduce((sum, a) => sum + a.choice_count, 0);
             answers.forEach(answer => {
                 const answerLabel = document.querySelector(`label[for="choice${answer.id}"]`);
                 if (answerLabel) {
-                    // Append the choice count in a small, muted format
+                    const percentage = totalCount > 0 ? Math.round((answer.choice_count / totalCount) * 100) : 0;
                     const countSpan = document.createElement('span');
                     countSpan.style.fontSize = '0.9rem';
                     countSpan.style.fontWeight = 'bold';
                     countSpan.style.marginLeft = '5px';
-                    countSpan.textContent = `(${answer.choice_count} ${answer.choice_count === 1 ? 'person' : 'people'} chose this)`;
+                    countSpan.textContent = `(${percentage}% chose this)`;
                     answerLabel.appendChild(countSpan);
                 }
             });

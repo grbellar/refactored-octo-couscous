@@ -98,7 +98,7 @@
 {% block content %}
 {% endblock content %}
 
-    
+
 
 <footer class="footer">
     <div class="container p-2">
@@ -121,14 +121,14 @@
 
   <!-- Project JS -->
   <script src="{% static 'js/base.js' %}"></script>
-    
+
   <script>
     date = new Date().getFullYear()
     document.getElementById('copyright').innerHTML = `© PerfusionBoardPrep.com ${date}`
 
     function updateCountdown() {
       // Set the date we're counting down to
-      const targetDate = new Date(new Date().getFullYear(), 9, 13);
+      const targetDate = new Date(new Date().getFullYear(), 04, 18);
 
       // Get today's date and time
       const now = new Date();
@@ -140,7 +140,7 @@
       const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
 
       // Display the result
-      document.getElementById("exam-countdown").innerText = daysLeft + " days left until the October 2025 exam!";
+      document.getElementById("exam-countdown").innerText = daysLeft + " days left until the April 2026 exam!";
 
       // If the countdown is over
       if (difference < 0) {
